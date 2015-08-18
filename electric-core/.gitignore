@@ -1,1 +1,4 @@
 /target/
+
+# the jdbc configuration file
+jdbc.properties
