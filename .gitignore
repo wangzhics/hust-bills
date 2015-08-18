@@ -19,3 +19,6 @@ hs_err_pid*
 # Eclipse Workspace Directory
 .metadata
 RemoteSystemsTempFiles
+
+# Eclipse Code Recommenders 
+.recommenders
