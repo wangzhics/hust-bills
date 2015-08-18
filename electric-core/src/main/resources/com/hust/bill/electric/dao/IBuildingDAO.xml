@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hust.bill.electric.dao.IBuildingDAO">
+	<resultMap id="buildingResultMap" type="com.hust.bill.electric.bean.Building">
+		<id column="name" property="name" jdbcType="NVARCHAR" />
+		<result column="area" property="area" jdbcType="NVARCHAR" />
+		<result column="floor" property="floor" jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="insert">
+		<if test="array.length != 0">
+			insert into electric_building(area, name, floor) values
+			<foreach collection="array" item="item" index="index"
+				separator=",">
+				(#{item.area, jdbcType=VARCHAR}, #{item.name, jdbcType=VARCHAR}, #{item.floor,
+				jdbcType=INTEGER})
+			</foreach>
+		</if>
+	</insert>
+
+	<select id="getAll" resultMap="buildingResultMap">
+		select area, name, floor from
+		electric_building
+	</select>
+
+	<select id="getByArea" parameterType="String" resultMap="buildingResultMap">
+		select area, name, floor from electric_building where area = #{area,
+		jdbcType=VARCHAR}
+	</select>
+
+	<select id="getByNames" resultMap="buildingResultMap">
+		<if test="names.length != 0">
+			select area, name, floor from electric_building where name in
+			<foreach collection="names" item="name" open="(" separator=","
+				close=")">
+				#{name, jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="names.length == 0">
+			select area, name, floor from electric_building where name in ('')
+		</if>
+	</select>
+
+	<delete id="deleteByNames">
+		<if test="names.length != 0">
+			delete from electric_building where name in
+			<foreach collection="names" item="name" open="(" separator=","
+				close=")">
+				#{name, jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="names.length == 0">
+		  select count(*) from electric_building
+		</if>
+	</delete>
+
+</mapper>
