@@ -5,17 +5,17 @@ import java.util.Queue;
 
 import com.hust.bill.electric.core.http.ElectricHttpClient;
 
-public class ChainConext {
+public class BasicSegmentConext {
 	
-	private Queue<ITaskSegment> taskSegments = new LinkedList<>();
+	private Queue<BasicTaskSegment> taskSegments = new LinkedList<>();
 	
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
 
-	public Queue<ITaskSegment> getTaskSegments() {
+	public Queue<BasicTaskSegment> getTaskSegments() {
 		return taskSegments;
 	}
 
-	public void setTaskSegments(Queue<ITaskSegment> taskSegments) {
+	public void setTaskSegments(Queue<BasicTaskSegment> taskSegments) {
 		this.taskSegments = taskSegments;
 	}
 
