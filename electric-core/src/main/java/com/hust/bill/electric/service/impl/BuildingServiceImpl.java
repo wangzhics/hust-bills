@@ -43,9 +43,13 @@ public class BuildingServiceImpl implements IBuildingService{
 		oldNameSet.retainAll(newNameSet);
 		
 		logger.info("Need Delete Buildings is " + oldNameSet.toString());
-		buildingDAO.deleteByNames(oldNameSet.toArray(new String[0]));
+		if(oldNameSet.size() > 0) {
+			buildingDAO.deleteByNames(oldNameSet.toArray(new String[0]));
+		}
 		logger.info("Need Insert Buildings is " + oldNameSet.toString());
-		buildingDAO.insert(newBuildings);
+		if(newBuildings.length > 0) {
+			buildingDAO.insert(newBuildings);
+		}
 		
 	}
 
