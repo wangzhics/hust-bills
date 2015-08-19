@@ -10,7 +10,7 @@ public class RemainRecord {
 	
 	private String buildingName;
 	
-	private String roomStr;
+	private String roomName;
 	
 	private Date dateTime;
 	
@@ -20,21 +20,21 @@ public class RemainRecord {
 		
 	}
 	
-	public RemainRecord(String buildingName, String roomStr, Date dateTime, float remain) {
+	public RemainRecord(String buildingName, String roomName, Date dateTime, float remain) {
 		this.buildingName = buildingName;
-		this.roomStr = roomStr;
+		this.roomName = roomName;
 		this.dateTime = dateTime;
 		this.remain = remain;
 	}
 	
 	public RemainRecord(String buildingName, int floor, int room, Date dateTime, float remain) {
 		this.buildingName = buildingName;
-		this.roomStr = getRoomStr(floor, room);
+		this.roomName = getRoomName(floor, room);
 		this.dateTime = dateTime;
 		this.remain = remain;
 	}
 	
-	public static String getRoomStr(int floor, int room) {
+	public static String getRoomName(int floor, int room) {
 		return String.valueOf(floor) + df.format(room);
 	}
 
@@ -54,12 +54,12 @@ public class RemainRecord {
 		this.buildingName = buildingName;
 	}
 
-	public String getRoomStr() {
-		return roomStr;
+	public String getRoomName() {
+		return roomName;
 	}
 
-	public void setRoomStr(String roomStr) {
-		this.roomStr = roomStr;
+	public void setRoomName(String roomStr) {
+		this.roomName = roomStr;
 	}
 	
 	public float getRemain() {
@@ -72,7 +72,7 @@ public class RemainRecord {
 
 	@Override
 	public String toString() {
-		return "RemainRecord [buildingName=" + buildingName + ", roomStr=" + roomStr + ", dateTime=" + dateTime
+		return "RemainRecord [buildingName=" + buildingName + ", roomStr=" + roomName + ", dateTime=" + dateTime
 				+ ", remain=" + remain + "]";
 	}
 }

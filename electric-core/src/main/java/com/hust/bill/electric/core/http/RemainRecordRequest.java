@@ -24,7 +24,7 @@ public class RemainRecordRequest implements IRequest {
 	@Override
 	public NameValuePair[] perparePostForm() {
 		String floorStr = floor + "层";
-		String roomStr = RemainRecord.getRoomStr(floor, room);
+		String roomStr = RemainRecord.getRoomName(floor, room);
 		return new BasicNameValuePair[]{
 			new BasicNameValuePair(HttpElements._PROGRAMID, area),
 			new BasicNameValuePair(HttpElements._TXTYQ, building),

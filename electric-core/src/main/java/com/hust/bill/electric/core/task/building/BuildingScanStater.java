@@ -6,11 +6,11 @@ import com.hust.bill.electric.core.http.RequestException;
 import com.hust.bill.electric.core.page.AreaPage;
 import com.hust.bill.electric.service.IBuildingService;
 
-public class BuildingUpdateStater extends Thread {
+public class BuildingScanStater extends Thread {
 
 	private IBuildingService buildingService;
 	
-	public BuildingUpdateStater(IBuildingService buildingService) {
+	public BuildingScanStater(IBuildingService buildingService) {
 		super();
 		setDaemon(true);
 		setName("Building Update Stater");
@@ -24,7 +24,7 @@ public class BuildingUpdateStater extends Thread {
 			httpClient.perpare();
 			AreaPage areaPage = new AreaPage(httpClient.getCurrentDocument());
 			for(String area : areaPage.getAreas()) {
-				BuildingUpdateThread updateExecutor = new BuildingUpdateThread(area, buildingService);
+				BuildingScanThread updateExecutor = new BuildingScanThread(area, buildingService);
 				updateExecutor.start();
 			}
 		} catch (RequestException e) {

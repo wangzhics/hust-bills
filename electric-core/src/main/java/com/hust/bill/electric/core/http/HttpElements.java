@@ -19,4 +19,7 @@ public class HttpElements {
 	
 	public final static String _TextBox2 = "TextBox2";
 	public final static String _TextBox3 = "TextBox3";
+	
+	public final static String _GRIDVIEW1 = "GridView1";
+	public final static String _GRIDVIEW2 = "GridView2";
 }

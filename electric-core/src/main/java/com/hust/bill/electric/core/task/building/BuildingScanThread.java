@@ -1,10 +1,8 @@
 package com.hust.bill.electric.core.task.building;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +15,9 @@ import com.hust.bill.electric.core.page.BuildingFloorPage;
 import com.hust.bill.electric.core.page.BuildingNamePage;
 import com.hust.bill.electric.service.IBuildingService;
 
-public class BuildingUpdateThread extends Thread {
+public class BuildingScanThread extends Thread {
 	
-	private static Logger logger = LoggerFactory.getLogger(BuildingUpdateThread.class);
+	private static Logger logger = LoggerFactory.getLogger(BuildingScanThread.class);
 	
 	private String area;
 	private IBuildingService buildingService; 
@@ -27,7 +25,7 @@ public class BuildingUpdateThread extends Thread {
 	
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
 	
-	public BuildingUpdateThread(String area, IBuildingService buildingService) {
+	public BuildingScanThread(String area, IBuildingService buildingService) {
 		super();
 		setDaemon(true);
 		setName("Building[" + area + "] Scan Executor");

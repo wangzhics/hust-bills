@@ -29,7 +29,7 @@ public class DispatchThread extends Thread implements ISubThreadFinishListener {
 				threadSemaphore.acquire();
 				Thread subThread = new Thread(subThreadRunnable);
 				subThread.setDaemon(true);
-				subThread.setName("Building[" + subThreadRunnable.getThreadName() + "] Remain Executor");
+				subThread.setName(subThreadRunnable.getThreadName());
 				subThread.start();
 				subThreadRunnable = subThreads.poll();
 			} catch (InterruptedException e) {
