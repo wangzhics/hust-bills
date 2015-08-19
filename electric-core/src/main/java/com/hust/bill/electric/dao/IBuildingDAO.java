@@ -11,6 +11,8 @@ public interface IBuildingDAO {
 
 	public void insert(Building[] buildings);
 	
+	//public void update(Building[] buildings);
+	
 	public void deleteByNames(@Param("names")String[] names);
 	
 	public Building[] getByNames(@Param("names")String[] names);

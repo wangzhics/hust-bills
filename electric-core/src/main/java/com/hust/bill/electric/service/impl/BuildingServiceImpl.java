@@ -30,7 +30,6 @@ public class BuildingServiceImpl implements IBuildingService{
 	@Override
 	@Transactional
 	public void update(Building[] newBuildings) {
-		
 		Set<String> newNameSet = new HashSet<>(newBuildings.length);
 		for(Building b : newBuildings){
 			newNameSet.add(b.getName());
@@ -43,14 +42,9 @@ public class BuildingServiceImpl implements IBuildingService{
 		oldNameSet.retainAll(newNameSet);
 		
 		logger.info("Need Delete Buildings is " + oldNameSet.toString());
-		if(oldNameSet.size() > 0) {
-			buildingDAO.deleteByNames(oldNameSet.toArray(new String[0]));
-		}
+		buildingDAO.deleteByNames(oldNameSet.toArray(new String[0]));
 		logger.info("Need Insert Buildings is " + oldNameSet.toString());
-		if(newBuildings.length > 0) {
-			buildingDAO.insert(newBuildings);
-		}
-		
+		buildingDAO.insert(newBuildings);
 	}
 
 	@Override
