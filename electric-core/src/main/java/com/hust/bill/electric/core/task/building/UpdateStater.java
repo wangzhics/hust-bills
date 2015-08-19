@@ -15,7 +15,7 @@ public class UpdateStater extends Thread {
 	public UpdateStater(IBuildingService buildingService) {
 		super();
 		setDaemon(true);
-		setName("Building Scan Stater Thread");
+		setName("Building Update Stater Thread");
 		this.buildingService = buildingService;
 	}
 	
@@ -27,8 +27,8 @@ public class UpdateStater extends Thread {
 			AreaPage areaPage = new AreaPage();
 			areaPage.updateAttributes(httpClient.getCurrentDocument());
 			for(String area : areaPage.getAreas()) {
-				UpdateSegmentConext updateConext = new UpdateSegmentConext(area, buildingService);
-				UpdateExecutor updateExecutor = new UpdateExecutor(updateConext);
+				SegmentConext updateConext = new SegmentConext(area, buildingService);
+				SegmentExecutor updateExecutor = new SegmentExecutor(updateConext);
 				updateExecutor.start();
 			}
 		} catch (ClientProtocolException e) {

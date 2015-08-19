@@ -7,32 +7,20 @@ import org.apache.http.client.ClientProtocolException;
 import com.hust.bill.electric.core.http.BuildingNameRequest;
 import com.hust.bill.electric.core.http.ElectricHttpClient;
 import com.hust.bill.electric.core.page.BuildingNamePage;
-import com.hust.bill.electric.core.task.BasicSegmentConext;
-import com.hust.bill.electric.core.task.BasicTaskSegment;
 
-public class BuildingSegment extends BasicTaskSegment {
-
-	
-	public BuildingSegment(BasicSegmentConext segmentConext) {
-		super(segmentConext);
-	}
-
-	@Override
-	public UpdateSegmentConext getSegmentConext() {
-		return (UpdateSegmentConext) super.getSegmentConext();
-	}
+public class BuildingSegment implements ITaskSegment {
 	
 	@Override
-	public void execute() {
-		BuildingNameRequest request = new BuildingNameRequest(getSegmentConext().getArea());
+	public void execute(SegmentConext segmentConext) {
+		BuildingNameRequest request = new BuildingNameRequest(segmentConext.getArea());
 		try {
-			ElectricHttpClient httpClient = getSegmentConext().getHttpClient();
+			ElectricHttpClient httpClient = segmentConext.getHttpClient();
 			httpClient.executeRequest(request);
 			BuildingNamePage buildingNamePage = new BuildingNamePage();
 			buildingNamePage.updateAttributes(httpClient.getCurrentDocument());
 			for(String buildingName : buildingNamePage.getBuildingNames()) {
-				FloorSegment floorSegment = new FloorSegment(getSegmentConext(), buildingName);
-				getSegmentConext().getTaskSegments().add(floorSegment);
+				FloorSegment floorSegment = new FloorSegment(buildingName);
+				segmentConext.getTaskSegments().add(floorSegment);
 			}
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
