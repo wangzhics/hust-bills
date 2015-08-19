@@ -1,10 +1,8 @@
 package com.hust.bill.electric.core.task.building;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
 
 import com.hust.bill.electric.core.http.ElectricHttpClient;
+import com.hust.bill.electric.core.http.RequestException;
 import com.hust.bill.electric.core.page.AreaPage;
 import com.hust.bill.electric.service.IBuildingService;
 
@@ -29,9 +27,7 @@ public class BuildingUpdateStater extends Thread {
 				BuildingUpdateThread updateExecutor = new BuildingUpdateThread(area, buildingService);
 				updateExecutor.start();
 			}
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (RequestException e) {
 			e.printStackTrace();
 		}
 	}

@@ -12,6 +12,7 @@ import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.core.http.BuildingFloorRequest;
 import com.hust.bill.electric.core.http.BuildingNameRequest;
 import com.hust.bill.electric.core.http.ElectricHttpClient;
+import com.hust.bill.electric.core.http.RequestException;
 import com.hust.bill.electric.core.page.BuildingFloorPage;
 import com.hust.bill.electric.core.page.BuildingNamePage;
 import com.hust.bill.electric.service.IBuildingService;
@@ -55,11 +56,9 @@ public class BuildingUpdateThread extends Thread {
 			}
 			
 			finish();
-		} catch (ClientProtocolException e) {
+		} catch (RequestException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} 
 	};
 	
 

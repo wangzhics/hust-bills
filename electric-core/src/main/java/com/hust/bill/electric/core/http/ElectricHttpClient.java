@@ -1,6 +1,7 @@
 package com.hust.bill.electric.core.http;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,29 +25,55 @@ public class ElectricHttpClient {
 	
 	private Document currentDocument = null;
 	
-	public void perpare() throws IOException, ClientProtocolException {
+	public void perpare() throws RequestException {
 		HttpGet httpGet = new HttpGet(HttpElements.url);
-		CloseableHttpResponse response = httpClient.execute(httpGet);
-		updateCurrentDocument(response);
+		CloseableHttpResponse response;
+		try {
+			response = httpClient.execute(httpGet);
+			try {
+				updateCurrentDocument(response);
+			} catch (IOException e) {
+				throw new RequestException("response can not be paser to jsoup document", e);
+			}
+		} catch (ClientProtocolException e) {
+			throw new RequestException("request[" + httpGet + "] occur http protocol error", e);
+		} catch (IOException e) {
+			throw new RequestException("request[" + httpGet + "] occur io error", e);
+		}
 	}
 
-	public void executeRequest(IRequest request) throws IOException, ClientProtocolException {
+	public void executeRequest(IRequest request) throws RequestException {
 		List<BasicNameValuePair> pairList = updatePostParams();
 		for(NameValuePair nameValuePair : request.perparePostForm()){
 			pairList.add(new BasicNameValuePair(nameValuePair.getName(), nameValuePair.getValue()));
 		}
 		HttpPost httpPost = new HttpPost(HttpElements.url);
-		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(pairList, "utf-8");
-		httpPost.setEntity(formEntity);
-		CloseableHttpResponse response = httpClient.execute(httpPost);
-		updateCurrentDocument(response);
+		try {
+			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(pairList, "utf-8");
+			httpPost.setEntity(formEntity);
+			CloseableHttpResponse response;
+			try {
+				response = httpClient.execute(httpPost);
+				try {
+					updateCurrentDocument(response);
+				} catch (IOException e) {
+					throw new RequestException("response can not be paser to jsoup document", e);
+				}
+			} catch (ClientProtocolException e) {
+				throw new RequestException("request[" + httpPost + "] occur http protocol error", e);
+			} catch (IOException e) {
+				throw new RequestException("request[" + httpPost + "] occur io error", e);
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new RequestException("UnsupportedEncoding: utf8-[" + pairList + "]", e);
+		}
 	}
 	
 	public Document getCurrentDocument() {
 		return currentDocument;
 	}
 	
-	private void updateCurrentDocument(CloseableHttpResponse response) throws IOException{
+	private void updateCurrentDocument(CloseableHttpResponse response) throws IOException {
 		try {
 			HttpEntity entity = response.getEntity();
 			currentDocument = Jsoup.parse(entity.getContent(), "utf-8", HttpElements.url);

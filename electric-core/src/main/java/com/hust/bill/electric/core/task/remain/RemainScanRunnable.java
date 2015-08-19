@@ -17,6 +17,7 @@ import com.hust.bill.electric.core.http.BuildingFloorRequest;
 import com.hust.bill.electric.core.http.BuildingNameRequest;
 import com.hust.bill.electric.core.http.ElectricHttpClient;
 import com.hust.bill.electric.core.http.RemainRecordRequest;
+import com.hust.bill.electric.core.http.RequestException;
 import com.hust.bill.electric.core.page.RemainRecordPage;
 import com.hust.bill.electric.core.thread.SubThreadRunnable;
 
@@ -49,17 +50,13 @@ public class RemainScanRunnable extends SubThreadRunnable {
 				tryOneFloor(i);
 			}
 			logger.info("Get remain records of [" + building.getName() + "] Finish");
-		} catch (ClientProtocolException e) {
+		} catch (RequestException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (IllegalThreadStateException e) {
-			e.printStackTrace();
-		}
+		} 
 		
 	}
 	
-	private void perpare() throws IOException, ClientProtocolException {
+	private void perpare() throws RequestException {
 		logger.info("Try perpare get remain records of [" + building.getName() + "]");
 		httpClient.perpare();
 		BuildingNameRequest buildingNameRequest = new BuildingNameRequest(building.getArea());
@@ -70,7 +67,7 @@ public class RemainScanRunnable extends SubThreadRunnable {
 		
 	}
 	
-	private void tryOneFloor(int floor) throws IOException, ClientProtocolException {
+	private void tryOneFloor(int floor) throws RequestException {
 		int continueFalse = 0;
 		RemainRecordPage recordPage = null;
 		for(int room = 1; room < 100; room ++) {
