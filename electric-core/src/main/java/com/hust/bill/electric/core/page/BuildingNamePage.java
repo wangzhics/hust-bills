@@ -9,22 +9,14 @@ import org.jsoup.select.Elements;
 
 import com.hust.bill.electric.core.http.HttpElements;
 
-public class BuildingNamePage implements IPage {
-
+public class BuildingNamePage extends AbstactPage {
+	
 	private String area;
 	
 	private String[] buildingNames;
-	
-	public String getArea() {
-		return area;
-	}
-	
-	public String[] getBuildingNames() {
-		return buildingNames;
-	}
 
-	@Override
-	public void updateAttributes(Document doc) {
+	public BuildingNamePage(Document doc) {
+		super(doc);
 		Element areaSelectElement = doc.getElementById(HttpElements._PROGRAMID);
 		Element areaOptionElement = areaSelectElement.select("option[selected=selected]").first();
 		area = areaOptionElement.val();
@@ -40,6 +32,15 @@ public class BuildingNamePage implements IPage {
 		}
 		buildingNames = buildingNameList.toArray(new String[0]);
 	}
+	
+	public String getArea() {
+		return area;
+	}
+	
+	public String[] getBuildingNames() {
+		return buildingNames;
+	}
+
 	
 	
 }

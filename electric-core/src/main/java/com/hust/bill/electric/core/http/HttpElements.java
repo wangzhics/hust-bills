@@ -17,6 +17,6 @@ public class HttpElements {
 	public final static String _ImageButtonX = "ImageButton1.x";
 	public final static String _ImageButtonY = "ImageButton1.y";
 	
-	public final static String _TextBox2 = "_TextBox2";
-	public final static String _TextBox3 = "_TextBox3";
+	public final static String _TextBox2 = "TextBox2";
+	public final static String _TextBox3 = "TextBox3";
 }

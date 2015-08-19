@@ -8,14 +8,14 @@ import com.hust.bill.electric.core.http.ElectricHttpClient;
 import com.hust.bill.electric.core.page.AreaPage;
 import com.hust.bill.electric.service.IBuildingService;
 
-public class UpdateStater extends Thread {
+public class BuildingUpdateStater extends Thread {
 
 	private IBuildingService buildingService;
 	
-	public UpdateStater(IBuildingService buildingService) {
+	public BuildingUpdateStater(IBuildingService buildingService) {
 		super();
 		setDaemon(true);
-		setName("Building Update Stater Thread");
+		setName("Building Update Stater");
 		this.buildingService = buildingService;
 	}
 	
@@ -24,11 +24,9 @@ public class UpdateStater extends Thread {
 		ElectricHttpClient httpClient = new ElectricHttpClient();
 		try {
 			httpClient.perpare();
-			AreaPage areaPage = new AreaPage();
-			areaPage.updateAttributes(httpClient.getCurrentDocument());
+			AreaPage areaPage = new AreaPage(httpClient.getCurrentDocument());
 			for(String area : areaPage.getAreas()) {
-				SegmentConext updateConext = new SegmentConext(area, buildingService);
-				SegmentExecutor updateExecutor = new SegmentExecutor(updateConext);
+				BuildingUpdateThread updateExecutor = new BuildingUpdateThread(area, buildingService);
 				updateExecutor.start();
 			}
 		} catch (ClientProtocolException e) {

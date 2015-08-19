@@ -9,16 +9,12 @@ import org.jsoup.select.Elements;
 
 import com.hust.bill.electric.core.http.HttpElements;
 
-public class AreaPage implements IPage {
-
+public class AreaPage extends AbstactPage {
+	
 	private String[] areas;
-	
-	public String[] getAreas() {
-		return areas;
-	}
-	
-	@Override
-	public void updateAttributes(Document doc) {
+
+	public AreaPage(Document doc) {
+		super(doc);
 		Element areaSelectElement = doc.getElementById(HttpElements._PROGRAMID);
 		Elements areaOptionElements = areaSelectElement.children();
 		List<String> areaList = new ArrayList<String>(10);
@@ -31,6 +27,9 @@ public class AreaPage implements IPage {
 		}
 		areas = areaList.toArray(new String[0]);
 	}
-
+	
+	public String[] getAreas() {
+		return areas;
+	}
 	
 }
