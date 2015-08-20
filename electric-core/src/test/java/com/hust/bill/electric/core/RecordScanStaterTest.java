@@ -22,7 +22,7 @@ public class RecordScanStaterTest {
 		try {
 			RecordScanStater stater = new RecordScanStater(buildingService);
 			stater.start();
-			Thread.sleep(100000);
+			Thread.sleep(1000000);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (Throwable e) {

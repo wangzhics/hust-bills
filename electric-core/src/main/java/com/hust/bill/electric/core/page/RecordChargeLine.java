@@ -1,6 +1,6 @@
 package com.hust.bill.electric.core.page;
 
-public class ChargeRecordLine {
+public class RecordChargeLine {
 
 	private String dateStr;
 	
@@ -8,10 +8,10 @@ public class ChargeRecordLine {
 	
 	private String moneyStr;
 
-	public ChargeRecordLine() {
+	public RecordChargeLine() {
 	}
 
-	public ChargeRecordLine(String dateStr, String powerStr, String moneyStr) {
+	public RecordChargeLine(String dateStr, String powerStr, String moneyStr) {
 		this.dateStr = dateStr;
 		this.powerStr = powerStr;
 		this.moneyStr = moneyStr;

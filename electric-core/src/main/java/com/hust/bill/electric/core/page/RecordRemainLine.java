@@ -1,15 +1,15 @@
 package com.hust.bill.electric.core.page;
 
-public class RemainRecordLine {
+public class RecordRemainLine {
 
 	private String dateStr;
 	
 	private String remainStr;
 
-	public RemainRecordLine() {
+	public RecordRemainLine() {
 	}
 	
-	public RemainRecordLine(String dateStr, String remainStr) {
+	public RecordRemainLine(String dateStr, String remainStr) {
 		this.dateStr = dateStr;
 		this.remainStr = remainStr;
 	}
