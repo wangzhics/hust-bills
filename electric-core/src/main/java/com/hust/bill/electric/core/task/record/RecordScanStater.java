@@ -34,7 +34,7 @@ public class RecordScanStater extends Thread {
 		for(Building building : allBuiilding) {
 			RecordScanCallable scanCallable = new RecordScanCallable(building);
 			Future<RecordScanCallableReturn> result = executorService.submit(scanCallable);
-			
+			resultList.add(result);
 		}
 		
 		executorService.shutdown();

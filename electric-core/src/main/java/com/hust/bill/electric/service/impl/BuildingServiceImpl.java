@@ -23,28 +23,31 @@ public class BuildingServiceImpl implements IBuildingService{
 	
 	
 	@Override
-	public Building[] getByArea(String area) {
-		return buildingDAO.getByArea(area);
-	}
-	
-	@Override
 	@Transactional
-	public void update(Building[] newBuildings) {
-		Set<String> newNameSet = new HashSet<>(newBuildings.length);
-		for(Building b : newBuildings){
-			newNameSet.add(b.getName());
-		}
-		Building[] oldBuildings = buildingDAO.getByNames(newNameSet.toArray(new String[0]));
-		Set<String> oldNameSet = new HashSet<String>(oldBuildings.length);
-		for(Building b : oldBuildings){
-			oldNameSet.add(b.getName());
-		}
-		oldNameSet.retainAll(newNameSet);
+	public void add(Building[] newBuildings) {
 		
-		logger.info("Need Delete Buildings is " + oldNameSet.toString());
-		buildingDAO.deleteByNames(oldNameSet.toArray(new String[0]));
-		logger.info("Need Insert Buildings is " + oldNameSet.toString());
-		buildingDAO.insert(newBuildings);
+		Set<Building> updateBuildingSet = new HashSet<Building>(newBuildings.length);
+		Set<Building> insertBuildingSet = new HashSet<Building>(newBuildings.length);
+		for(Building b : newBuildings){
+			updateBuildingSet.add(b);
+			insertBuildingSet.add(b);
+		}
+		
+		Building[] oldBuildings = buildingDAO.getAll();
+		Set<Building> oldBuildingSet = new HashSet<Building>(oldBuildings.length);
+		for(Building b : oldBuildings){
+			oldBuildingSet.add(b);
+		}
+		
+		updateBuildingSet.retainAll(oldBuildingSet); 
+		for(Building updateBuild : updateBuildingSet) {
+			buildingDAO.update(updateBuild);//TODO use batch update
+		}
+		logger.info("update buildings[{}]", updateBuildingSet);
+		
+		insertBuildingSet.removeAll(oldBuildingSet);
+		buildingDAO.insert(insertBuildingSet.toArray(new Building[0]));
+		logger.info("insert buildings[{}]", insertBuildingSet);
 	}
 
 	@Override
