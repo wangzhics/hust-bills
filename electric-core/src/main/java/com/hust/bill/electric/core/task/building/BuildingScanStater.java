@@ -19,11 +19,11 @@ public class BuildingScanStater extends Thread {
 
 	private IBuildingService buildingService;
 	
-	ExecutorService executorService = Executors.newFixedThreadPool(5);
+	private ExecutorService executorService = Executors.newFixedThreadPool(5);
 	
 	private List<Building> buildingList = new ArrayList<Building>(100);
 	
-	List<Future<Building[]>> resultList = new ArrayList<Future<Building[]>>(10);  
+	private List<Future<Building[]>> resultList = new ArrayList<Future<Building[]>>(10);  
 	
 	public BuildingScanStater(IBuildingService buildingService) {
 		super();

@@ -21,6 +21,7 @@ import com.hust.bill.electric.core.http.RequestException;
 import com.hust.bill.electric.core.page.RecordChargeLine;
 import com.hust.bill.electric.core.page.RecordPage;
 import com.hust.bill.electric.core.page.RecordRemainLine;
+import com.hust.bill.electric.service.IRecordService;
 
 
 public class RecordScanCallable implements Callable<RecordScanCallableReturn>  {
@@ -28,15 +29,17 @@ public class RecordScanCallable implements Callable<RecordScanCallableReturn>  {
 	private static Logger logger = LoggerFactory.getLogger(RecordScanCallable.class);
 	private SimpleDateFormat TIME_FORMATER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	
-	private Building building;
-	
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
 	
 	private List<RemainRecord> remainList = new ArrayList<RemainRecord>(1000);
 	private List<ChargeRecord> chargeList = new ArrayList<ChargeRecord>(200);
 	
-	public RecordScanCallable(Building building) {
+	private Building building;
+	private IRecordService recordService;
+	
+	public RecordScanCallable(Building building, IRecordService recordService) {
 		this.building = building;
+		this.recordService = recordService;
 	}
 	
 	
@@ -49,7 +52,9 @@ public class RecordScanCallable implements Callable<RecordScanCallableReturn>  {
 			tryOneFloor(i);
 		}
 		
-		RecordScanCallableReturn callableReturn = new RecordScanCallableReturn(remainList.size(), remainList.size());
+		saveRecords();
+		
+		RecordScanCallableReturn callableReturn = new RecordScanCallableReturn(building.getName(), remainList.size(), remainList.size());
 		logger.info("buildings[{}] remain record count is [{}]", building.getName(), remainList.size());
 		logger.info("buildings[{}] charge record count is [{}]", building.getName(), chargeList.size());
 		return callableReturn;
@@ -112,6 +117,11 @@ public class RecordScanCallable implements Callable<RecordScanCallableReturn>  {
 				break;
 			}
 		}
+	}
+	
+	private void saveRecords() {
+		recordService.insertTempRemains(remainList.toArray(new RemainRecord[0]));
+		recordService.insertTempCharges(chargeList.toArray(new ChargeRecord[0]));
 	}
 
 }
