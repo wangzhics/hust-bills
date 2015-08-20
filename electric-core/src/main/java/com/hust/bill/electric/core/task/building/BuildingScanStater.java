@@ -71,6 +71,6 @@ public class BuildingScanStater extends Thread {
 			}
 		}
 		
-		buildingService.update(buildingList.toArray(new Building[0]));
+		buildingService.add(buildingList.toArray(new Building[0]));
 	}
 }

@@ -44,12 +44,12 @@ public class BuildingScanCallable implements Callable<Building[]> {
 			BuildingFloorRequest floorRequest = new BuildingFloorRequest(area, buildingName);
 			httpClient.executeRequest(floorRequest);
 			BuildingFloorPage floorPage = new BuildingFloorPage(httpClient.getCurrentDocument());
-			logger.info("building[{}-{}]'s floor is {}" ,area, buildingName, floorPage.getFloor());
+			logger.debug("building[{}-{}]'s floor is {}" ,area, buildingName, floorPage.getFloor());
 			Building building = new Building(area, buildingName, floorPage.getFloor());
 			buildingList.add(building);
 		}
 		Building[] buildings =  buildingList.toArray(new Building[0]);
-		logger.info("area[{}]'s buildings are {}", area, buildings);
+		logger.debug("area[{}]'s buildings are {}", area, buildings);
 		return buildings;
 	}
 
