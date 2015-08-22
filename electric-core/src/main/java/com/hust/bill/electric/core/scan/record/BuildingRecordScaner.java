@@ -3,6 +3,9 @@ package com.hust.bill.electric.core.scan.record;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,89 +32,54 @@ public class BuildingRecordScaner implements Callable<BuildingRecordScanerReturn
 	
 	private Building building;
 	private IRecordService recordService;
+	private ExecutorService executorService;
 	
-	private ElectricHttpClient httpClient = new ElectricHttpClient();
+	private List<Future<FloorRecordScanerReturn>> resultList = new ArrayList<Future<FloorRecordScanerReturn>>(10);
 	
-	private List<Room> unSuccessRoomList = new ArrayList<Room>(100);
 	private List<RemainRecord> remainList = new ArrayList<RemainRecord>(2000);
 	private List<ChargeRecord> chargeList = new ArrayList<ChargeRecord>(200);
+	private List<Room> unSuccessRoomList = new ArrayList<Room>(100);
+	
+	private BuildingRecordScanerReturn scanerReturn = new BuildingRecordScanerReturn();
 	
 	public BuildingRecordScaner(Building building, IRecordService recordService) {
 		this.building = building;
 		this.recordService = recordService;
+		executorService =  Executors.newFixedThreadPool(building.getFloor());
 	}
 	
 	
 	@Override
 	public BuildingRecordScanerReturn call() throws Exception {
 		
-		perpare();
-		
 		for(int i = 1; i <= building.getFloor(); i ++) {
-			tryOneFloor(i);
+			FloorRecordScaner floorRecordScaner = new FloorRecordScaner(i, building);
+			Future<FloorRecordScanerReturn> result = executorService.submit(floorRecordScaner);
+			resultList.add(result);
 		}
 		
+		executorService.shutdown();
+		while(!executorService.isTerminated()) {
+			Thread.sleep(1000);
+		}
+		
+		for(Future<FloorRecordScanerReturn> result : resultList) {
+			FloorRecordScanerReturn scanerReturn = result.get();
+			remainList.addAll(scanerReturn.getRemainList());
+			chargeList.addAll(scanerReturn.getChargeList());
+			unSuccessRoomList.addAll(scanerReturn.getUnSuccessRoomList());
+		}
 		logger.info("buildings[{}] remain count is [{}], charge cout is[{}], unSuccessRoom count is{[]}", building.getName(), remainList.size(), unSuccessRoomList.size());
 		
 		saveRecords();
 		
-		Room[] unSuccessRooms = unSuccessRoomList.toArray(new Room[0]);
-		return new BuildingRecordScanerReturn(building.getName(), remainList.size(), remainList.size(), unSuccessRooms);
+		scanerReturn.setRemainCount(remainList.size());
+		scanerReturn.setChargeCount(chargeList.size());
+		scanerReturn.setUnSuccessRoomCount(unSuccessRoomList.size());
+		
+		return scanerReturn;
 	}
 	
-	private void perpare() throws RequestException {
-		logger.debug("try perpare get records of [{}]", building.getName());
-		httpClient.perpare();
-		BuildingNameRequest buildingNameRequest = new BuildingNameRequest(building.getArea());
-		httpClient.executeRequest(buildingNameRequest);
-		BuildingFloorRequest buildingFloorRequest = new BuildingFloorRequest(building.getArea(), building.getName());
-		httpClient.executeRequest(buildingFloorRequest);
-		logger.debug("perpare get records of [{}] Finish", building.getName());
-	}
-	
-	private void tryOneFloor(int floor) throws RequestException, PageParseException {
-		int continueFalse = 0;
-		for(int room = 1; room < 100; room ++) {
-			try {
-				RecordPage recordPage = getRecordPage(floor, room);
-				if(recordPage.isErrorPage()) {
-					continueFalse++;
-				} else {
-					addRoomRecords(recordPage);
-				}
-			} catch (RequestException e) {
-				unSuccessRoomList.add(new Room(building.getName(), floor, room));
-			}
-			if(continueFalse >  3) {
-				logger.info("try over 3 times, building[{}] max room no of floor[{}] is {}", building.getName(), floor, (room - continueFalse));
-				break;
-			}
-		}
-	}
-	
-	private RecordPage getRecordPage(int floor, int roomNO) throws RequestException, PageParseException {
-		String roomName = Room.getRoomName(floor, roomNO);
-		logger.debug("try get records of [{}-{}]", building.getName(), roomName);
-		RemainRecordRequest recordRequest = new RemainRecordRequest(building.getArea(), building.getName(), floor, roomNO);
-		httpClient.executeRequest(recordRequest);
-		RecordPage recordPage =  new RecordPage();
-		recordPage.parse(httpClient.getCurrentDocument());
-		if(!recordPage.isErrorPage()) {
-			logger.debug("try get records of [{}-{}] success: remain are[{}], charge are[{}]", building.getName(), roomName, recordPage.getRemainLines(), recordPage.getChargeLines());
-		} 
-		return recordPage;
-	}
-	
-	private void addRoomRecords(RecordPage recordPage) {
-		for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
-			RemainRecord remainRecord = new RemainRecord(recordPage.getBuildingName(), recordPage.getRoomName(), remainLine.getDate(), remainLine.getRemain());
-			remainList.add(remainRecord);
-		}
-		for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
-			ChargeRecord chargeRecord = new ChargeRecord(recordPage.getBuildingName(), recordPage.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney());
-			chargeList.add(chargeRecord);
-		}
-	}
 	
 	private void saveRecords() {
 		recordService.addTempRemains(remainList.toArray(new RemainRecord[0]));

@@ -1,22 +1,34 @@
 package com.hust.bill.electric.core.scan.record;
 
-import com.hust.bill.electric.bean.Room;
 
 class BuildingRecordScanerReturn {
 
 	private String buildingName;
 	private int remainCount;
 	private int chargeCount;
-	private Room[] unSuccessRooms;
+	private int unSuccessRoomCount;
 	
-	public BuildingRecordScanerReturn(String buildingName, int remainCount, int chargeCount, Room[] unSuccessRooms) {
-		this.buildingName = buildingName;
-		this.remainCount = remainCount;
-		this.chargeCount = chargeCount;
-		this.unSuccessRooms = unSuccessRooms;
+	public BuildingRecordScanerReturn() {
+		
 	}
 	
+	public void setBuildingName(String buildingName) {
+		this.buildingName = buildingName;
+	}
+
+
+	public void setRemainCount(int remainCount) {
+		this.remainCount = remainCount;
+	}
 	
+	public void setUnSuccessRoomCount(int unSuccessRoomCount) {
+		this.unSuccessRoomCount = unSuccessRoomCount;
+	}
+
+	public void setChargeCount(int chargeCount) {
+		this.chargeCount = chargeCount;
+	}
+
 	public String getBuildingName() {
 		return buildingName;
 	}
@@ -29,9 +41,8 @@ class BuildingRecordScanerReturn {
 		return chargeCount;
 	}
 	
-	public Room[] getUnSuccessRooms() {
-		return unSuccessRooms;
+	public int getUnSuccessRoomCount() {
+		return unSuccessRoomCount;
 	}
-	
 	
 }

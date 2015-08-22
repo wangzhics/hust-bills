@@ -18,12 +18,20 @@ public class BuildingFloorPage implements IPage {
 		Element areaSelectElement = doc.getElementById(HttpElements._PROGRAMID);
 		Element areaOptionElement = areaSelectElement.select("option[selected=selected]").first();
 		area = areaOptionElement.val();
+		
 		Element buildingNameSelectElement = doc.getElementById(HttpElements._TXTYQ);
 		Element buildingNameOptionElement = buildingNameSelectElement.select("option[selected=selected]").first();
 		buildingName = buildingNameOptionElement.val();
+		
+		floor = 0;
 		Element selectElement = doc.getElementById(HttpElements._TXTLD);
 		Elements optionElements = selectElement.children();
-		floor = optionElements.size() - 1;
+		for(Element optionElement : optionElements) {
+			String value = optionElement.val();
+			if(Character.isDigit(value.charAt(0))) {
+				floor = floor + 1;
+			}
+		}
 	}
 	
 	public String getArea() {

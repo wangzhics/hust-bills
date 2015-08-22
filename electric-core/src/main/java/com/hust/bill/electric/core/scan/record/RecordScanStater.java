@@ -18,7 +18,7 @@ public class RecordScanStater extends Thread {
 	
 	private static Logger logger = LoggerFactory.getLogger(RecordScanStater.class);
 	
-	private ExecutorService executorService = Executors.newFixedThreadPool(10);
+	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private List<Future<BuildingRecordScanerReturn>> resultList = new ArrayList<Future<BuildingRecordScanerReturn>>(100);
 	
 	private IBuildingService buildingService;
