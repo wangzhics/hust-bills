@@ -1,6 +1,7 @@
 package com.hust.bill.electric.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.hust.bill.electric.bean.ChargeRecord;
@@ -19,11 +20,11 @@ public class RecordServiceImpl implements IRecordService{
 	@Autowired
 	private IRemainTempDAO remainTempDAO;
 	
-	public void insertTempRemains(RemainRecord[] remainRecords) {
+	public void addTempRemains(RemainRecord[] remainRecords) {
 		remainTempDAO.insert(remainRecords);
 	}
 
-	public void insertTempCharges(ChargeRecord[] chargeRecords) {
+	public void addTempCharges(ChargeRecord[] chargeRecords) {
 		chargeTempDAO.insert(chargeRecords);
 	}
 

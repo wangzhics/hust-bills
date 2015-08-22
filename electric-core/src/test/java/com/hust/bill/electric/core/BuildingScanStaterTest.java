@@ -8,7 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.hust.bill.electric.core.task.building.BuildingScanStater;
+import com.hust.bill.electric.core.scan.building.BuildingScanStater;
 import com.hust.bill.electric.service.IBuildingService;
 
 @RunWith(SpringJUnit4ClassRunner.class)

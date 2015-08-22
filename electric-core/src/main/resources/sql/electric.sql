@@ -13,7 +13,7 @@ CREATE TABLE `e_record_remain_temp` (
   `buildingName`  nvarchar(50)  NOT NULL,  
   `roomName`      varchar(5)    NOT NULL,  
   `dateTime`      datetime      NOT NULL,    
-  `remain`        DECIMAL(5,1)  NOT NULL, 
+  `remain`        DECIMAL(8,2)  NOT NULL, 
   PRIMARY KEY (`buildingName`, `roomName`, `dateTime`)  
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8; 
 
@@ -23,8 +23,8 @@ CREATE TABLE `e_record_charge_temp` (
   `buildingName`  nvarchar(50)  NOT NULL,  
   `roomName`      varchar(5)    NOT NULL,  
   `dateTime`      datetime      NOT NULL,    
-  `power`         DECIMAL(5,1)  NOT NULL, 
-  `money`         DECIMAL(4,2)  NOT NULL,
+  `power`         DECIMAL(7,2)  NOT NULL, 
+  `money`         DECIMAL(6,2)  NOT NULL,
   PRIMARY KEY (`buildingName`, `roomName`, `dateTime`)  
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8; 
 

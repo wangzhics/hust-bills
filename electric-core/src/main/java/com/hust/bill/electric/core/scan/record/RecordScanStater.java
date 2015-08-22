@@ -1,4 +1,4 @@
-package com.hust.bill.electric.core.task.record;
+package com.hust.bill.electric.core.scan.record;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class RecordScanStater extends Thread {
 	private static Logger logger = LoggerFactory.getLogger(RecordScanStater.class);
 	
 	private ExecutorService executorService = Executors.newFixedThreadPool(10);
-	private List<Future<RecordScanCallableReturn>> resultList = new ArrayList<Future<RecordScanCallableReturn>>(100);
+	private List<Future<BuildingRecordScanerReturn>> resultList = new ArrayList<Future<BuildingRecordScanerReturn>>(100);
 	
 	private IBuildingService buildingService;
 	private IRecordService recordService;
@@ -46,8 +46,8 @@ public class RecordScanStater extends Thread {
 		Building[] allBuiilding = buildingService.getAll();
 		
 		for(Building building : allBuiilding) {
-			RecordScanCallable scanCallable = new RecordScanCallable(building, recordService);
-			Future<RecordScanCallableReturn> result = executorService.submit(scanCallable);
+			BuildingRecordScaner scanCallable = new BuildingRecordScaner(building, recordService);
+			Future<BuildingRecordScanerReturn> result = executorService.submit(scanCallable);
 			resultList.add(result);
 		}
 		
@@ -56,13 +56,13 @@ public class RecordScanStater extends Thread {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error("InterruptedException, should not be occour", e);
 			}
 		}
 		
-		for(Future<RecordScanCallableReturn> result : resultList) {
+		for(Future<BuildingRecordScanerReturn> result : resultList) {
 			try {
-				RecordScanCallableReturn callableReturn = result.get();
+				BuildingRecordScanerReturn callableReturn = result.get();
 				remainRecordCount = remainRecordCount + callableReturn.getRemainCount();
 				chargeRecordCount = chargeRecordCount + callableReturn.getChargeCount();
 			} catch (InterruptedException e) {

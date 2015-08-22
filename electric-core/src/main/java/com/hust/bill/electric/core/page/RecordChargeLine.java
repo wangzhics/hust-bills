@@ -1,44 +1,36 @@
 package com.hust.bill.electric.core.page;
 
+import java.util.Date;
+
 public class RecordChargeLine {
-
-	private String dateStr;
 	
-	private String powerStr;
+	private float power;
 	
-	private String moneyStr;
+	private float money;
+	
+	private Date date;
 
-	public RecordChargeLine() {
+	public RecordChargeLine(float power, float money, Date date) {
+		this.power = power;
+		this.money = money;
+		this.date = date;
 	}
 
-	public RecordChargeLine(String dateStr, String powerStr, String moneyStr) {
-		this.dateStr = dateStr;
-		this.powerStr = powerStr;
-		this.moneyStr = moneyStr;
+	public float getPower() {
+		return power;
 	}
 
-	public String getDateStr() {
-		return dateStr;
+	public float getMoney() {
+		return money;
+	}
+	
+	public Date getDate() {
+		return date;
 	}
 
-	public void setDateStr(String dateStr) {
-		this.dateStr = dateStr;
-	}
-
-	public String getPowerStr() {
-		return powerStr;
-	}
-
-	public void setPowerStr(String powerStr) {
-		this.powerStr = powerStr;
-	}
-
-	public String getMoneyStr() {
-		return moneyStr;
-	}
-
-	public void setMoneyStr(String moneyStr) {
-		this.moneyStr = moneyStr;
+	@Override
+	public String toString() {
+		return "[power=" + power + ", money=" + money + "]";
 	}
 	
 }

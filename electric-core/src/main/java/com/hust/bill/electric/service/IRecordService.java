@@ -9,7 +9,7 @@ public interface IRecordService {
 	
 	public void clearTempCharges();
 
-	public void insertTempRemains(RemainRecord[] remainRecords);
+	public void addTempRemains(RemainRecord[] remainRecords);
 	
-	public void insertTempCharges(ChargeRecord[] chargeRecords);
+	public void addTempCharges(ChargeRecord[] chargeRecords);
 }

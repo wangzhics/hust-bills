@@ -6,7 +6,7 @@ import org.jsoup.select.Elements;
 
 import com.hust.bill.electric.core.http.HttpElements;
 
-public class BuildingFloorPage extends AbstactPage {
+public class BuildingFloorPage implements IPage {
 	
 	private String area;
 	
@@ -14,8 +14,7 @@ public class BuildingFloorPage extends AbstactPage {
 	
 	private int floor;
 
-	public BuildingFloorPage(Document doc) {
-		super(doc);
+	public void parse(Document doc) throws PageParseException {
 		Element areaSelectElement = doc.getElementById(HttpElements._PROGRAMID);
 		Element areaOptionElement = areaSelectElement.select("option[selected=selected]").first();
 		area = areaOptionElement.val();

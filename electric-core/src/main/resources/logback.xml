@@ -11,8 +11,8 @@
     <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
       <driverClass>com.mysql.jdbc.Driver</driverClass>
       <url>jdbc:mysql://127.0.0.1:3306/hust-bill</url>
-      <user>***</user>
-      <password>***</password>
+      <user>root</user>
+      <password>root2015</password>
     </connectionSource>
   </appender>
 

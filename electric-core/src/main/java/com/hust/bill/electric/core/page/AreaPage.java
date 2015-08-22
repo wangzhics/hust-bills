@@ -9,12 +9,15 @@ import org.jsoup.select.Elements;
 
 import com.hust.bill.electric.core.http.HttpElements;
 
-public class AreaPage extends AbstactPage {
+public class AreaPage implements IPage {
 	
 	private String[] areas;
+	
+	public AreaPage() {
+		
+	}
 
-	public AreaPage(Document doc) {
-		super(doc);
+	public void parse(Document doc) throws PageParseException {
 		Element areaSelectElement = doc.getElementById(HttpElements._PROGRAMID);
 		Elements areaOptionElements = areaSelectElement.children();
 		List<String> areaList = new ArrayList<String>(10);

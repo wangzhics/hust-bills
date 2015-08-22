@@ -1,33 +1,29 @@
 package com.hust.bill.electric.core.page;
 
+import java.util.Date;
+
 public class RecordRemainLine {
-
-	private String dateStr;
 	
-	private String remainStr;
+	private float remain;
+	
+	private Date date;
+	
+	public RecordRemainLine(float remain, Date date) {
+		this.remain = remain;
+		this.date = date;
+	}
 
-	public RecordRemainLine() {
+	public float getRemain() {
+		return remain;
 	}
 	
-	public RecordRemainLine(String dateStr, String remainStr) {
-		this.dateStr = dateStr;
-		this.remainStr = remainStr;
+	public Date getDate() {
+		return date;
 	}
 
-	public String getDateStr() {
-		return dateStr;
-	}
-
-	public void setDateStr(String dateStr) {
-		this.dateStr = dateStr;
-	}
-
-	public String getRemainStr() {
-		return remainStr;
-	}
-
-	public void setRemainStr(String remainStr) {
-		this.remainStr = remainStr;
+	@Override
+	public String toString() {
+		return String.valueOf(remain);
 	}
 	
 }
