@@ -4,6 +4,6 @@ public interface IRoomService {
 
 	public void extractTemp();
 	
-	public void removeAllTemp();
+	public void clearTemp();
 	
 }

@@ -10,8 +10,8 @@ public interface IBuildingDAO {
 
 	public void insert(Building[] buildings);
 	
-	public void update(Building building);
-	
 	public Building[] getAll();
+	
+	public void truncate();
 	
 }

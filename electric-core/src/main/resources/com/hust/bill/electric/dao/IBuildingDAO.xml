@@ -19,41 +19,16 @@
 			</foreach>
 		</if>
 	</insert>
-	
-	<update id="update" parameterType="com.hust.bill.electric.bean.Building">
-		 update e_building set area=#{area, jdbcType=VARCHAR}, floor=#{floor, jdbcType=INTEGER} where name=#{name, jdbcType=VARCHAR} 
-  </update>
 
 	<select id="getAll" resultMap="buildingResultMap">
 		select area, name, floor from e_building
 	</select>
+  
+  <delete id="truncate">
+    truncate table e_building
+  </delete>
 
-	<select id="getByArea" parameterType="String" resultMap="buildingResultMap">
-		select area, name, floor from e_building where area = #{area, jdbcType=VARCHAR}
-	</select>
 
-	<select id="getByNames" resultMap="buildingResultMap">
-    <if test="names.length == 0">
-      select area, name, floor from e_building where name in ('')
-    </if>
-		<if test="names.length != 0">
-			select area, name, floor from e_building where name in
-			<foreach collection="names" item="name" open="(" separator="," close=")">
-				#{name, jdbcType=VARCHAR}
-			</foreach>
-		</if>
-	</select>
 
-	<delete id="deleteByNames">
-    <if test="names.length == 0">
-      select count(*) from e_building
-    </if>
-		<if test="names.length != 0">
-			delete from e_building where name in
-			<foreach collection="names" item="name" open="(" separator="," close=")">
-				#{name, jdbcType=VARCHAR}
-			</foreach>
-		</if>
-	</delete>
 	
 </mapper>

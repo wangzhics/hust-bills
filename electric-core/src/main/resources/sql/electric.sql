@@ -28,3 +28,11 @@ CREATE TABLE `e_record_charge_temp` (
   PRIMARY KEY (`buildingName`, `roomName`, `dateTime`)  
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8; 
 
+--
+DROP TABLE IF EXISTS `e_room_temp`;
+CREATE TABLE `e_room_temp` (  
+  `buildingName`  nvarchar(50)  NOT NULL,  
+  `roomName`      varchar(5)    NOT NULL,
+  PRIMARY KEY (`buildingName`, `roomName`)  
+) ENGINE=Innodb, DEFAULT CHARSET=utf8; 
+

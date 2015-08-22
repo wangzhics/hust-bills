@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.bean.ChargeRecord;
 import com.hust.bill.electric.bean.RemainRecord;
+import com.hust.bill.electric.bean.Room;
 import com.hust.bill.electric.core.http.BuildingFloorRequest;
 import com.hust.bill.electric.core.http.BuildingNameRequest;
 import com.hust.bill.electric.core.http.ElectricHttpClient;
@@ -29,13 +30,13 @@ public class RecordScanCallable implements Callable<RecordScanCallableReturn>  {
 	private static Logger logger = LoggerFactory.getLogger(RecordScanCallable.class);
 	private SimpleDateFormat TIME_FORMATER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	
-	private ElectricHttpClient httpClient = new ElectricHttpClient();
-	
-	private List<RemainRecord> remainList = new ArrayList<RemainRecord>(1000);
-	private List<ChargeRecord> chargeList = new ArrayList<ChargeRecord>(200);
-	
 	private Building building;
 	private IRecordService recordService;
+	
+	private ElectricHttpClient httpClient = new ElectricHttpClient();
+	
+	private List<RemainRecord> remainList = new ArrayList<RemainRecord>(2000);
+	private List<ChargeRecord> chargeList = new ArrayList<ChargeRecord>(200);
 	
 	public RecordScanCallable(Building building, IRecordService recordService) {
 		this.building = building;
@@ -72,51 +73,63 @@ public class RecordScanCallable implements Callable<RecordScanCallableReturn>  {
 	
 	private void tryOneFloor(int floor) throws RequestException {
 		int continueFalse = 0;
-		RecordPage recordPage = null;
 		for(int room = 1; room < 100; room ++) {
-			String roomName = RemainRecord.getRoomName(floor, room);
-			logger.debug("try get records of [{}-{}]", building.getName(), roomName);
-			RemainRecordRequest recordRequest = new RemainRecordRequest(building.getArea(), building.getName(), floor, room);
-			httpClient.executeRequest(recordRequest);
-			recordPage = new RecordPage(httpClient.getCurrentDocument());
-			if(recordPage.isErrorPage()) {
-				logger.debug("records of [{}-{}] do not exists", building.getName(), roomName);
-				continueFalse ++;
-			} else {
-				continueFalse = 0;
-				logger.debug("remain record count of [{}-{}] is {}", building.getName(), roomName, recordPage.getRemainLines().length);
-				for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
-					try {
-						Date remainDate = TIME_FORMATER.parse(remainLine.getDateStr());
-						float remain = Float.parseFloat(remainLine.getRemainStr());
-						RemainRecord remainRecord = new RemainRecord(building.getName(), roomName, remainDate, remain);
-						remainList.add(remainRecord);
-					} catch (ParseException e) {
-						logger.warn("remain date[{}] of [{}-{}] can not be parse", remainLine.getDateStr(), building.getName(), roomName);
-					} catch (NumberFormatException e) {
-						logger.warn("remain[{}] of [{}-{}] can not be parse", remainLine.getRemainStr(), building.getName(), roomName);
-					}
-				}
-				logger.debug("charge record count of [{}-{}] is {}", building.getName(), roomName,recordPage.getChargeLines().length);
-				for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
-					try {
-						Date chargeDate = TIME_FORMATER.parse(chargeLine.getDateStr());
-						float power = Float.parseFloat(chargeLine.getPowerStr());
-						float money = Float.parseFloat(chargeLine.getMoneyStr());
-						ChargeRecord chargeRecord = new ChargeRecord(building.getName(), roomName, chargeDate, power, money);
-						chargeList.add(chargeRecord);
-					} catch (ParseException e) {
-						logger.warn("charge date[{}] of [{}-{}] can not be parse", chargeLine.getDateStr(), building.getName(), roomName);
-					} catch (NumberFormatException e) {
-						logger.warn("charge[{}, {}] of [{}-{}] can not be parse", chargeLine.getMoneyStr(), chargeLine.getMoneyStr(), building.getName(), roomName);
-					}
-				}
+			if(!tryOneRoom(floor, room)) {
+				continueFalse++;
 			}
 			if(continueFalse >  3) {
 				logger.warn("try over 3 times, building[{}] max room no of floor[{}] is {}", building.getName(), floor, (room - continueFalse));
 				break;
 			}
 		}
+	}
+	
+	private RecordPage getRecordPage(int floor, int roomNO) throws RequestException {
+		String roomName = Room.getRoomName(floor, roomNO);
+		logger.debug("try get records page of [{}-{}]", building.getName(), roomName);
+		RemainRecordRequest recordRequest = new RemainRecordRequest(building.getArea(), building.getName(), floor, roomNO);
+		httpClient.executeRequest(recordRequest);
+		return new RecordPage(httpClient.getCurrentDocument());
+	}
+	
+	private boolean tryOneRoom(int floor, int roomNO) throws RequestException {
+		String roomName = Room.getRoomName(floor, roomNO);
+		logger.debug("try get records of [{}-{}]", building.getName(), roomName);
+		RecordPage recordPage = getRecordPage(floor, roomNO);
+		if(recordPage.isErrorPage()) {
+			logger.debug("records of [{}-{}] do not exists", building.getName(), roomName);
+			return false;
+		} 
+		
+		for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
+			try {
+				Date remainDate = TIME_FORMATER.parse(remainLine.getDateStr());
+				float remain = Float.parseFloat(remainLine.getRemainStr());
+				RemainRecord remainRecord = new RemainRecord(building.getName(), roomName, remainDate, remain);
+				remainList.add(remainRecord);
+			} catch (ParseException e) {
+				logger.warn("remain date[{}] of [{}-{}] can not be parse", remainLine.getDateStr(), building.getName(), roomName);
+			} catch (NumberFormatException e) {
+				logger.warn("remain[{}] of [{}-{}] can not be parse", remainLine.getRemainStr(), building.getName(), roomName);
+			}
+		}
+		
+		logger.debug("charge record count of [{}-{}] is {}", building.getName(), roomName,recordPage.getChargeLines().length);
+		for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
+			try {
+				Date chargeDate = TIME_FORMATER.parse(chargeLine.getDateStr());
+				float power = Float.parseFloat(chargeLine.getPowerStr());
+				float money = Float.parseFloat(chargeLine.getMoneyStr());
+				ChargeRecord chargeRecord = new ChargeRecord(building.getName(), roomName, chargeDate, power, money);
+				chargeList.add(chargeRecord);
+			} catch (ParseException e) {
+				logger.warn("charge date[{}] of [{}-{}] can not be parse", chargeLine.getDateStr(), building.getName(), roomName);
+			} catch (NumberFormatException e) {
+				logger.warn("charge[{}, {}] of [{}-{}] can not be parse", chargeLine.getMoneyStr(), chargeLine.getMoneyStr(), building.getName(), roomName);
+			}
+		}
+		logger.debug("try get records of [{}-{}] success", building.getName(), roomName);
+		return true;
 	}
 	
 	private void saveRecords() {

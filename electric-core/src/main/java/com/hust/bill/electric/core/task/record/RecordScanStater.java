@@ -66,9 +66,9 @@ public class RecordScanStater extends Thread {
 				remainRecordCount = remainRecordCount + callableReturn.getRemainCount();
 				chargeRecordCount = chargeRecordCount + callableReturn.getChargeCount();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.error("InterruptedException, should not be occour", e);
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				logger.error("ExecutionException", e);
 			}
 		}
 	}

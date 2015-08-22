@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hust.bill.electric.dao.IRoomTempDAO">
+	
+	<insert id="generate">
+    insert into e_room_temp(buildingName, roomName) select distinct buildingName, roomName FROM .e_record_remain_temp;
+  </insert>
+
+	<select id="getAll">
+		select buildingName, roomName from e_room_temp
+	</select>
+
+  <delete id="truncate">
+    truncate table e_room_temp
+  </delete>
+	
+</mapper>

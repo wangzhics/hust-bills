@@ -1,12 +1,8 @@
 package com.hust.bill.electric.bean;
 
-import java.text.DecimalFormat;
 import java.util.Date;
 
 public class RemainRecord {
-	
-	private final static DecimalFormat df = new DecimalFormat("00");
-	
 	
 	private String buildingName;
 	
@@ -27,17 +23,6 @@ public class RemainRecord {
 		this.remain = remain;
 	}
 	
-	public RemainRecord(String buildingName, int floor, int room, Date dateTime, float remain) {
-		this.buildingName = buildingName;
-		this.roomName = getRoomName(floor, room);
-		this.dateTime = dateTime;
-		this.remain = remain;
-	}
-	
-	public static String getRoomName(int floor, int room) {
-		return String.valueOf(floor) + df.format(room);
-	}
-
 	public Date getDateTime() {
 		return dateTime;
 	}

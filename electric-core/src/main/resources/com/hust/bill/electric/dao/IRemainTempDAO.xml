@@ -10,8 +10,7 @@
 		<if test="array.length != 0">
 			insert into e_record_remain_temp(buildingName, roomName, dateTime, remain) values
 			<foreach collection="array" item="item" index="index" separator=",">
-				(#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, 
-				 #{item.dateTime, jdbcType=DATE}, #{item.remain, jdbcType=FLOAT})
+				(#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime, jdbcType=DATE}, #{item.remain, jdbcType=FLOAT})
 			</foreach>
 		</if>
 	</insert>

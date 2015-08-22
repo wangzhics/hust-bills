@@ -65,5 +65,11 @@ public class ChargeRecord {
 	public void setChargeMoney(float chargeMoney) {
 		this.chargeMoney = chargeMoney;
 	}
+
+	@Override
+	public String toString() {
+		return "ChargeRecord [buildingName=" + buildingName + ", roomName=" + roomName + ", dateTime=" + dateTime
+				+ ", chargePower=" + chargePower + ", chargeMoney=" + chargeMoney + "]";
+	}
 	
 }

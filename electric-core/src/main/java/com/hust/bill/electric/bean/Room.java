@@ -1,25 +1,42 @@
 package com.hust.bill.electric.bean;
 
+import java.text.DecimalFormat;
+
 public class Room {
 
+	private final static DecimalFormat df = new DecimalFormat("00");
+	
 	private String buildingName;
 	
-	private String name;
+	private String roomName;
 	
-	private int floor;
+	private int roomFloor;
+	
+	private int roomNO;
 
 	public Room() {
 		
 	}
-	
-	public Room(String buildingName, String name, int floor) {
-		super();
+
+	public Room(String buildingName, int roomFloor, int roomNO) {
 		this.buildingName = buildingName;
-		this.name = name;
-		this.floor = floor;
+		this.roomFloor = roomFloor;
+		this.roomNO = roomNO;
+		this.roomName = getRoomName(roomFloor, roomNO);
 	}
 
+	public static String getRoomName(int floor, int room) {
+		return String.valueOf(floor) + df.format(room);
+	}
 
+	public int getRoomFloor() {
+		return roomFloor;
+	}
+	
+	public int getRoomNO() {
+		return roomNO;
+	}
+	
 	public String getBuildingName() {
 		return buildingName;
 	}
@@ -28,20 +45,11 @@ public class Room {
 		this.buildingName = buildingName;
 	}
 
-	public String getName() {
-		return name;
+	public String getRoomName() {
+		return roomName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
 	}
-
-	public int getFloor() {
-		return floor;
-	}
-
-	public void setFloor(int floor) {
-		this.floor = floor;
-	}
-	
 }

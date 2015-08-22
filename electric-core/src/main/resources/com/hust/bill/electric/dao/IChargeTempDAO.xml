@@ -10,8 +10,7 @@
 		<if test="array.length != 0">
 			insert into e_record_charge_temp(buildingName, roomName, dateTime, power, money) values
 			<foreach collection="array" item="item" index="index" separator=",">
-				(#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, 
-				 #{item.dateTime, jdbcType=DATE}, #{item.chargePower, jdbcType=FLOAT}, #{item.chargeMoneyW, jdbcType=FLOAT})
+				(#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime, jdbcType=DATE}, #{item.chargePower, jdbcType=FLOAT}, #{item.chargeMoney, jdbcType=FLOAT})
 			</foreach>
 		</if>
 	</insert>

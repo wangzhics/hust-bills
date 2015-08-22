@@ -12,34 +12,27 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ElectricHttpClient {
 	
+	private static Logger logger = LoggerFactory.getLogger(ElectricHttpClient.class);
 	private CloseableHttpClient httpClient = HttpClients.createDefault();
 	
 	private Document currentDocument = null;
 	
 	public void perpare() throws RequestException {
 		HttpGet httpGet = new HttpGet(HttpElements.url);
-		CloseableHttpResponse response;
-		try {
-			response = httpClient.execute(httpGet);
-			try {
-				updateCurrentDocument(response);
-			} catch (IOException e) {
-				throw new RequestException("response can not be paser to jsoup document", e);
-			}
-		} catch (ClientProtocolException e) {
-			throw new RequestException("request[" + httpGet + "] occur http protocol error", e);
-		} catch (IOException e) {
-			throw new RequestException("request[" + httpGet + "] occur io error", e);
-		}
+		CloseableHttpResponse response =  tryThreeTime(httpGet);;
+		updateCurrentDocument(response);
 	}
 
 	public void executeRequest(IRequest request) throws RequestException {
@@ -51,19 +44,8 @@ public class ElectricHttpClient {
 		try {
 			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(pairList, "utf-8");
 			httpPost.setEntity(formEntity);
-			CloseableHttpResponse response;
-			try {
-				response = httpClient.execute(httpPost);
-				try {
-					updateCurrentDocument(response);
-				} catch (IOException e) {
-					throw new RequestException("response can not be paser to jsoup document", e);
-				}
-			} catch (ClientProtocolException e) {
-				throw new RequestException("request[" + httpPost + "] occur http protocol error", e);
-			} catch (IOException e) {
-				throw new RequestException("request[" + httpPost + "] occur io error", e);
-			}
+			CloseableHttpResponse response =  tryThreeTime(httpPost);;
+			updateCurrentDocument(response);
 		} catch (UnsupportedEncodingException e) {
 			throw new RequestException("UnsupportedEncoding: utf8-[" + pairList + "]", e);
 		}
@@ -73,12 +55,33 @@ public class ElectricHttpClient {
 		return currentDocument;
 	}
 	
-	private void updateCurrentDocument(CloseableHttpResponse response) throws IOException {
+	private CloseableHttpResponse tryThreeTime(HttpRequestBase request) throws RequestException {
+		Throwable lastException = null;
+		for(int i = 0; i < 3; i++) {
+			try {
+				return httpClient.execute(request);
+			} catch (ClientProtocolException e) {
+				lastException = e;
+				logger.warn("http request[" + request + "] occur http protocol error, try again");
+			} catch (IOException e) {
+				throw new RequestException("request[" + request + "] occur io error", e);
+			}
+		}
+		throw new RequestException("request[" + request + "] occur http protocol error, already try 3 times", lastException);
+	}
+	
+	private void updateCurrentDocument(CloseableHttpResponse response) throws RequestException {
 		try {
 			HttpEntity entity = response.getEntity();
 			currentDocument = Jsoup.parse(entity.getContent(), "utf-8", HttpElements.url);
+		} catch (IOException e) {
+			throw new RequestException("response can not be paser to jsoup document", e);
 		} finally {
-			response.close();
+			try {
+				response.close();
+			} catch (IOException e) {
+				throw new RequestException("response can not closed", e);
+			}
 		}
 	}
 	

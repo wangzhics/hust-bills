@@ -3,11 +3,9 @@ package com.hust.bill.electric.core.http;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.hust.bill.electric.bean.RemainRecord;
+import com.hust.bill.electric.bean.Room;
 
 public class RemainRecordRequest implements IRequest {
-	
-	
 	
 	private String area;
 	private String building;
@@ -24,7 +22,7 @@ public class RemainRecordRequest implements IRequest {
 	@Override
 	public NameValuePair[] perparePostForm() {
 		String floorStr = floor + "层";
-		String roomStr = RemainRecord.getRoomName(floor, room);
+		String roomStr = Room.getRoomName(floor, room);
 		return new BasicNameValuePair[]{
 			new BasicNameValuePair(HttpElements._PROGRAMID, area),
 			new BasicNameValuePair(HttpElements._TXTYQ, building),
