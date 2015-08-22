@@ -16,6 +16,14 @@
     </connectionSource>
   </appender>
 
+  <logger name="org.apache.http.headers">  
+    <level value="debug" />  
+  </logger>
+  
+  <logger name="org.apache.http.wire">  
+    <level value="INFO" />  
+  </logger>
+
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="DB" />

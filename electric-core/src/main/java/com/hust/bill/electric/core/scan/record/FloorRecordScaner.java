@@ -35,12 +35,13 @@ public class FloorRecordScaner implements Callable<FloorRecordScanerReturn> {
 	}
 	
 	@Override
-	public FloorRecordScanerReturn call() {
+	public FloorRecordScanerReturn call() throws Exception {
 		
 		try {
 			perpare();
 		} catch (RequestException e) {
-			logger.debug("floor[{}-{}] record scaner http client perpare error", building.getName(), floor, e);
+			logger.error("floor[{}-{}] record scaner http client perpare error", building.getName(), floor, e);
+			return scanerReturn;
 		}
 		
 		int continueFalse = 0;

@@ -69,7 +69,7 @@ public class BuildingRecordScaner implements Callable<BuildingRecordScanerReturn
 			chargeList.addAll(scanerReturn.getChargeList());
 			unSuccessRoomList.addAll(scanerReturn.getUnSuccessRoomList());
 		}
-		logger.info("buildings[{}] remain count is [{}], charge cout is[{}], unSuccessRoom count is{[]}", building.getName(), remainList.size(), unSuccessRoomList.size());
+		logger.info("buildings[{}] remain count is [{}], charge cout is[{}], unSuccessRoom count is[{}]", building.getName(), remainList.size(), unSuccessRoomList.size());
 		
 		saveRecords();
 		
