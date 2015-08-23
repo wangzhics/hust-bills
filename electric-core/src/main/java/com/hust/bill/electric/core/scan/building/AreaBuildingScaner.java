@@ -21,13 +21,14 @@ public class AreaBuildingScaner implements Callable<AreaBuildingScanResult> {
 	private static Logger logger = LoggerFactory.getLogger(AreaBuildingScaner.class);
 	
 	private String area;
-	
+	private AreaBuildingScanResult scanResult = new AreaBuildingScanResult();
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
 	private List<Building> buildingList = new ArrayList<Building>(30);
 	
 	
 	public AreaBuildingScaner(String area) {
 		this.area = area;
+		scanResult.setArea(area);
 	}
 	
 	@Override
@@ -37,11 +38,10 @@ public class AreaBuildingScaner implements Callable<AreaBuildingScanResult> {
 		for(String buildingName : getBuildingNames()) {
 			int floor = getBuildingFloor(buildingName);
 			Building building = new Building(area, buildingName, floor);
-			buildingList.add(building);
+			scanResult.getBuildingList().add(building);
 		}
-		Building[] buildings =  buildingList.toArray(new Building[0]);
-		logger.info("area[{}]'s buildings are {}", area, buildings);
-		return new AreaBuildingScanResult(buildings);
+		logger.info("area[{}] building are {}", buildingList);
+		return scanResult;
 	}
 	
 	private String[] getBuildingNames()  throws RequestException, PageParseException {

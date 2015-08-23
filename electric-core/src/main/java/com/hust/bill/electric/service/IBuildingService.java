@@ -4,7 +4,9 @@ import com.hust.bill.electric.bean.Building;
 
 public interface IBuildingService {
 	
-	public void updateAll(Building[] buildings);
+	public void add(Building[] buildings);
+	
+	public void delete(Building building);
 	
 	public Building[] getAll();
 	

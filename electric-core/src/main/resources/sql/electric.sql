@@ -1,3 +1,4 @@
+use `hust-bill`;
 --
 DROP TABLE IF EXISTS `e_building`;
 CREATE TABLE `e_building` (
@@ -12,6 +13,8 @@ DROP TABLE IF EXISTS `e_room`;
 CREATE TABLE `e_room` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `roomName`      varchar(5)    NOT NULL,
+  `floor`         int(1)        NOT NULL,
+  `roomNO`        int(2)        NOT NULL,
   PRIMARY KEY (`buildingName`, `roomName`),
   FOREIGN KEY `fk_e_room_temp` (`buildingName`) REFERENCES `e_building`(`name`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -26,8 +29,8 @@ CREATE TABLE `e_record_remain` (
   PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),
   FOREIGN KEY `fk_e_record_remain` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
-ALTER TABLE `e_record_remain` ADD INDEX 'ix_e_record_remain_building' (`buildingName`);
-ALTER TABLE `e_record_remain` ADD INDEX 'ix_e_record_remain_room' (`roomName`);
+ALTER TABLE `e_record_remain` ADD INDEX `ix_e_record_remain_building` (`buildingName`);
+ALTER TABLE `e_record_remain` ADD INDEX `ix_e_record_remain_room` (`roomName`);
 
 --
 DROP TABLE IF EXISTS `e_record_charge`;
@@ -37,9 +40,8 @@ CREATE TABLE `e_record_charge` (
   `dateTime`      datetime      NOT NULL,    
   `power`         DECIMAL(7,2)  NOT NULL,
   `money`         DECIMAL(6,2)  NOT NULL,
-  PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),\
+  PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),
   FOREIGN KEY `fk_e_record_charge` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
-ALTER TABLE `e_record_charge` ADD INDEX 'ix_e_record_charge_building' (`buildingName`);
-ALTER TABLE `e_record_charge` ADD INDEX 'ix_e_record_charge_room' (`roomName`);
-
+ALTER TABLE `e_record_charge` ADD INDEX `ix_e_record_charge_building` (`buildingName`);
+ALTER TABLE `e_record_charge` ADD INDEX `ix_e_record_charge_room` (`roomName`);

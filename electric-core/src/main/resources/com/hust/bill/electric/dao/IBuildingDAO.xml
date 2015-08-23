@@ -24,8 +24,8 @@
 		select area, name, floor from e_building
 	</select>
   
-  <delete id="truncate">
-    truncate table e_building
+  <delete id="delete">
+    delete from e_building where name = #{name}
   </delete>
 
 
