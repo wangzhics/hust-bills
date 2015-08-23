@@ -6,23 +6,19 @@ class BuildingRecordScanerReturn {
 	private String buildingName;
 	private int remainCount;
 	private int chargeCount;
-	private int unSuccessRoomCount;
 	
-	public BuildingRecordScanerReturn() {
-		
+	public BuildingRecordScanerReturn(String buildingName, int remainCount, int chargeCount) {
+		this.buildingName = buildingName;
+		this.remainCount = remainCount;
+		this.chargeCount = chargeCount;
 	}
-	
+
 	public void setBuildingName(String buildingName) {
 		this.buildingName = buildingName;
 	}
 
-
 	public void setRemainCount(int remainCount) {
 		this.remainCount = remainCount;
-	}
-	
-	public void setUnSuccessRoomCount(int unSuccessRoomCount) {
-		this.unSuccessRoomCount = unSuccessRoomCount;
 	}
 
 	public void setChargeCount(int chargeCount) {
@@ -39,10 +35,6 @@ class BuildingRecordScanerReturn {
 	
 	public int getChargeCount() {
 		return chargeCount;
-	}
-	
-	public int getUnSuccessRoomCount() {
-		return unSuccessRoomCount;
 	}
 	
 }

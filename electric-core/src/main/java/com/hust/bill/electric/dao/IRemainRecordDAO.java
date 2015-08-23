@@ -3,13 +3,15 @@ package com.hust.bill.electric.dao;
 import org.springframework.stereotype.Repository;
 
 import com.hust.bill.electric.bean.RemainRecord;
+import com.hust.bill.electric.bean.Room;
 
 @Repository(value="remainTempDAO")
-public interface IRemainTempDAO {
+public interface IRemainRecordDAO {
 
 	public void insert(RemainRecord[] remainRecords);
 	
-	public RemainRecord[] getAll(); 
+	public void deleteByRooms(Room[] rooms);
 	
-	public void truncate();
+	public RemainRecord[] getRoomLast(Room room);
+	
 }

@@ -29,37 +29,35 @@ public class BuildingScanStater extends Thread {
 	
 	private List<Building> buildingList = new ArrayList<Building>(100);
 	
-	private List<Future<Building[]>> resultList = new ArrayList<Future<Building[]>>(10);  
+	private List<Future<AreaBuildingScanResult>> resultList = new ArrayList<Future<AreaBuildingScanResult>>(10);  
 	
 	public BuildingScanStater(IBuildingService buildingService) {
-		super();
 		setDaemon(true);
-		setName("Building Update Stater");
+		setName("Building Scan Stater");
 		this.buildingService = buildingService;
 	}
 	
 	
 	public void run() {
-		String [] areas = new String[0];
 		
 		ElectricHttpClient httpClient = new ElectricHttpClient();
 		try {
 			httpClient.perpare();
 			AreaPage areaPage = new AreaPage();
 			areaPage.parse(httpClient.getCurrentDocument());
-			areas =  areaPage.getAreas();
+			for(String area : areaPage.getAreas()) {
+				AreaBuildingScaner scanCallable = new AreaBuildingScaner(area);
+				Future<AreaBuildingScanResult> result = executorService.submit(scanCallable);
+				resultList.add(result);
+			}
 		} catch (RequestException e) {
 			logger.error("get all area error", e);
 			return;
 		} catch (PageParseException e) {
 			logger.error("AreaPage PageParseException, should not be occour", e);
+			return;
 		}
 		
-		for(String area : areas) {
-			AreaBuildingScaner scanCallable = new AreaBuildingScaner(area);
-			Future<Building[]> result = executorService.submit(scanCallable);
-			resultList.add(result);
-		}
 		
 		executorService.shutdown();
 		while(!executorService.isTerminated()) {
@@ -67,24 +65,26 @@ public class BuildingScanStater extends Thread {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				logger.error("InterruptedException, should not be occour", e);
+				return;
 			}
 		}
 		
-		for(Future<Building[]> result : resultList) {
-			try {
-				buildingList.addAll(Arrays.asList(result.get()));
-			} catch (InterruptedException e) {
-				logger.error("InterruptedException, should not be occour", e);
-			} catch (ExecutionException e) {
-				Throwable t = e.getCause();
-				if(t instanceof PageParseException) {
-					logger.error("PageParseException, should not be occour", e);
-				} else {
-					logger.error("ExecutionException occour", e);
-				}
+		try {
+			for(Future<AreaBuildingScanResult> result : resultList) {
+				AreaBuildingScanResult scanResult = result.get();
+				buildingList.addAll(Arrays.asList(scanResult.getBuildings()));
+			}
+			buildingService.updateAll(buildingList.toArray(new Building[0]));
+		} catch (InterruptedException e) {
+			logger.error("InterruptedException, should not be occour", e);
+		} catch (ExecutionException e) {
+			Throwable t = e.getCause();
+			if(t instanceof PageParseException) {
+				logger.error("PageParseException, should not be occour", e);
+			} else {
+				logger.error("ExecutionException occour", e);
 			}
 		}
 		
-		buildingService.updateAll(buildingList.toArray(new Building[0]));
 	}
 }

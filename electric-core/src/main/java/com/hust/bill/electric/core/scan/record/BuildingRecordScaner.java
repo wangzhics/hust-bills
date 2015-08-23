@@ -32,54 +32,82 @@ public class BuildingRecordScaner implements Callable<BuildingRecordScanerReturn
 	
 	private Building building;
 	private IRecordService recordService;
-	private ExecutorService executorService;
 	
-	private List<Future<FloorRecordScanerReturn>> resultList = new ArrayList<Future<FloorRecordScanerReturn>>(10);
+	private ElectricHttpClient httpClient = new ElectricHttpClient();
 	
 	private List<RemainRecord> remainList = new ArrayList<RemainRecord>(2000);
 	private List<ChargeRecord> chargeList = new ArrayList<ChargeRecord>(200);
-	private List<Room> unSuccessRoomList = new ArrayList<Room>(100);
-	
-	private BuildingRecordScanerReturn scanerReturn = new BuildingRecordScanerReturn();
 	
 	public BuildingRecordScaner(Building building, IRecordService recordService) {
 		this.building = building;
 		this.recordService = recordService;
-		executorService =  Executors.newFixedThreadPool(building.getFloor());
 	}
 	
 	
 	@Override
 	public BuildingRecordScanerReturn call() throws Exception {
 		
-		for(int i = 1; i <= building.getFloor(); i ++) {
-			FloorRecordScaner floorRecordScaner = new FloorRecordScaner(i, building);
-			Future<FloorRecordScanerReturn> result = executorService.submit(floorRecordScaner);
-			resultList.add(result);
-		}
+		perpare();
 		
-		executorService.shutdown();
-		while(!executorService.isTerminated()) {
-			Thread.sleep(1000);
+		int continueFalse = 0;
+		for(int floor = 1; floor <= building.getFloor(); floor++) {
+			for(int roomNO = 1; roomNO < 100; roomNO ++) {
+				String roomName = Room.getRoomName(floor, roomNO);
+				RecordPage recordPage = getRecordPage(floor, roomNO);
+				if(recordPage.hasRecord()) {
+					addRoomRecords(recordPage);
+				} else {
+					continueFalse ++;
+				} 
+				if(continueFalse >  3) {
+					logger.info("floor[{}-{}] max room is {}", building.getName(), floor, (roomNO - continueFalse));
+					break;
+				}
+			}
 		}
-		
-		for(Future<FloorRecordScanerReturn> result : resultList) {
-			FloorRecordScanerReturn scanerReturn = result.get();
-			remainList.addAll(scanerReturn.getRemainList());
-			chargeList.addAll(scanerReturn.getChargeList());
-			unSuccessRoomList.addAll(scanerReturn.getUnSuccessRoomList());
-		}
-		logger.info("buildings[{}] remain count is [{}], charge cout is[{}], unSuccessRoom count is[{}]", building.getName(), remainList.size(), unSuccessRoomList.size());
+		logger.info("buildings[{}] remain count is [{}], charge cout is[{}]", building.getName(), remainList.size());
 		
 		saveRecords();
 		
-		scanerReturn.setRemainCount(remainList.size());
-		scanerReturn.setChargeCount(chargeList.size());
-		scanerReturn.setUnSuccessRoomCount(unSuccessRoomList.size());
+		return new BuildingRecordScanerReturn(building.getName(), remainList.size(), chargeList.size());
 		
-		return scanerReturn;
+		
 	}
 	
+	
+	private void perpare() throws RequestException {
+		logger.debug("building[{}] record scaner http client perpare start", building.getName());
+		httpClient.perpare();
+		BuildingNameRequest buildingNameRequest = new BuildingNameRequest(building.getArea());
+		httpClient.executeRequest(buildingNameRequest);
+		BuildingFloorRequest buildingFloorRequest = new BuildingFloorRequest(building.getArea(), building.getName());
+		httpClient.executeRequest(buildingFloorRequest);
+		logger.debug("building[{}] record scaner http client perpare finish", building.getName());
+	}
+	
+	private RecordPage getRecordPage(int floor, int roomNO) throws RequestException, PageParseException {
+		String roomName = Room.getRoomName(floor, roomNO);
+		logger.debug("room[{}-{}] record page get start", building.getName(), roomName);
+		RemainRecordRequest recordRequest = new RemainRecordRequest(building.getArea(), building.getName(), floor, roomNO);
+		httpClient.executeRequest(recordRequest);
+		RecordPage recordPage =  new RecordPage();
+		recordPage.parse(httpClient.getCurrentDocument());
+		if(recordPage.hasRecord()) {
+			logger.debug("room[{}-{}] record page get success: remain are[{}], charge are[{}]", building.getName(), roomName, recordPage.getRemainLines(), recordPage.getChargeLines());
+		} 
+		return recordPage;
+	}
+	
+	private void addRoomRecords(RecordPage recordPage) {
+		for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
+			RemainRecord remainRecord = new RemainRecord(recordPage.getBuildingName(), recordPage.getRoomName(), remainLine.getDate(), remainLine.getRemain());
+			remainList.add(remainRecord);
+		}
+		for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
+			ChargeRecord chargeRecord = new ChargeRecord(recordPage.getBuildingName(), recordPage.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney());
+			chargeList.add(chargeRecord);
+		}
+	}
 	
 	private void saveRecords() {
 		recordService.addTempRemains(remainList.toArray(new RemainRecord[0]));

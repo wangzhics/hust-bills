@@ -1,9 +1,11 @@
 package com.hust.bill.electric.service;
 
+import com.hust.bill.electric.bean.Room;
+
 public interface IRoomService {
 
-	public void extractTemp();
+	public void updateByBuilding(String buildingName, Room[] rooms);
 	
-	public void clearTemp();
+	public Room[] getByBuilding(String buildingName);
 	
 }

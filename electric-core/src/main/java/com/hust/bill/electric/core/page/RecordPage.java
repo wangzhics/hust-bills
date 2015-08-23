@@ -14,7 +14,7 @@ import com.hust.bill.electric.core.http.HttpElements;
 
 public class RecordPage implements IPage {
 
-	private SimpleDateFormat TIME_FORMATER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private SimpleDateFormat dateFormat;
 	
 	private String area;
 	
@@ -28,16 +28,28 @@ public class RecordPage implements IPage {
 	
 	private RecordChargeLine[] chargeLines = new RecordChargeLine[0];
 	
-	private boolean isErrorPage = false;
+	private boolean hasRecord = false;
+	
+	public RecordPage(SimpleDateFormat dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+	
+	public static boolean hasRecord(Document doc) {
+		Elements deferElement = doc.select("script[defer]");
+		if(deferElement.size() > 0) {
+			return false;
+		}
+		return true;
+	}
 	
 	public void parse(Document doc) throws PageParseException {
 		
 		Elements deferElement = doc.select("script[defer]");
 		if(deferElement.size() > 0) {
-			isErrorPage = true;
 			return;
 		}
 		
+		hasRecord = true;
 		Element areaSelectElement = doc.getElementById(HttpElements._PROGRAMID);
 		Element areaOptionElement = areaSelectElement.select("option[selected=selected]").first();
 		area = areaOptionElement.val();
@@ -61,7 +73,7 @@ public class RecordPage implements IPage {
 			String remainStr = remainTdElements.get(0).html();
 			String dateStr = remainTdElements.get(1).html();
 			try {
-				Date remainDate = TIME_FORMATER.parse(dateStr);
+				Date remainDate = dateFormat.parse(dateStr);
 				float remain = Float.parseFloat(remainStr);
 				RecordRemainLine remainRecordLine = new RecordRemainLine(remain, remainDate);
 				remainList.add(remainRecordLine);
@@ -85,7 +97,7 @@ public class RecordPage implements IPage {
 				try {
 					float power = Float.parseFloat(powerStr);
 					float money = Float.parseFloat(moneyStr);
-					Date chargeDate = TIME_FORMATER.parse(dateStr);
+					Date chargeDate = dateFormat.parse(dateStr);
 					RecordChargeLine chargeRecordLine = new RecordChargeLine(power, money, chargeDate);
 					chargeList.add(chargeRecordLine);
 				} catch (ParseException e) {
@@ -122,8 +134,8 @@ public class RecordPage implements IPage {
 		return chargeLines;
 	}
 
-	public boolean isErrorPage() {
-		return isErrorPage;
+	public boolean hasRecord() {
+		return hasRecord;
 	}
 	
 	

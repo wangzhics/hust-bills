@@ -16,7 +16,7 @@ import com.hust.bill.electric.core.page.BuildingFloorPage;
 import com.hust.bill.electric.core.page.BuildingNamePage;
 import com.hust.bill.electric.core.page.PageParseException;
 
-public class AreaBuildingScaner implements Callable<Building[]> {
+public class AreaBuildingScaner implements Callable<AreaBuildingScanResult> {
 	
 	private static Logger logger = LoggerFactory.getLogger(AreaBuildingScaner.class);
 	
@@ -31,7 +31,7 @@ public class AreaBuildingScaner implements Callable<Building[]> {
 	}
 	
 	@Override
-	public Building[] call() throws Exception {
+	public AreaBuildingScanResult call() throws Exception {
 		
 		httpClient.perpare();
 		for(String buildingName : getBuildingNames()) {
@@ -40,8 +40,8 @@ public class AreaBuildingScaner implements Callable<Building[]> {
 			buildingList.add(building);
 		}
 		Building[] buildings =  buildingList.toArray(new Building[0]);
-		logger.debug("area[{}]'s buildings are {}", area, buildings);
-		return buildings;
+		logger.info("area[{}]'s buildings are {}", area, buildings);
+		return new AreaBuildingScanResult(buildings);
 	}
 	
 	private String[] getBuildingNames()  throws RequestException, PageParseException {

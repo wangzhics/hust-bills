@@ -13,25 +13,28 @@ public class Building {
 	}
 	
 	public Building() {
-		super();
 	}
-
 
 	public String getArea() {
 		return area;
 	}
+	
 	public void setArea(String area) {
 		this.area = area;
 	}
+	
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public int getFloor() {
 		return floor;
 	}
+	
 	public void setFloor(int floor) {
 		this.floor = floor;
 	}
@@ -40,7 +43,7 @@ public class Building {
 	public String toString() {
 		return "Building [area=" + area + ", name=" + name + ", floor=" + floor + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
