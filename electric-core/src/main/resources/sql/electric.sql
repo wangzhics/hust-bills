@@ -1,5 +1,22 @@
 use `hust-bill`;
+
 --
+DROP TABLE IF EXISTS `e_task_building`;
+CREATE TABLE `e_task_building` (
+  `id`          int           NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `starTime`    datetime      NOT NULL,
+  `endTime`     datetime      NOT NULL
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `e_task_building_result`;
+CREATE TABLE `e_task_building` (
+  `id`          int           NOT NULL,
+  `area`        nvarchar(20)  NOT NULL,
+  `name`        nvarchar(50)  NOT NULL,
+  `floor`       int(1)        NOT NULL
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `e_building`;
 CREATE TABLE `e_building` (
   `area`        nvarchar(20)  NOT NULL,
@@ -8,7 +25,23 @@ CREATE TABLE `e_building` (
   PRIMARY KEY (`name`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
 
+
 --
+DROP TABLE IF EXISTS `e_task_room`;
+CREATE TABLE `e_task_room` (
+  `id`          int           NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `starTime`    datetime      NOT NULL,
+  `endTime`     datetime      NOT NULL
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `e_task_room_result`;
+CREATE TABLE `e_task_building` (
+  `id`            int           NOT NULL,
+  `buildingName`  nvarchar(50)  NOT NULL,
+  `roomName`      varchar(5)    NOT NULL,
+  `floor`         int(1)        NOT NULL,
+  `roomNO`        int(2)        NOT NULL
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
 DROP TABLE IF EXISTS `e_room`;
 CREATE TABLE `e_room` (
   `buildingName`  nvarchar(50)  NOT NULL,
