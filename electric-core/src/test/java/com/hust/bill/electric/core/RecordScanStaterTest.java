@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.hust.bill.electric.core.scan.record.RecordScanStater;
 import com.hust.bill.electric.service.IBuildingService;
 import com.hust.bill.electric.service.IRecordService;
 
@@ -24,8 +23,6 @@ public class RecordScanStaterTest {
 	@Test
 	public void test() {
 		try {
-			RecordScanStater stater = new RecordScanStater(buildingService, recordService);
-			stater.start();
 			Thread.sleep(3600000);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
