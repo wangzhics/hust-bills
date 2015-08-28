@@ -19,8 +19,18 @@ public enum Operation {
 	}
 
 	public String getDescription() {
-
 		return description;
+	}
+	
+	public static Operation parser(int code) {
+		if(code == ADD.getCode()) {
+			return ADD;
+		} else if(code == UPDATE.getCode()) {
+			return UPDATE;
+		} else if(code == DELETE.getCode()) {
+			return DELETE;
+		} 
+		return null;
 	}
 
 }

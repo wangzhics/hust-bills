@@ -1,4 +1,4 @@
-package com.hust.bill.electric.core.scan.building;
+package com.hust.bill.electric.core.task.building;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +16,22 @@ import com.hust.bill.electric.core.page.BuildingFloorPage;
 import com.hust.bill.electric.core.page.BuildingNamePage;
 import com.hust.bill.electric.core.page.PageParseException;
 
-public class AreaBuildingScaner implements Callable<AreaBuildingScanResult> {
+public class ScanByAreaCallable implements Callable<ScanByAreaResult> {
 	
-	private static Logger logger = LoggerFactory.getLogger(AreaBuildingScaner.class);
+	private static Logger logger = LoggerFactory.getLogger(ScanByAreaCallable.class);
 	
 	private String area;
-	private AreaBuildingScanResult scanResult = new AreaBuildingScanResult();
+	private ScanByAreaResult scanResult = new ScanByAreaResult();
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
-	private List<Building> buildingList = new ArrayList<Building>(30);
 	
 	
-	public AreaBuildingScaner(String area) {
+	public ScanByAreaCallable(String area) {
 		this.area = area;
 		scanResult.setArea(area);
 	}
 	
 	@Override
-	public AreaBuildingScanResult call() throws Exception {
+	public ScanByAreaResult call() throws Exception {
 		
 		httpClient.perpare();
 		for(String buildingName : getBuildingNames()) {
@@ -40,7 +39,7 @@ public class AreaBuildingScaner implements Callable<AreaBuildingScanResult> {
 			Building building = new Building(area, buildingName, floor);
 			scanResult.getBuildingList().add(building);
 		}
-		logger.info("area[{}] building are {}", buildingList);
+		logger.info("area[{}] building are {}", scanResult.getBuildingList());
 		return scanResult;
 	}
 	

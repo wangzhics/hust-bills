@@ -1,35 +1,35 @@
-package com.hust.bill.electric.bean.task;
+package com.hust.bill.electric.bean.task.building;
 
 import java.math.BigInteger;
 import java.util.Date;
 
 import com.hust.bill.electric.bean.Building;
+import com.hust.bill.electric.bean.task.Operation;
 
 public class BuildingOperateBean {
-	private BigInteger scanID;
-	private String scanName;
+	private BigInteger taskID;
+	private String taskName;
 	private BigInteger resultID;
 	private String areaName;
 	private String buildingName;
 	private int buildingFloor;
 	private Operation operate;
-	private Date timestmp;
+	private Date timestamp;
 	
 	public Building newBuilding() {
 		return new Building(areaName, buildingName, buildingFloor);
 	}
-	
-	public BigInteger getScanID() {
-		return scanID;
+	public BigInteger getTaskID() {
+		return taskID;
 	}
-	public void setScanID(BigInteger scanID) {
-		this.scanID = scanID;
+	public void setTaskID(BigInteger taskID) {
+		this.taskID = taskID;
 	}
-	public String getScanName() {
-		return scanName;
+	public String getTaskName() {
+		return taskName;
 	}
-	public void setScanName(String scanName) {
-		this.scanName = scanName;
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 	public BigInteger getResultID() {
 		return resultID;
@@ -61,11 +61,11 @@ public class BuildingOperateBean {
 	public void setOperate(Operation operate) {
 		this.operate = operate;
 	}
-	public Date getTimestmp() {
-		return timestmp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
-	public void setTimestmp(Date timestmp) {
-		this.timestmp = timestmp;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 }

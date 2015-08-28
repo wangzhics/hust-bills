@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hust.bill.electric.core.http.ElectricHttpClient;
 import com.hust.bill.electric.core.page.AreaPage;
+import com.hust.bill.electric.core.task.building.ScanByAreaResult;
+import com.hust.bill.electric.core.task.building.ScanByAreaCallable;
 
 public class BuildingScanStater implements Callable<BuildingScanResult>  {
 
@@ -21,7 +23,7 @@ public class BuildingScanStater implements Callable<BuildingScanResult>  {
 	
 	ElectricHttpClient httpClient = new ElectricHttpClient();
 	private ExecutorService executorService = Executors.newFixedThreadPool(5);
-	private List<Future<AreaBuildingScanResult>> resultList = new ArrayList<Future<AreaBuildingScanResult>>(10);  
+	private List<Future<ScanByAreaResult>> resultList = new ArrayList<Future<ScanByAreaResult>>(10);  
 	private BuildingScanResult scanResult = new BuildingScanResult();
 	
 	public BuildingScanStater() {
@@ -39,15 +41,15 @@ public class BuildingScanStater implements Callable<BuildingScanResult>  {
 		logger.debug("perpare area building scaner");
 		for(String area : areaPage.getAreas()) {
 			scanResult.getUnSuccessAreaList().add(area);
-			AreaBuildingScaner buildingScaner = new AreaBuildingScaner(area);
-			Future<AreaBuildingScanResult> result = executorService.submit(buildingScaner);
+			ScanByAreaCallable buildingScaner = new ScanByAreaCallable(area);
+			Future<ScanByAreaResult> result = executorService.submit(buildingScaner);
 			resultList.add(result);
 		}
 		logger.debug("perpare area building scaner finish");
 		
-		for(Future<AreaBuildingScanResult> result : resultList) {
+		for(Future<ScanByAreaResult> result : resultList) {
 			try {
-				AreaBuildingScanResult areaScanResult = result.get();
+				ScanByAreaResult areaScanResult = result.get();
 				scanResult.getUnSuccessAreaList().remove(areaScanResult.getArea());
 				scanResult.getSuccessAreaList().add(areaScanResult.getArea());
 				scanResult.getBuildingList().addAll(areaScanResult.getBuildingList());

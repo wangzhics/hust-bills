@@ -1,6 +1,7 @@
 package com.hust.bill.electric.core;
 
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -12,27 +13,36 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.hust.bill.electric.bean.task.TaskStatus;
+import com.hust.bill.electric.bean.task.building.BuildingTaskBean;
 import com.hust.bill.electric.core.scan.building.BuildingScanResult;
 import com.hust.bill.electric.core.scan.building.BuildingScanStater;
+import com.hust.bill.electric.core.task.building.ScanAllTask;
 import com.hust.bill.electric.service.IBuildingService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-context.xml"})
-public class BuildingScanStaterTest {
+public class BuildingScanAllTest {
 	
-	private ExecutorService executorService = Executors.newSingleThreadExecutor();
+	@Autowired
+	private IBuildingService buildingService;
 	
 	@Test
 	public void test() {
 		
 		try {
-			BuildingScanStater stater = new BuildingScanStater();
-			Future<BuildingScanResult> future = executorService.submit(stater);
-			BuildingScanResult result = future.get();
-			System.out.println(result.getSuccessAreaList());
-			System.out.println(result.getUnSuccessAreaList());
-			System.out.println(result.getBuildingList());
-			Thread.sleep(10000);
+			BuildingTaskBean taskBean = new BuildingTaskBean();
+			taskBean.setName("ceshi2");
+			taskBean.setStartTime(new Date());
+			taskBean.setStatus(TaskStatus.PERPARE);
+			buildingService.addTask(taskBean);
+			ScanAllTask scanAllTask = new ScanAllTask(taskBean, buildingService);
+			Thread t = new Thread(scanAllTask);
+			t.start();
+			while(true) {
+				System.out.println(scanAllTask.getProgress());
+				Thread.sleep(100);
+			}
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (Throwable e) {

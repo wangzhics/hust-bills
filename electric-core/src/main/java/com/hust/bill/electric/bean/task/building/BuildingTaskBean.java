@@ -1,16 +1,18 @@
-package com.hust.bill.electric.bean.task;
+package com.hust.bill.electric.bean.task.building;
 
 import java.math.BigInteger;
 import java.util.Date;
 
-public class BuildingScanTaskBean {
+import com.hust.bill.electric.bean.task.TaskStatus;
+
+public class BuildingTaskBean {
 
 	private BigInteger id;
 	private String name;
-	private Date starTime;
+	private Date startTime;
 	private Date endTime;
 	private int resultCount;
-	private int status;
+	private TaskStatus status;
 	public BigInteger getId() {
 		return id;
 	}
@@ -23,11 +25,11 @@ public class BuildingScanTaskBean {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Date getStarTime() {
-		return starTime;
+	public Date getStartTime() {
+		return startTime;
 	}
-	public void setStarTime(Date starTime) {
-		this.starTime = starTime;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 	public Date getEndTime() {
 		return endTime;
@@ -41,10 +43,10 @@ public class BuildingScanTaskBean {
 	public void setResultCount(int resultCount) {
 		this.resultCount = resultCount;
 	}
-	public int getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
 }

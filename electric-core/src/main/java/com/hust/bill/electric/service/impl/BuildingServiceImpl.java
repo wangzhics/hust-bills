@@ -10,14 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hust.bill.electric.bean.Building;
-import com.hust.bill.electric.bean.Room;
-import com.hust.bill.electric.bean.task.BuildingOperateBean;
-import com.hust.bill.electric.bean.task.BuildingScanResultBean;
-import com.hust.bill.electric.bean.task.BuildingScanTaskBean;
+import com.hust.bill.electric.bean.task.building.BuildingOperateBean;
+import com.hust.bill.electric.bean.task.building.BuildingTaskResultBean;
+import com.hust.bill.electric.bean.task.building.BuildingTaskBean;
 import com.hust.bill.electric.dao.IBuildingDAO;
-import com.hust.bill.electric.dao.IChargeRecordDAO;
-import com.hust.bill.electric.dao.IRemainRecordDAO;
-import com.hust.bill.electric.dao.IRoomDAO;
 import com.hust.bill.electric.service.IBuildingService;
 
 @Service(value="buildingService")
@@ -26,35 +22,33 @@ public class BuildingServiceImpl implements IBuildingService{
 	@Autowired
 	private IBuildingDAO buildingDAO;
 	
-	@Autowired
-	private IRoomDAO roomDAO;
-	
-	@Autowired
-	private IRemainRecordDAO remainRecordDAO;
-	
-	@Autowired
-	private IChargeRecordDAO chargeRecordDAO;
-	
 	
 	@Override
 	@Transactional
-	public void addScanTask(BuildingScanTaskBean taskBean) {
-		buildingDAO.insertScanTask(taskBean);
-		BigInteger id = buildingDAO.getScanTaskByTime(taskBean.getStarTime());
+	public void addTask(BuildingTaskBean taskBean) {
+		buildingDAO.insertTask(taskBean);
+		BigInteger id = buildingDAO.getTaskIDByName(taskBean.getName());
 		taskBean.setId(id);
 	}
 	
 	@Override
+	public void updateTaskSatus(BuildingTaskBean taskBean) {
+		buildingDAO.updateTaskSatus(taskBean.getId(), taskBean.getStatus());
+	}
+	
+	@Override
 	@Transactional
-	public void finishScanTask(BuildingScanTaskBean taskBean, BuildingScanResultBean[] scanResults) {
-		buildingDAO.insertScanResults(scanResults);
-		buildingDAO.updateScanTaskEndTime(taskBean.getId(), taskBean.getEndTime());
+	public void finishTask(BuildingTaskBean taskBean, BuildingTaskResultBean[] scanResults) {
+		buildingDAO.insertTaskResults(scanResults);
+		buildingDAO.updateTaskEndTime(taskBean.getId(), taskBean.getEndTime());
+		buildingDAO.updateTaskResultCount(taskBean.getId(), taskBean.getResultCount());
+		buildingDAO.updateTaskSatus(taskBean.getId(), taskBean.getStatus());
 	}
 	
 	
 	@Override
-	public BuildingScanTaskBean[] getAllScanTask() {
-		return buildingDAO.getAllScanTask();
+	public BuildingTaskBean[] getAllTask() {
+		return buildingDAO.getAllTask();
 	}
 	
 	@Override
@@ -85,17 +79,22 @@ public class BuildingServiceImpl implements IBuildingService{
 		}
 		// just add
 		buildingDAO.insertOperateBeans(addList.toArray(new BuildingOperateBean[0]));
-		buildingDAO.insert(addList.toArray(new Building[0]));
+		buildingDAO.inserts(addList.toArray(new Building[0]));
 	}
 	
 	@Override
-	public BuildingScanResultBean[] getScanResultsByTaskID(BigInteger scanID) {
-		return buildingDAO.getScanResultsByTask(scanID);
+	public BuildingTaskResultBean[] getTaskResultsByTaskID(BigInteger scanID) {
+		return buildingDAO.getScanResultsByTaskID(scanID);
 	}
 
+	@Override
+	public BuildingOperateBean[] getAllOperation() {
+		return buildingDAO.getAllOperateBeans();
+	}
 	
 	@Override
 	public Building[] getAll() {
 		return null;
 	}
+
 }
