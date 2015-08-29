@@ -58,6 +58,7 @@ public class BuildingServiceImpl implements IBuildingService{
 	}
 	
 	@Override
+	@Transactional
 	public void operate(BuildingOperateBean[] operateBeans) {
 		List<BuildingOperateBean> operateAddList = new ArrayList<BuildingOperateBean>(operateBeans.length);
 		List<Building> addList = new ArrayList<Building>(operateBeans.length);

@@ -18,6 +18,19 @@ public class RoomOperateBean {
 	private Operation operate;
 	private Date timestamp;
 	
+	public static RoomOperateBean newOperateBean(RoomTaskBean taskBean, RoomTaskResultBean resultBean, Operation operation) {
+		RoomOperateBean operateBean = new RoomOperateBean();
+		operateBean.taskID = taskBean.getId();
+		operateBean.taskName = taskBean.getName();
+		operateBean.buildingName = taskBean.getBuildingName();
+		operateBean.resultID = resultBean.getId();
+		operateBean.roomName = resultBean.getRoomName();
+		operateBean.roomFloor = resultBean.getRoomFloor();
+		operateBean.roomNO = resultBean.getRoomNO();
+		operateBean.operate = operation;
+		return operateBean;
+	}
+	
 	public Room newRoom() {
 		Room room = new Room();
 		room.setBuildingName(buildingName);

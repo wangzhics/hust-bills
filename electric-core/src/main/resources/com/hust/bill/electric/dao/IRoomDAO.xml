@@ -14,7 +14,7 @@
   </resultMap>
     <insert id="insertTask">
       insert into e_room_task(name, buildingName, startTime, status) 
-      values (#{name}, #{buildingName}, #{startTime}, #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
+      values (#{name}, #{buildingName}, now(), #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
   </insert>
   
   <update id="updateTaskSatus">
@@ -22,11 +22,11 @@
   </update>
   
   <update id="updateTaskEndTime">
-      update e_room_task set endTime = #{endTime} where id = #{id}
+       update e_room_task set endTime = now() where id = #{id}
   </update>
   
   <update id="updateTaskResultCount">
-      update e_room_task set resultCount = #{resultCount} where id = #{id}
+      update e_room_task set resultCount = (select count(id) from e_room_task_result where taskId = #{id}) where id = #{id}
   </update>
   
   <select id="getTaskIDByName" resultType="java.math.BigInteger">
@@ -75,17 +75,17 @@
     <result column="roomFloor"      property="roomFloor"      jdbcType="INTEGER" />
     <result column="roomNO"         property="roomNO"         jdbcType="INTEGER" />
     <result column="operate"        property="operate"        jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.OprationTypeHandler" />
-    <result column="timestamp"      property="timestamp"      jdbcType="DATE" />
+    <result column="stamp"          property="timestamp"      jdbcType="DATE" />
   </resultMap>
   
     <insert id="insertOperateBeans">
     <if test="array.length == 0">
-      select count(*) from e_building_operate
+      select count(*) from e_room_operate
     </if>
     <if test="array.length != 0">
-      insert into e_building_operate(taskId, taskName, buildingName, resultId, roomName, roomFloor, roomNO, operate, timestamp) values
+      insert into e_room_operate(taskId, taskName, buildingName, resultId, roomName, roomFloor, roomNO, operate, stamp) values
       <foreach collection="array" item="item" index="index" separator=",">
-        (#{item.taskID}, #{item.taskName}, #{item.buildingName}, #{item.resultId}, #{item.roomName}, #{item.roomFloor}, #{item.roomNO}, 
+        (#{item.taskID}, #{item.taskName}, #{item.buildingName}, #{item.resultID}, #{item.roomName}, #{item.roomFloor}, #{item.roomNO}, 
         #{item.operate, typeHandler=com.hust.bill.electric.dao.OprationTypeHandler}, now())
       </foreach>
     </if>
@@ -99,22 +99,22 @@
     select taskId, taskName, buildingName, resultId, roomName, roomFloor, roomNO, operate, timestamp from e_building_operate
   </select>
   
-  <!-- building -->
+  <!-- room -->
   <resultMap id="roomResultMap" type="com.hust.bill.electric.bean.Room">
-    <id column="buildingName"     property="buildingName"   jdbcType="NVARCHAR" />
-    <result column="roomName"     property="roomName"       jdbcType="NVARCHAR" />
-    <result column="floor"        property="floor"          jdbcType="INTEGER" />
-    <result column="roomNO"       property="roomNO"         jdbcType="INTEGER" />
+    <result column="buildingName"     property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"         property="roomName"       jdbcType="NVARCHAR" />
+    <result column="roomFloor"        property="roomFloor"      jdbcType="INTEGER" />
+    <result column="roomNO"           property="roomNO"         jdbcType="INTEGER" />
   </resultMap>
   
-  <insert id="insert">
+  <insert id="inserts">
     <if test="array.length == 0">
       select count(*) from e_building
     </if>
     <if test="array.length != 0">
-      insert into e_room(buildingName, name, floor) values
+      insert into e_room(buildingName, roomName, roomFloor, roomNO) values
       <foreach collection="array" item="item" index="index" separator=",">
-        (#{item.area, jdbcType=VARCHAR}, #{item.name, jdbcType=VARCHAR}, #{item.floor, jdbcType=INTEGER})
+        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.roomFloor, jdbcType=INTEGER}, #{item.roomNO, jdbcType=INTEGER})
       </foreach>
     </if>
   </insert>       

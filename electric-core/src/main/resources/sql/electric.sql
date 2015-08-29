@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `e_building_task`;
 CREATE TABLE `e_building_task` (
   `id`              bigint        NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name`            nvarchar(50)  NOT NULL UNIQUE,
-  `starTime`        datetime      NOT NULL,
+  `startTime`        datetime      NOT NULL,
   `endTime`         datetime,
   `resultCount`     int,
   `status`          int(1)        NOT NULL
@@ -30,7 +30,7 @@ CREATE TABLE `e_building_operate` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `buildingFloor` int(1)        NOT NULL,
   `operate`       int(1)        NOT NULL,
-  `timestmp`      datetime      NOT NULL,
+  `timestamp`      datetime     NOT NULL,
   FOREIGN KEY `fk_e_building_operate_taskid` (`taskId`) REFERENCES `e_building_task`(`id`),
   FOREIGN KEY `fk_e_building_operate_resultid` (`resultId`) REFERENCES `e_building_task_result`(`id`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -52,7 +52,7 @@ CREATE TABLE `e_room_task` (
   `id`              bigint        NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name`            nvarchar(50)  NOT NULL UNIQUE,
   `buildingName`    nvarchar(50)  NOT NULL,
-  `starTime`        datetime      NOT NULL,
+  `startTime`        datetime      NOT NULL,
   `endTime`         datetime,
   `resultCount`     int,
   `status`          int(1)        NOT NULL
@@ -64,7 +64,7 @@ CREATE TABLE `e_room_task_result` (
   `id`              bigint            NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `buildingName`    nvarchar(50)      NOT NULL,
   `roomName`        varchar(5)        NOT NULL,
-  `floor`           int(1)            NOT NULL,
+  `roomFloor`       int(1)            NOT NULL,
   `roomNO`          int(2)            NOT NULL,
   FOREIGN KEY `fk_e_room_task_result_id` (`taskId`) REFERENCES `e_room_task`(`id`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -76,10 +76,10 @@ CREATE TABLE `e_room_operate` (
   `buildingName`    nvarchar(50)      NOT NULL,
   `resultId`        bigint            NOT NULL,
   `roomName`        varchar(5)        NOT NULL,
-  `floor`           int(1)            NOT NULL,
+  `roomFloor`       int(1)            NOT NULL,
   `roomNO`          int(2)            NOT NULL,
   `operate`         int(1)            NOT NULL,
-  `timestmp`      datetime            NOT NULL,
+  `timestamp`      datetime            NOT NULL,
   FOREIGN KEY `fk_e_room_operate_taskid` (`taskId`) REFERENCES `e_room_task`(`id`),
   FOREIGN KEY `fk_e_room_operate_resultid` (`resultId`) REFERENCES `e_room_task_result`(`id`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -88,7 +88,7 @@ DROP TABLE IF EXISTS `e_room`;
 CREATE TABLE `e_room` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `roomName`      varchar(5)    NOT NULL,
-  `floor`         int(1)        NOT NULL,
+  `roomFloor`     int(1)        NOT NULL,
   `roomNO`        int(2)        NOT NULL,
   PRIMARY KEY (`buildingName`, `roomName`),
   FOREIGN KEY `fk_e_room_temp` (`buildingName`) REFERENCES `e_building`(`name`)

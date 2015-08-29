@@ -6,11 +6,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.bean.Room;
 import com.hust.bill.electric.bean.task.TaskStatus;
-import com.hust.bill.electric.bean.task.building.BuildingOperateBean;
 import com.hust.bill.electric.bean.task.room.RoomOperateBean;
 import com.hust.bill.electric.bean.task.room.RoomTaskBean;
 import com.hust.bill.electric.bean.task.room.RoomTaskResultBean;
@@ -18,7 +17,7 @@ import com.hust.bill.electric.dao.IRoomDAO;
 import com.hust.bill.electric.service.IRoomService;
 
 @Service(value="roomService")
-public class RoomService implements IRoomService {
+public class RoomServiceImpl implements IRoomService {
 
 	@Autowired
 	private IRoomDAO roomDAO;
@@ -27,6 +26,7 @@ public class RoomService implements IRoomService {
 	@Override
 	public void addTask(RoomTaskBean taskBean) {
 		roomDAO.insertTask(taskBean);
+		taskBean.setId(roomDAO.getTaskIDByName(taskBean.getName()));
 	}
 
 	@Override
@@ -35,6 +35,7 @@ public class RoomService implements IRoomService {
 	}
 
 	@Override
+	@Transactional
 	public void finishTask(BigInteger taskId, TaskStatus taskStatus) {
 		roomDAO.updateTaskEndTime(taskId);
 		roomDAO.updateTaskResultCount(taskId);
@@ -57,6 +58,7 @@ public class RoomService implements IRoomService {
 	}
 
 	@Override
+	@Transactional
 	public void operate(RoomOperateBean[] operateBeans) {
 		List<RoomOperateBean> operateAddList = new ArrayList<RoomOperateBean>(operateBeans.length);
 		List<Room> addList = new ArrayList<Room>(operateBeans.length);

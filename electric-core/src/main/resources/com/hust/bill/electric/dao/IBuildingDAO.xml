@@ -14,7 +14,7 @@
   
 	<insert id="insertTask">
       insert into e_building_task(name, startTime, status) 
-      values (#{name}, #{startTime}, #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
+      values (#{name}, now(), #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
   </insert>
   
   <update id="updateTaskSatus">
@@ -72,14 +72,14 @@
     <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
     <result column="buildingFloor"  property="buildingFloor"  jdbcType="INTEGER" />
     <result column="operate"        property="operate"        jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.OprationTypeHandler" />
-    <result column="timestamp"      property="timestamp"      jdbcType="DATE" />
+    <result column="stamp"          property="timestamp"      jdbcType="DATE" />
   </resultMap>
   <insert id="insertOperateBeans">
     <if test="array.length == 0">
       select count(*) from e_building_operate
     </if>
     <if test="array.length != 0">
-      insert into e_building_operate(taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, timestamp) values
+      insert into e_building_operate(taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, stamp) values
       <foreach collection="array" item="item" index="index" separator=",">
         (#{item.taskID}, #{item.taskName}, #{item.resultID}, #{item.areaName}, #{item.buildingName}, #{item.buildingFloor}, 
         #{item.operate, typeHandler=com.hust.bill.electric.dao.OprationTypeHandler}, now())
@@ -88,7 +88,7 @@
   </insert>
   
   <select id="getOperateBeansByTaskID" resultMap="buildingOperateResultMap">
-    select taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, timestamp from e_building_operate where taskId= #{taskID}
+    select taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, stamp from e_building_operate where taskId= #{taskID}
   </select>
   
   <select id="getAllOperateBeans" resultMap="buildingOperateResultMap">

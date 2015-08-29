@@ -2,20 +2,12 @@ package com.hust.bill.electric.core.task;
 
 public abstract class Task implements Runnable {
 
-	private String name;
-	
 	private volatile int steps = 1;
 	private volatile int currentStep = 0;
 	private volatile int perpare = 0;
 	private String currentMessage = "";
 
-	public Task(String name) {
-		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
-	}
+	public abstract String getName();
 	
 	protected void setSteps(int newSteps) {
 		currentStep ++;
