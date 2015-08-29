@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hust.bill.electric.bean.Building;
+import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.building.BuildingOperateBean;
 import com.hust.bill.electric.bean.task.building.BuildingTaskResultBean;
 import com.hust.bill.electric.bean.task.building.BuildingTaskBean;
@@ -31,20 +32,25 @@ public class BuildingServiceImpl implements IBuildingService{
 		taskBean.setId(id);
 	}
 	
+	
 	@Override
-	public void updateTaskSatus(BuildingTaskBean taskBean) {
-		buildingDAO.updateTaskSatus(taskBean.getId(), taskBean.getStatus());
+	public void updateTaskStatus(BigInteger taskId, TaskStatus taskStatus) {
+		buildingDAO.updateTaskSatus(taskId, taskStatus);
 	}
 	
 	@Override
 	@Transactional
-	public void finishTask(BuildingTaskBean taskBean, BuildingTaskResultBean[] scanResults) {
-		buildingDAO.insertTaskResults(scanResults);
-		buildingDAO.updateTaskEndTime(taskBean.getId(), taskBean.getEndTime());
-		buildingDAO.updateTaskResultCount(taskBean.getId(), taskBean.getResultCount());
-		buildingDAO.updateTaskSatus(taskBean.getId(), taskBean.getStatus());
+	public void finishTask(BigInteger taskId, TaskStatus taskStatus) {
+		buildingDAO.updateTaskEndTime(taskId);
+		buildingDAO.updateTaskResultCount(taskId);
+		buildingDAO.updateTaskSatus(taskId, taskStatus);
 	}
 	
+	@Override
+	public void addTaskResults(BuildingTaskResultBean[] results) {
+		buildingDAO.insertTaskResults(results);
+		
+	}
 	
 	@Override
 	public BuildingTaskBean[] getAllTask() {
@@ -78,13 +84,13 @@ public class BuildingServiceImpl implements IBuildingService{
 			}
 		}
 		// just add
-		buildingDAO.insertOperateBeans(addList.toArray(new BuildingOperateBean[0]));
+		buildingDAO.insertOperateBeans(operateAddList.toArray(new BuildingOperateBean[0]));
 		buildingDAO.inserts(addList.toArray(new Building[0]));
 	}
 	
 	@Override
 	public BuildingTaskResultBean[] getTaskResultsByTaskID(BigInteger scanID) {
-		return buildingDAO.getScanResultsByTaskID(scanID);
+		return buildingDAO.getTaskResultsByTaskID(scanID);
 	}
 
 	@Override
@@ -96,5 +102,6 @@ public class BuildingServiceImpl implements IBuildingService{
 	public Building[] getAll() {
 		return null;
 	}
+
 
 }

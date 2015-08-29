@@ -22,11 +22,11 @@
   </update>
   
   <update id="updateTaskEndTime">
-      update e_building_task set endTime = #{endTime} where id = #{id}
+      update e_building_task set endTime = now() where id = #{id}
   </update>
   
   <update id="updateTaskResultCount">
-      update e_building_task set resultCount = #{resultCount} where id = #{id}
+      update e_building_task set resultCount = (select count(id) from e_building_task_result where taskId = #{id}) where id = #{id}
   </update>
   
   <select id="getTaskIDByName" resultType="java.math.BigInteger">
@@ -59,8 +59,8 @@
     </if>
   </insert>
   
-  <select id="getScanResultsByTaskID" resultMap="buildingTaskResultResultMap">
-    select id, taskId, areaName, buildingName, buildingFloor from e_building_scan_result where scanId= #{scanID}
+  <select id="getTaskResultsByTaskID" resultMap="buildingTaskResultResultMap">
+    select id, taskId, areaName, buildingName, buildingFloor from e_building_task_result where taskId= #{taskID}
   </select>
 
   <!-- operation -->
@@ -81,14 +81,14 @@
     <if test="array.length != 0">
       insert into e_building_operate(taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, timestamp) values
       <foreach collection="array" item="item" index="index" separator=",">
-        (#{item.taskID}, #{item.taskName}, #{item.resultId}, #{item.areaName}, #{item.buildingName}, #{item.buildingFloor}, 
-        #{item.operate, typeHandler=com.hust.bill.electric.dao.OprationTypeHandler}, #{item.timestamp})
+        (#{item.taskID}, #{item.taskName}, #{item.resultID}, #{item.areaName}, #{item.buildingName}, #{item.buildingFloor}, 
+        #{item.operate, typeHandler=com.hust.bill.electric.dao.OprationTypeHandler}, now())
       </foreach>
     </if>
   </insert>
   
   <select id="getOperateBeansByTaskID" resultMap="buildingOperateResultMap">
-    select taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, timestamp from e_building_operate where scanId= #{scanID}
+    select taskId, taskName, resultId, areaName, buildingName, buildingFloor, operate, timestamp from e_building_operate where taskId= #{taskID}
   </select>
   
   <select id="getAllOperateBeans" resultMap="buildingOperateResultMap">

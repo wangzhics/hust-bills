@@ -53,8 +53,18 @@ public class Room {
 		this.roomName = roomName;
 	}
 
+	public void setRoomFloor(int roomFloor) {
+		this.roomFloor = roomFloor;
+	}
+
+	public void setRoomNO(int roomNO) {
+		this.roomNO = roomNO;
+	}
+
 	@Override
 	public String toString() {
 		return "Room [buildingName=" + buildingName + ", roomName=" + roomName + "]";
 	}
+	
+	
 }

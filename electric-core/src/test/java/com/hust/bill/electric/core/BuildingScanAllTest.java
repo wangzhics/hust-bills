@@ -17,6 +17,7 @@ import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.building.BuildingTaskBean;
 import com.hust.bill.electric.core.scan.building.BuildingScanResult;
 import com.hust.bill.electric.core.scan.building.BuildingScanStater;
+import com.hust.bill.electric.core.task.building.InitialBuildingTask;
 import com.hust.bill.electric.core.task.building.ScanAllTask;
 import com.hust.bill.electric.service.IBuildingService;
 
@@ -31,12 +32,7 @@ public class BuildingScanAllTest {
 	public void test() {
 		
 		try {
-			BuildingTaskBean taskBean = new BuildingTaskBean();
-			taskBean.setName("ceshi2");
-			taskBean.setStartTime(new Date());
-			taskBean.setStatus(TaskStatus.PERPARE);
-			buildingService.addTask(taskBean);
-			ScanAllTask scanAllTask = new ScanAllTask(taskBean, buildingService);
+			ScanAllTask scanAllTask = new ScanAllTask(buildingService);
 			Thread t = new Thread(scanAllTask);
 			t.start();
 			while(true) {

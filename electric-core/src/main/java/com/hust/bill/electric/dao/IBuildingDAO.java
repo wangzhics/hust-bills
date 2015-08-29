@@ -2,7 +2,6 @@ package com.hust.bill.electric.dao;
 
 
 import java.math.BigInteger;
-import java.util.Date;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -19,11 +18,11 @@ public interface IBuildingDAO {
 	
 	public void insertTask(BuildingTaskBean taskBean);
 	
+	public void updateTaskEndTime(@Param("id") BigInteger id);
+	
+	public void updateTaskResultCount(@Param("id") BigInteger id);
+	
 	public void updateTaskSatus(@Param("id") BigInteger id, @Param("status") TaskStatus taskStatus);
-	
-	public void updateTaskEndTime(@Param("id") BigInteger id, @Param("endTime") Date endTime);
-	
-	public void updateTaskResultCount(@Param("id") BigInteger id, @Param("resultCount") int resultCount);
 	
 	public BigInteger getTaskIDByName(@Param("name") String name);
 	
@@ -31,11 +30,11 @@ public interface IBuildingDAO {
 	
 	public void insertTaskResults(BuildingTaskResultBean[] scanResults);
 	
-	public BuildingTaskResultBean[] getScanResultsByTaskID(@Param("scanID") BigInteger scanID);
+	public BuildingTaskResultBean[] getTaskResultsByTaskID(@Param("taskID") BigInteger taskID);
 	
 	public void insertOperateBeans(BuildingOperateBean[] operateBeans);
 	
-	public BuildingOperateBean[] getOperateBeansByTaskID(@Param("scanID")BigInteger scanID);
+	public BuildingOperateBean[] getOperateBeansByTaskID(@Param("taskID")BigInteger taskID);
 	
 	public BuildingOperateBean[] getAllOperateBeans();
 	

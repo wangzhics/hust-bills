@@ -1,7 +1,5 @@
 package com.hust.bill.electric.core.task.building;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
@@ -18,16 +16,16 @@ import com.hust.bill.electric.core.page.PageParseException;
 
 public class ScanByAreaCallable implements Callable<ScanByAreaResult> {
 	
-	private static Logger logger = LoggerFactory.getLogger(ScanByAreaCallable.class);
+	private final static Logger logger = LoggerFactory.getLogger(ScanByAreaCallable.class);
 	
 	private String area;
-	private ScanByAreaResult scanResult = new ScanByAreaResult();
+	private ScanByAreaResult scanResult;
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
 	
 	
 	public ScanByAreaCallable(String area) {
 		this.area = area;
-		scanResult.setArea(area);
+		scanResult = new ScanByAreaResult(area);
 	}
 	
 	@Override

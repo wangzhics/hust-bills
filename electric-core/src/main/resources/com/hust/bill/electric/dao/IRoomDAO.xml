@@ -2,7 +2,111 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hust.bill.electric.dao.IRoomDAO">
-	
+  <!-- task -->
+  <resultMap id="roomTaskResultMap" type="com.hust.bill.electric.bean.task.room.RoomTaskBean">
+    <id column="id"               property="id"           jdbcType="BIGINT" />
+    <result column="name"         property="name"         jdbcType="NVARCHAR" />
+    <result column="buildingName" property="buildingName" jdbcType="NVARCHAR" />
+    <result column="startTime"    property="startTime"    jdbcType="DATE" />
+    <result column="endTime"      property="endTime"      jdbcType="DATE" />
+    <result column="resultCount"  property="resultCount"  jdbcType="INTEGER" />
+    <result column="status"       property="status"       jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.TaskStatusTypeHandler" />
+  </resultMap>
+    <insert id="insertTask">
+      insert into e_room_task(name, buildingName, startTime, status) 
+      values (#{name}, #{buildingName}, #{startTime}, #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
+  </insert>
+  
+  <update id="updateTaskSatus">
+      update e_room_task set status = #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler} where id = #{id}
+  </update>
+  
+  <update id="updateTaskEndTime">
+      update e_room_task set endTime = #{endTime} where id = #{id}
+  </update>
+  
+  <update id="updateTaskResultCount">
+      update e_room_task set resultCount = #{resultCount} where id = #{id}
+  </update>
+  
+  <select id="getTaskIDByName" resultType="java.math.BigInteger">
+    select id from e_room_task where name = #{name}
+  </select>
+  
+  <select id="getAllTask" resultMap="roomTaskResultMap">
+    select id, name, buildingName, starTime, endTime, resultCount, status from e_room_task
+  </select>
+  
+  
+  <!-- taskResult -->
+  <resultMap id="roomTaskResultResultMap" type="com.hust.bill.electric.bean.task.room.RoomTaskResultBean">
+    <id column="id"                 property="id"             jdbcType="BIGINT" />
+    <result column="taskId"         property="taskID"         jdbcType="BIGINT" />
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"       property="roomName"       jdbcType="NVARCHAR" />
+    <result column="roomFloor"      property="roomFloor"      jdbcType="INTEGER" />
+    <result column="roomNO"        property="roomNO"         jdbcType="INTEGER" />
+  </resultMap>
+  
+  <insert id="insertTaskResults">
+    <if test="array.length == 0">
+      select count(*) from e_room_task_result
+    </if>
+    <if test="array.length != 0">
+      insert into e_room_task_result(taskId, buildingName, roomName, roomFloor, roomNO) values
+      <foreach collection="array" item="item" index="index" separator=",">
+        (#{item.taskID}, #{item.buildingName}, #{item.roomName}, #{item.roomFloor}, #{item.roomNO})
+      </foreach>
+    </if>
+  </insert>
+  
+  <select id="getTaskResultsByTaskID" resultMap="roomTaskResultResultMap">
+    select id,taskId, buildingName, roomName, roomFloor, roomNO from e_room_task_result where taskId= #{taskID}
+  </select>
+  
+  
+  <!-- operation -->
+  <resultMap id="roomOperateResultMap" type="com.hust.bill.electric.bean.task.room.RoomOperateBean">
+    <result column="taskId"         property="taskID"         jdbcType="BIGINT" />
+    <result column="taskName"       property="taskName"       jdbcType="NVARCHAR" />
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="resultId"       property="resultID"       jdbcType="BIGINT" />
+    <result column="roomName"       property="roomName"       jdbcType="NVARCHAR" />
+    <result column="roomFloor"      property="roomFloor"      jdbcType="INTEGER" />
+    <result column="roomNO"         property="roomNO"         jdbcType="INTEGER" />
+    <result column="operate"        property="operate"        jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.OprationTypeHandler" />
+    <result column="timestamp"      property="timestamp"      jdbcType="DATE" />
+  </resultMap>
+  
+    <insert id="insertOperateBeans">
+    <if test="array.length == 0">
+      select count(*) from e_building_operate
+    </if>
+    <if test="array.length != 0">
+      insert into e_building_operate(taskId, taskName, buildingName, resultId, roomName, roomFloor, roomNO, operate, timestamp) values
+      <foreach collection="array" item="item" index="index" separator=",">
+        (#{item.taskID}, #{item.taskName}, #{item.buildingName}, #{item.resultId}, #{item.roomName}, #{item.roomFloor}, #{item.roomNO}, 
+        #{item.operate, typeHandler=com.hust.bill.electric.dao.OprationTypeHandler}, now())
+      </foreach>
+    </if>
+  </insert>
+  
+  <select id="getOperateBeansByTaskID" resultMap="roomOperateResultMap">
+    select taskId, taskName, buildingName, resultId, roomName, roomFloor, roomNO, operate, timestamp from e_building_operate where taskId= #{taskID}
+  </select>
+  
+  <select id="getAllOperateBeans" resultMap="roomOperateResultMap">
+    select taskId, taskName, buildingName, resultId, roomName, roomFloor, roomNO, operate, timestamp from e_building_operate
+  </select>
+  
+  <!-- building -->
+  <resultMap id="roomResultMap" type="com.hust.bill.electric.bean.Room">
+    <id column="buildingName"     property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"     property="roomName"       jdbcType="NVARCHAR" />
+    <result column="floor"        property="floor"          jdbcType="INTEGER" />
+    <result column="roomNO"       property="roomNO"         jdbcType="INTEGER" />
+  </resultMap>
+  
   <insert id="insert">
     <if test="array.length == 0">
       select count(*) from e_building

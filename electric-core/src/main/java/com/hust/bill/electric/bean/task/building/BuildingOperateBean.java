@@ -16,6 +16,18 @@ public class BuildingOperateBean {
 	private Operation operate;
 	private Date timestamp;
 	
+	public static BuildingOperateBean newOperateBean(BuildingTaskBean taskBean, BuildingTaskResultBean resultBean, Operation operation) {
+		BuildingOperateBean operateBean = new BuildingOperateBean();
+		operateBean.taskID = taskBean.getId();
+		operateBean.taskName = taskBean.getName();
+		operateBean.resultID = resultBean.getId();
+		operateBean.areaName = resultBean.getAreaName();
+		operateBean.buildingName = resultBean.getBuildingName(); 
+		operateBean.buildingFloor = resultBean.getBuildingFloor();
+		operateBean.operate = operation;
+		return operateBean;
+	}
+	
 	public Building newBuilding() {
 		return new Building(areaName, buildingName, buildingFloor);
 	}

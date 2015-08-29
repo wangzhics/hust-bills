@@ -1,6 +1,5 @@
 package com.hust.bill.electric.core.task.building;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hust.bill.electric.bean.Building;
+import com.hust.bill.electric.bean.task.Operation;
 import com.hust.bill.electric.bean.task.TaskStatus;
+import com.hust.bill.electric.bean.task.building.BuildingOperateBean;
 import com.hust.bill.electric.bean.task.building.BuildingTaskBean;
 import com.hust.bill.electric.bean.task.building.BuildingTaskResultBean;
 import com.hust.bill.electric.core.http.ElectricHttpClient;
@@ -20,22 +21,19 @@ import com.hust.bill.electric.core.page.AreaPage;
 import com.hust.bill.electric.core.task.Task;
 import com.hust.bill.electric.service.IBuildingService;
 
-public class ScanAllTask extends Task{
+public class InitialBuildingTask extends Task {
 
-	
+	public final static String TASK_NAME = "Initial-Building";
 	private final static Logger logger = LoggerFactory.getLogger(ScanAllTask.class);
-	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-	private static final String BUILDING= "Building";
-	
-	ElectricHttpClient httpClient = new ElectricHttpClient();
 	private ExecutorService executorService = Executors.newFixedThreadPool(5);
 	private List<Future<ScanByAreaResult>> resultList = new ArrayList<Future<ScanByAreaResult>>(10);
 	private List<Building> buildingList = new ArrayList<Building>(100);
-	
+		
 	private IBuildingService buildingService;
+	ElectricHttpClient httpClient = new ElectricHttpClient();
 	
-	public ScanAllTask(IBuildingService buildingService) {
-		super(BUILDING + "[" + sdf.format(new Date()) + "]");
+	public InitialBuildingTask(IBuildingService buildingService) {
+		super(TASK_NAME);
 		this.buildingService = buildingService;
 	}
 
@@ -48,6 +46,10 @@ public class ScanAllTask extends Task{
 		
 		try {
 			buildingService.addTask(taskBean);
+			
+			logger.debug("building scan: start task");
+			taskBean.setStatus(TaskStatus.RUNNING);
+			buildingService.updateTaskStatus(taskBean.getId(), TaskStatus.RUNNING);
 			
 			logger.debug("perpare building scan: get areas");
 			httpClient.perpare();
@@ -86,6 +88,14 @@ public class ScanAllTask extends Task{
 				i++;
 			}
 			buildingService.addTaskResults(taskResults);
+			BuildingTaskResultBean[] taskResultBeans = buildingService.getTaskResultsByTaskID(taskBean.getId());
+			BuildingOperateBean[] operareBeans = new BuildingOperateBean[buildingList.size()];
+			i = 0;
+			for(BuildingTaskResultBean resultBean : taskResultBeans) {
+				operareBeans[i] = BuildingOperateBean.newOperateBean(taskBean, resultBean, Operation.ADD);
+				i++;
+			}
+			buildingService.operate(operareBeans);
 			logger.debug("building scan: save to database finish");
 			stepIn();
 			
@@ -96,9 +106,9 @@ public class ScanAllTask extends Task{
 			
 		} catch (Exception e) {
 			logger.error("building scan failed", e);
-			buildingService.finishTask(taskBean.getId(), TaskStatus.ERROR);
 			taskBean.setStatus(TaskStatus.ERROR);
+			buildingService.finishTask(taskBean.getId(), TaskStatus.ERROR);
 		}  
 	}
-
+	
 }

@@ -9,6 +9,7 @@ public class BuildingTaskResultBean {
 	private String areaName;
 	private String buildingName;
 	private int buildingFloor;
+	
 	public BigInteger getId() {
 		return id;
 	}

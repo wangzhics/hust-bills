@@ -1,18 +1,20 @@
 package com.hust.bill.electric.core.task;
 
-import java.math.BigInteger;
-
 public abstract class Task implements Runnable {
 
-	private BigInteger id;
+	private String name;
 	
 	private volatile int steps = 1;
 	private volatile int currentStep = 0;
 	private volatile int perpare = 0;
 	private String currentMessage = "";
 
-	public Task(BigInteger id) {
-		this.id = id;
+	public Task(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	protected void setSteps(int newSteps) {
@@ -31,10 +33,6 @@ public abstract class Task implements Runnable {
 	
 	protected void setMessage(String msg) {
 		this.currentMessage = msg;
-	}
-	
-	public BigInteger getId() {
-		return id;
 	}
 	
 	public float getProgress() {

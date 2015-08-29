@@ -10,8 +10,10 @@ public class ScanByAreaResult {
 	private String area;
 	private List<Building> buildingList = new ArrayList<Building>(20);
 
-	public ScanByAreaResult() {
+	public ScanByAreaResult(String area) {
+		this.area = area;
 	}
+	
 	
 	public String getArea() {
 		return area;
@@ -19,10 +21,6 @@ public class ScanByAreaResult {
 	
 	public List<Building> getBuildingList() {
 		return buildingList;
-	}
-
-	public void setArea(String area) {
-		this.area = area;
 	}
 
 }
