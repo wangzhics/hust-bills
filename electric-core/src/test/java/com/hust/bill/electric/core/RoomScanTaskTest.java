@@ -22,14 +22,15 @@ public class RoomScanTaskTest {
 	@Autowired
 	private IBuildingService buildingService;
 	
-	@Autowired IRoomService roomService;
+	@Autowired 
+	private IRoomService roomService;
 	
 	@Test
 	public void test() {
 		try {
 			Building b = new Building("东区", "东一舍", 3);
 			try {
-				RoomScanTask scanAllTask = new RoomScanTask(b, roomService, true);
+				RoomScanTask scanAllTask = new RoomScanTask(b, roomService, false);
 				Thread t = new Thread(scanAllTask);
 				t.start();
 				while(true) {

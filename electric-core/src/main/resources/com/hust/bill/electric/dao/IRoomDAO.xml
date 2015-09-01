@@ -34,7 +34,7 @@
   </select>
   
   <select id="getAllTask" resultMap="roomTaskResultMap">
-    select id, name, buildingName, starTime, endTime, resultCount, status from e_room_task
+    select id, name, buildingName, startTime, endTime, resultCount, status from e_room_task
   </select>
   
   

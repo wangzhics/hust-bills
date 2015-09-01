@@ -1,5 +1,7 @@
 package com.hust.bill.electric.core.task;
 
+import com.hust.bill.electric.bean.task.TaskStatus;
+
 public abstract class Task implements Runnable {
 
 	private volatile int steps = 1;
@@ -8,6 +10,8 @@ public abstract class Task implements Runnable {
 	private String currentMessage = "";
 
 	public abstract String getName();
+	
+	public abstract TaskStatus getTaskStatus();
 	
 	protected void setSteps(int newSteps) {
 		currentStep ++;
@@ -27,12 +31,12 @@ public abstract class Task implements Runnable {
 		this.currentMessage = msg;
 	}
 	
-	public float getProgress() {
-		return (float) (0.1 * perpare + 0.9  * perpare * currentStep / steps);
-	}
-	
 	public String getMessage() {
 		return currentMessage;
+	}
+	
+	public float getProgress() {
+		return (float) (0.1 * perpare + 0.9  * perpare * currentStep / steps);
 	}
 	
 }

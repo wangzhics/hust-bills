@@ -1,6 +1,8 @@
 package com.hust.bill.electric.core.task.room;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import com.hust.bill.electric.core.http.RemainRecordRequest;
 import com.hust.bill.electric.core.http.RequestException;
 import com.hust.bill.electric.core.page.RecordPage;
 import com.hust.bill.electric.core.task.Task;
+import com.hust.bill.electric.core.task.TaskManager;
 import com.hust.bill.electric.service.IRoomService;
 
 public class RoomScanTask extends Task {
@@ -27,6 +30,7 @@ public class RoomScanTask extends Task {
 	
 	public final static String INITIAL_TASK_NAME = "Initial-Room";
 	private final static Logger logger = LoggerFactory.getLogger(RoomScanTask.class);
+	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	
 	private Building building;
 	private IRoomService roomService;
@@ -50,14 +54,18 @@ public class RoomScanTask extends Task {
 			this.autoOperate = true;
 			taskBean.setName(INITIAL_TASK_NAME + "-" + building.getName());
 		} else {
-			taskBean.setName("r[" + building.getName() + "]");
+			taskBean.setName("r[" + building.getName() + "]-[" + sdf.format(new Date()) + "]");
 		}
 		roomService.addTask(taskBean);
 	}
 
 	@Override
 	public void run() {
+		TaskManager.getInstance().addTask(this);
 		try {
+			taskBean.setStatus(TaskStatus.RUNNING);
+			roomService.updateTaskStatus(taskBean.getId(), TaskStatus.RUNNING);
+			
 			perpare();
 			
 			finishPerpare(building.getFloor() + 2);
@@ -73,6 +81,8 @@ public class RoomScanTask extends Task {
 		} catch (Exception e) {
 			logger.error("room scan task[{}] failed", getName() ,e);
 			finishTask(TaskStatus.ERROR);
+		} finally {
+			TaskManager.getInstance().removeTask(this);
 		}
 	}
 	
@@ -153,6 +163,11 @@ public class RoomScanTask extends Task {
 	@Override
 	public String getName() {
 		return taskBean.getName();
+	}
+	
+	@Override
+	public TaskStatus getTaskStatus() {
+		return taskBean.getStatus();
 	}
 
 }

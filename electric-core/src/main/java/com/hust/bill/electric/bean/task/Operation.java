@@ -10,11 +10,11 @@ public enum Operation {
 		this.description = description;
 	}
 
-	private Integer code;
+	private int code;
 
 	private String description;
 
-	public Integer getCode() {
+	public int getCode() {
 		return code;
 	}
 

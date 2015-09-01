@@ -20,6 +20,7 @@ import com.hust.bill.electric.bean.task.building.BuildingTaskResultBean;
 import com.hust.bill.electric.core.http.ElectricHttpClient;
 import com.hust.bill.electric.core.page.AreaPage;
 import com.hust.bill.electric.core.task.Task;
+import com.hust.bill.electric.core.task.TaskManager;
 import com.hust.bill.electric.service.IBuildingService;
 
 public class BuilidngScanTask extends Task {
@@ -61,7 +62,13 @@ public class BuilidngScanTask extends Task {
 	}
 	
 	@Override
+	public TaskStatus getTaskStatus() {
+		return taskBean.getStatus();
+	}
+	
+	@Override
 	public void run() {
+		TaskManager.getInstance().addTask(this);
 		try {
 			taskBean.setStatus(TaskStatus.RUNNING);
 			buildingService.updateTaskStatus(taskBean.getId(), TaskStatus.RUNNING);
@@ -83,7 +90,9 @@ public class BuilidngScanTask extends Task {
 		} catch (Exception e) {
 			logger.error("building scan task[{}] failed", getName() ,e);
 			finishTask(TaskStatus.ERROR);
-		}  
+		}  finally {
+			TaskManager.getInstance().removeTask(this);
+		}
 	}
 	
 	private void perpareAreas() throws Exception {

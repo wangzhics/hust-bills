@@ -11,11 +11,11 @@ public enum TaskStatus {
 		this.description = description;
 	}
 
-	private Integer code;
+	private int code;
 
 	private String description;
 
-	public Integer getCode() {
+	public int getCode() {
 		return code;
 	}
 
@@ -24,7 +24,9 @@ public enum TaskStatus {
 	}
 	
 	public static TaskStatus parser(int code) {
-		if(code == RUNNING.getCode()) {
+		if(code == PERPARE.getCode()) {
+			return PERPARE;
+		} else if(code == RUNNING.getCode()) {
 			return RUNNING;
 		} else if(code == FINISH.getCode()) {
 			return FINISH;

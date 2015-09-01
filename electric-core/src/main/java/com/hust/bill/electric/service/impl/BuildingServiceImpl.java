@@ -101,7 +101,7 @@ public class BuildingServiceImpl implements IBuildingService{
 	
 	@Override
 	public Building[] getAll() {
-		return null;
+		return buildingDAO.getAll();
 	}
 
 
