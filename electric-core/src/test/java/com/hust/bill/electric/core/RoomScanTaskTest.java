@@ -9,18 +9,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.hust.bill.electric.bean.Building;
-import com.hust.bill.electric.core.task.building.BuilidngScanTask;
 import com.hust.bill.electric.core.task.room.RoomScanTask;
-import com.hust.bill.electric.service.IBuildingService;
-import com.hust.bill.electric.service.IRecordService;
 import com.hust.bill.electric.service.IRoomService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-context.xml"})
 public class RoomScanTaskTest {
-
-	@Autowired
-	private IBuildingService buildingService;
 	
 	@Autowired 
 	private IRoomService roomService;
@@ -30,11 +24,12 @@ public class RoomScanTaskTest {
 		try {
 			Building b = new Building("东区", "东一舍", 3);
 			try {
-				RoomScanTask scanAllTask = new RoomScanTask(b, roomService, false);
-				Thread t = new Thread(scanAllTask);
+				RoomScanTask roomScanTask = new RoomScanTask(b, roomService);
+				roomScanTask.create();
+				Thread t = new Thread(roomScanTask);
 				t.start();
 				while(true) {
-					System.out.println(scanAllTask.getProgress());
+					System.out.println(roomScanTask.getProgress());
 					Thread.sleep(100);
 				}
 			} catch (DataAccessException e) {

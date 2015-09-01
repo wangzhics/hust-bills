@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hust.bill.electric.bean.Building;
+import com.hust.bill.electric.bean.task.TaskBean;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.building.BuildingOperateBean;
 import com.hust.bill.electric.bean.task.building.BuildingTaskResultBean;
@@ -18,7 +19,7 @@ import com.hust.bill.electric.dao.IBuildingDAO;
 import com.hust.bill.electric.service.IBuildingService;
 
 @Service(value="buildingService")
-public class BuildingServiceImpl implements IBuildingService{
+public class BuildingServiceImpl implements IBuildingService {
 
 	@Autowired
 	private IBuildingDAO buildingDAO;
@@ -26,8 +27,9 @@ public class BuildingServiceImpl implements IBuildingService{
 	
 	@Override
 	@Transactional
-	public void addTask(BuildingTaskBean taskBean) {
-		buildingDAO.insertTask(taskBean);
+	public void addTask(TaskBean taskBean) {
+		BuildingTaskBean buildingTaskBean = (BuildingTaskBean)taskBean;
+		buildingDAO.insertTask(buildingTaskBean);
 		BigInteger id = buildingDAO.getTaskIDByName(taskBean.getName());
 		taskBean.setId(id);
 	}
@@ -103,6 +105,5 @@ public class BuildingServiceImpl implements IBuildingService{
 	public Building[] getAll() {
 		return buildingDAO.getAll();
 	}
-
 
 }

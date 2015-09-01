@@ -10,16 +10,16 @@ import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.service.IBuildingService;
 import com.hust.bill.electric.service.IRoomService;
 
-public class InitialRoomStater implements Runnable {
+public class RoomInitialStater implements Runnable {
 
-	private final static Logger logger = LoggerFactory.getLogger(InitialRoomStater.class);
+	private final static Logger logger = LoggerFactory.getLogger(RoomInitialStater.class);
 	
 	private IBuildingService buildingService;
 	private IRoomService roomService;
 	private ExecutorService executorService = Executors.newFixedThreadPool(5);
 	
 	
-	public InitialRoomStater(IBuildingService buildingService, IRoomService roomService) {
+	public RoomInitialStater(IBuildingService buildingService, IRoomService roomService) {
 		this.buildingService = buildingService;
 		this.roomService = roomService;
 	}
@@ -30,11 +30,12 @@ public class InitialRoomStater implements Runnable {
 		logger.debug("room initial start");
 		try {
 			for(Building b : buildingService.getAll()) {
-				RoomScanTask scanTask = new RoomScanTask(b, roomService, true);
-				executorService.submit(scanTask);
+				RoomInitialTask initialTask = new RoomInitialTask(b, roomService);
+				initialTask.create();
+				executorService.submit(initialTask);
 			}
 		} catch (Exception e) {
-			logger.error("room initial failed, can not start room scan task", e);
+			logger.error("room initial failed, can not create room scan task", e);
 			return;
 		}
 		executorService.shutdown();  

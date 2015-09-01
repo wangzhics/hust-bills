@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hust.bill.electric.bean.Room;
+import com.hust.bill.electric.bean.task.TaskBean;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.room.RoomOperateBean;
 import com.hust.bill.electric.bean.task.room.RoomTaskBean;
@@ -24,8 +25,9 @@ public class RoomServiceImpl implements IRoomService {
 	
 	
 	@Override
-	public void addTask(RoomTaskBean taskBean) {
-		roomDAO.insertTask(taskBean);
+	public void addTask(TaskBean taskBean) {
+		RoomTaskBean roomTaskBean = (RoomTaskBean) taskBean;
+		roomDAO.insertTask(roomTaskBean);
 		taskBean.setId(roomDAO.getTaskIDByName(taskBean.getName()));
 	}
 

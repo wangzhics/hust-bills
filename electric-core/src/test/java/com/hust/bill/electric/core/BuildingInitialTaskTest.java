@@ -9,12 +9,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.hust.bill.electric.core.task.building.BuildingInitialTask;
 import com.hust.bill.electric.core.task.building.BuildingScanTask;
 import com.hust.bill.electric.service.IBuildingService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-context.xml"})
-public class BuildingScanTaskTest {
+public class BuildingInitialTaskTest {
 	
 	@Autowired
 	private IBuildingService buildingService;
@@ -23,12 +24,12 @@ public class BuildingScanTaskTest {
 	public void test() {
 		
 		try {
-			BuildingScanTask buildingScanTask = new BuildingScanTask(buildingService);
-			buildingScanTask.create();
-			Thread t = new Thread(buildingScanTask);
+			BuildingInitialTask scanAllTask = new BuildingInitialTask(buildingService);
+			scanAllTask.create();
+			Thread t = new Thread(scanAllTask);
 			t.start();
 			while(true) {
-				System.out.println(buildingScanTask.getProgress());
+				System.out.println(scanAllTask.getProgress());
 				Thread.sleep(100);
 			}
 		} catch (DataAccessException e) {
