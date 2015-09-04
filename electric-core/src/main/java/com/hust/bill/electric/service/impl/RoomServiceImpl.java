@@ -102,4 +102,10 @@ public class RoomServiceImpl implements IRoomService {
 		return null;
 	}
 
+	@Override
+	public Room[] getByBuilding(String buildingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

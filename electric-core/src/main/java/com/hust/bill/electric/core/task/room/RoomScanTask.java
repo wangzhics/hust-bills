@@ -28,7 +28,7 @@ public class RoomScanTask extends Task {
 	
 	protected Building building;
 	protected List<Room> roomList = new ArrayList<Room>(100);
-	private ElectricHttpClient httpClient = new ElectricHttpClient();
+	protected ElectricHttpClient httpClient = new ElectricHttpClient();
 	
 	
 	public RoomScanTask(Building building, IRoomService roomService) {

@@ -30,7 +30,7 @@ CREATE TABLE `e_building_operate` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `buildingFloor` int(1)        NOT NULL,
   `operate`       int(1)        NOT NULL,
-  `timestamp`      datetime     NOT NULL,
+  `stamp`      datetime     NOT NULL,
   FOREIGN KEY `fk_e_building_operate_taskid` (`taskId`) REFERENCES `e_building_task`(`id`),
   FOREIGN KEY `fk_e_building_operate_resultid` (`resultId`) REFERENCES `e_building_task_result`(`id`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -79,7 +79,7 @@ CREATE TABLE `e_room_operate` (
   `roomFloor`       int(1)            NOT NULL,
   `roomNO`          int(2)            NOT NULL,
   `operate`         int(1)            NOT NULL,
-  `timestamp`      datetime            NOT NULL,
+  `stamp`           datetime          NOT NULL,
   FOREIGN KEY `fk_e_room_operate_taskid` (`taskId`) REFERENCES `e_room_task`(`id`),
   FOREIGN KEY `fk_e_room_operate_resultid` (`resultId`) REFERENCES `e_room_task_result`(`id`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -95,13 +95,35 @@ CREATE TABLE `e_room` (
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
 
 
+--
+DROP TABLE IF EXISTS `e_record_task`;
+CREATE TABLE `e_record_task` (
+  `id`              bigint        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name`            nvarchar(50)  NOT NULL UNIQUE,
+  `startTime`       datetime      NOT NULL,
+  `endTime`         datetime,
+  `resultCount`     int,
+  `status`          int(1)        NOT NULL
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `e_record_task_result`;
+CREATE TABLE `e_record_task_result` (
+  `taskId`          bigint              NOT NULL,
+  `id`              bigint              NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `buildingName`    nvarchar(50)        NOT NULL,
+  `remainCount`     int                 NOT NULL,
+  `chargeCount`     int                 NOT NULL,
+  `stamp`           datetime            NOT NULL,
+  FOREIGN KEY `fk_e_record_task_result_id` (`taskId`) REFERENCES `e_record_task`(`id`)
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
 
 --
 DROP TABLE IF EXISTS `e_record_remain`;
 CREATE TABLE `e_record_remain` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `roomName`      varchar(5)    NOT NULL,
-  `dateTime`      datetime      NOT NULL,
+  `stamp`         datetime      NOT NULL,
   `remain`        DECIMAL(8,2)  NOT NULL,
   PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),
   FOREIGN KEY `fk_e_record_remain` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
@@ -114,7 +136,7 @@ DROP TABLE IF EXISTS `e_record_charge`;
 CREATE TABLE `e_record_charge` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `roomName`      varchar(5)    NOT NULL,
-  `dateTime`      datetime      NOT NULL,    
+  `stamp`         datetime      NOT NULL,    
   `power`         DECIMAL(7,2)  NOT NULL,
   `money`         DECIMAL(6,2)  NOT NULL,
   PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),

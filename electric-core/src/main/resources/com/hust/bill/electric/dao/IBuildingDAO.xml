@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hust.bill.electric.dao.IBuildingDAO">
-	<!-- task -->
-	<resultMap id="buildingTaskResultMap" type="com.hust.bill.electric.bean.task.building.BuildingTaskBean">
+  <!-- task -->
+  <resultMap id="buildingTaskResultMap" type="com.hust.bill.electric.bean.task.building.BuildingTaskBean">
     <id column="id"               property="id"           jdbcType="BIGINT" />
     <result column="name"         property="name"         jdbcType="NVARCHAR" />
     <result column="startTime"    property="startTime"    jdbcType="DATE" />
@@ -12,7 +12,7 @@
     <result column="status"       property="status"       jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.TaskStatusTypeHandler" />
   </resultMap>
   
-	<insert id="insertTask">
+  <insert id="insertTask">
       insert into e_building_task(name, startTime, status) 
       values (#{name}, now(), #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
   </insert>
@@ -103,20 +103,20 @@
     <result column="floor"        property="floor"  jdbcType="INTEGER" />
   </resultMap>
   
-	<insert id="inserts">
+  <insert id="inserts">
     <if test="array.length == 0">
       select count(*) from e_building
     </if>
-		<if test="array.length != 0">
-			insert into e_building(area, name, floor) values
-			<foreach collection="array" item="item" index="index" separator=",">
-				(#{item.area, jdbcType=VARCHAR}, #{item.name, jdbcType=VARCHAR}, #{item.floor, jdbcType=INTEGER})
-			</foreach>
-		</if>
-	</insert>
+    <if test="array.length != 0">
+      insert into e_building(area, name, floor) values
+      <foreach collection="array" item="item" index="index" separator=",">
+        (#{item.area, jdbcType=VARCHAR}, #{item.name, jdbcType=VARCHAR}, #{item.floor, jdbcType=INTEGER})
+      </foreach>
+    </if>
+  </insert>
 
-	<select id="getAll" resultMap="buildingResultMap">
-		select area, name, floor from e_building
-	</select>
-	
+  <select id="getAll" resultMap="buildingResultMap">
+    select area, name, floor from e_building
+  </select>
+  
 </mapper>

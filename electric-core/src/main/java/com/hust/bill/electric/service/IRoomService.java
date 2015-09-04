@@ -17,4 +17,6 @@ public interface IRoomService extends ITaskService {
 	public RoomOperateBean[] getAllOperation();
 	
 	public Room[] getAll();
+	
+	public Room[] getByBuilding(String buildingName);
 }

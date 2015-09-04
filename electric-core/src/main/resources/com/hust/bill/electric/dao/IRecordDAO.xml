@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hust.bill.electric.dao.IRecordDAO">
+	<!-- task -->
+	<resultMap id="recordTaskResultMap" type="com.hust.bill.electric.bean.task.record.RecordTaskBean">
+    <id column="id"               property="id"           jdbcType="BIGINT" />
+    <result column="name"         property="name"         jdbcType="NVARCHAR" />
+    <result column="startTime"    property="startTime"    jdbcType="DATE" />
+    <result column="endTime"      property="endTime"      jdbcType="DATE" />
+    <result column="resultCount"  property="resultCount"  jdbcType="INTEGER" />
+    <result column="status"       property="status"       jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.TaskStatusTypeHandler" />
+  </resultMap>
+  
+	<insert id="insertTask">
+      insert into e_record_task(name, startTime, status) 
+      values (#{name}, now(), #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
+  </insert>
+  
+  <update id="updateTaskSatus">
+      update e_record_task set status = #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler} where id = #{id}
+  </update>
+  
+  <update id="updateTaskEndTime">
+      update e_record_task set endTime = now() where id = #{id}
+  </update>
+  
+  <update id="updateTaskResultCount">
+      update e_record_task set resultCount = (select sum(remainCount+chargeCount) from e_record_task_result where taskId = #{id}) where id = #{id}
+  </update>
+  
+  <select id="getTaskIDByName" resultType="java.math.BigInteger">
+    select id from e_record_task where name = #{name}
+  </select>
+  
+  <select id="getAllTask" resultMap="recordTaskResultMap">
+    select id, name, starTime, endTime, resultCount, status from e_record_task
+  </select>
+  
+  
+  <!-- taskResult -->
+  <resultMap id="recordTaskResultResultMap" type="com.hust.bill.electric.bean.task.record.RecordTaskResultBean">
+    <id column="id"                 property="id"             jdbcType="BIGINT" />
+    <result column="taskId"         property="taskID"         jdbcType="BIGINT" />
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="remianCount"    property="remianCount"    jdbcType="INTEGER" />
+    <result column="chargeCount"    property="chargeCount"    jdbcType="INTEGER" />
+    <result column="stamp"          property="timestamp"      jdbcType="DATE" />
+  </resultMap>
+  
+  <insert id="insertTaskResult">
+      insert into e_record_task_result(taskId, buildingName, remianCount, chargeCount, stamp) values
+      (#{taskID}, #{buildingName}, #{remianCount}, #{chargeCount}, now())
+  </insert>
+  
+  <select id="getTaskResultsByTaskID" resultMap="recordTaskResultResultMap">
+    select id, taskId, buildingName, remianCount, chargeCount from e_record_task_result where taskId= #{taskID}
+  </select>
+
+  
+  <!-- record -->
+  <select id="getLastRemainsByBuilding" resultType="java.util.HashMap">
+     select roomName, max(stamp) stamp from e_record_remain where buildingName=#{buildingName} group by roomName;
+  </select>
+  <select id="getLastChargesByBuilding" resultType="java.util.HashMap">
+     select roomName, max(stamp) stamp from e_record_charge where buildingName=#{buildingName} group by roomName;
+  </select>
+  
+  <insert id="insertRemains">
+    <if test="array.length == 0">
+      select count(*) from e_record_remain_temp
+    </if>
+    <if test="array.length != 0">
+      insert into e_record_remain(buildingName, roomName, stamp, remain) values
+      <foreach collection="array" item="item" index="index" separator=",">
+        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime, jdbcType=DATE}, #{item.remain, jdbcType=FLOAT})
+      </foreach>
+    </if>
+  </insert>
+    
+  <insert id="insertCharges">
+    <if test="array.length == 0">
+      select count(*) from e_record_charge_temp
+    </if>
+    <if test="array.length != 0">
+      insert into e_record_charge(buildingName, roomName, stamp, power, money) values
+      <foreach collection="array" item="item" index="index" separator=",">
+        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime, jdbcType=DATE}, #{item.chargePower, jdbcType=FLOAT}, #{item.chargeMoney, jdbcType=FLOAT})
+      </foreach>
+    </if>
+  </insert>
+	
+</mapper>
