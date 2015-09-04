@@ -61,7 +61,7 @@
   <!-- record -->
   <resultMap id="recordRemainResultMap" type="com.hust.bill.electric.bean.RemainRecord">
     <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
-    <result column="roomName"       property="buildingName"   jdbcType="VARCHAR" />
+    <result column="roomName"       property="roomName"   jdbcType="VARCHAR" />
     <result column="stamp"          property="dateTime"       jdbcType="DATE" />
     <result column="remain"         property="remain"         jdbcType="FLOAT" />
   </resultMap>

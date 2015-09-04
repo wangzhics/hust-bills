@@ -28,7 +28,7 @@ public class RecordScanTask extends Task {
 	private IRoomService roomService;
 	
 	private Building[] buildings;
-	private ExecutorService executorService = Executors.newFixedThreadPool(1);
+	private ExecutorService executorService = Executors.newFixedThreadPool(5);
 	private List<Future<ScanByBuildingResult>> resultList = new ArrayList<Future<ScanByBuildingResult>>(100);
 	
 	

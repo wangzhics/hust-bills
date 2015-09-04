@@ -34,8 +34,8 @@ public class RecordScanTaskTest {
 			Thread t = new Thread(scanTask);
 			t.start();
 			while(true) {
-				System.out.println(scanTask.getProgress());
-				Thread.sleep(100);
+				//System.out.println(scanTask.getProgress());
+				Thread.sleep(10000);
 			}
 		} catch (DataAccessException e) {
 			e.printStackTrace();
