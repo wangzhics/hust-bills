@@ -22,7 +22,7 @@ public class RoomSpecialTask extends RoomScanTask {
 		super(building, roomService);
 		this.floors = floors;
 	}
-
+	
 	@Override
 	protected void execute() throws Exception {
 		logger.debug("task[{}] start execute", getName());

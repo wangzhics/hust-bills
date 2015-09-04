@@ -2,6 +2,7 @@ package com.hust.bill.electric.service.impl;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class RecordServiceImpl implements IRecordService{
 	public void addTask(TaskBean taskBean) {
 		RecordTaskBean recordTaskBean = (RecordTaskBean) taskBean;
 		recordDAO.insertTask(recordTaskBean);
+		BigInteger id = recordDAO.getTaskIDByName(taskBean.getName());
+		taskBean.setId(id);
 	}
 
 	@Override
@@ -57,12 +60,22 @@ public class RecordServiceImpl implements IRecordService{
 
 	@Override
 	public Map<String, Date> getLastRemainsByBuilding(String buildingName) {
-		return recordDAO.getLastRemainsByBuilding(buildingName);
+		RemainRecord[] records = recordDAO.getLastRemainsByBuilding(buildingName);
+		Map<String, Date> map = new HashMap<>(records.length);
+		for(RemainRecord record : records) {
+			map.put(record.getRoomName(), record.getDateTime());
+		}
+		return map;
 	}
 
 	@Override
 	public Map<String, Date> getLastChargesByBuilding(String buildingName) {
-		return recordDAO.getLastChargesByBuilding(buildingName);
+		ChargeRecord[] records= recordDAO.getLastChargesByBuilding(buildingName);
+		Map<String, Date> map = new HashMap<>(records.length);
+		for(ChargeRecord record : records) {
+			map.put(record.getRoomName(), record.getDateTime());
+		}
+		return map;
 	}
 
 }

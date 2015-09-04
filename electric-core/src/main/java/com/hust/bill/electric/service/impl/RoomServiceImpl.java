@@ -93,7 +93,6 @@ public class RoomServiceImpl implements IRoomService {
 
 	@Override
 	public RoomOperateBean[] getAllOperation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -104,8 +103,7 @@ public class RoomServiceImpl implements IRoomService {
 
 	@Override
 	public Room[] getByBuilding(String buildingName) {
-		// TODO Auto-generated method stub
-		return null;
+		return roomDAO.getByBuilding(buildingName);
 	}
 
 }

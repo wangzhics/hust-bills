@@ -18,7 +18,6 @@ import com.hust.bill.electric.core.task.Task;
 import com.hust.bill.electric.service.IBuildingService;
 import com.hust.bill.electric.service.IRecordService;
 import com.hust.bill.electric.service.IRoomService;
-import com.hust.bill.electric.service.ITaskService;
 
 public class RecordScanTask extends Task {
 
@@ -27,19 +26,16 @@ public class RecordScanTask extends Task {
 	
 	private IBuildingService buildingService;
 	private IRoomService roomService;
-	private IRecordService recordService;
 	
 	private Building[] buildings;
-	private ExecutorService executorService = Executors.newFixedThreadPool(5);
+	private ExecutorService executorService = Executors.newFixedThreadPool(1);
 	private List<Future<ScanByBuildingResult>> resultList = new ArrayList<Future<ScanByBuildingResult>>(100);
 	
 	
-	public RecordScanTask(ITaskService taskService, IBuildingService buildingService, IRoomService roomService,
-			IRecordService recordService) {
-		super(taskService);
+	public RecordScanTask(IBuildingService buildingService, IRoomService roomService, IRecordService recordService) {
+		super(recordService);
 		this.buildingService = buildingService;
 		this.roomService = roomService;
-		this.recordService = recordService;
 	}
 
 	@Override
@@ -61,17 +57,20 @@ public class RecordScanTask extends Task {
 	protected void execute() throws Exception {
 		logger.debug("task[{}]: create scaner by building", getName());
 		for(Building building : buildings) {
-			ScanByBuildingCallable callable = new ScanByBuildingCallable(getTaskBean(), building, roomService, recordService);
+			ScanByBuildingCallable callable = new ScanByBuildingCallable(getTaskBean(), building, roomService, getTaskService());
 			Future<ScanByBuildingResult> result = executorService.submit(callable);
 			resultList.add(result);
 		}
 		logger.debug("task[{}]:  create scaner by building finish", getName());
-		
+		int remianCount = 0, chargeCount = 0;
 		logger.debug("task[{}]: sub scaner start execute", getName());
 		for(Future<ScanByBuildingResult> result : resultList) {
-			result.get();
+			ScanByBuildingResult resultBean = result.get();
+			remianCount = remianCount + resultBean.getResultBean().getRemainCount();
+			chargeCount = chargeCount + resultBean.getResultBean().getRemainCount();
 			stepIn();
 		}
+		logger.info("task[{}]: finish emian count {}, charge count{}", getName(), remianCount, chargeCount);
 	}
 
 	@Override
@@ -81,6 +80,10 @@ public class RecordScanTask extends Task {
 	
 	protected RecordTaskBean getTaskBean() {
 		return (RecordTaskBean)taskBean;
+	}
+	
+	protected IRecordService getTaskService() {
+		return (IRecordService)taskService;
 	}
 
 }

@@ -1,8 +1,6 @@
 package com.hust.bill.electric.dao;
 
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -32,9 +30,9 @@ public interface IRecordDAO {
 	
 	public RecordTaskResultBean[] getTaskResultsByTaskID(@Param("taskID") BigInteger taskID);
 	
-	public Map<String, Date> getLastRemainsByBuilding(@Param("buildingName") String buildingName);
+	public RemainRecord[] getLastRemainsByBuilding(@Param("buildingName") String buildingName);
 	
-	public Map<String, Date> getLastChargesByBuilding(@Param("buildingName") String buildingName);
+	public ChargeRecord[] getLastChargesByBuilding(@Param("buildingName") String buildingName);
 	
 	public void insertRemains(RemainRecord[] remainRecords);
 	

@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.hust.bill.electric.core.task.building.BuildingInitialTask;
-import com.hust.bill.electric.core.task.building.BuildingScanTask;
 import com.hust.bill.electric.service.IBuildingService;
 
 @RunWith(SpringJUnit4ClassRunner.class)

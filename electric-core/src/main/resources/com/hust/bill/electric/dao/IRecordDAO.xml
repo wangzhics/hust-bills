@@ -43,49 +43,63 @@
     <id column="id"                 property="id"             jdbcType="BIGINT" />
     <result column="taskId"         property="taskID"         jdbcType="BIGINT" />
     <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
-    <result column="remianCount"    property="remianCount"    jdbcType="INTEGER" />
+    <result column="remainCount"    property="remainCount"    jdbcType="INTEGER" />
     <result column="chargeCount"    property="chargeCount"    jdbcType="INTEGER" />
     <result column="stamp"          property="timestamp"      jdbcType="DATE" />
   </resultMap>
   
   <insert id="insertTaskResult">
-      insert into e_record_task_result(taskId, buildingName, remianCount, chargeCount, stamp) values
-      (#{taskID}, #{buildingName}, #{remianCount}, #{chargeCount}, now())
+      insert into e_record_task_result(taskId, buildingName, remainCount, chargeCount, stamp) values
+      (#{taskID}, #{buildingName}, #{remainCount}, #{chargeCount}, now())
   </insert>
   
   <select id="getTaskResultsByTaskID" resultMap="recordTaskResultResultMap">
-    select id, taskId, buildingName, remianCount, chargeCount from e_record_task_result where taskId= #{taskID}
+    select id, taskId, buildingName, remainCount, chargeCount from e_record_task_result where taskId= #{taskID}
   </select>
 
   
   <!-- record -->
-  <select id="getLastRemainsByBuilding" resultType="java.util.HashMap">
-     select roomName, max(stamp) stamp from e_record_remain where buildingName=#{buildingName} group by roomName;
+  <resultMap id="recordRemainResultMap" type="com.hust.bill.electric.bean.RemainRecord">
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"       property="buildingName"   jdbcType="VARCHAR" />
+    <result column="stamp"          property="dateTime"       jdbcType="DATE" />
+    <result column="remain"         property="remain"         jdbcType="FLOAT" />
+  </resultMap>
+  <resultMap id="recordChargeResultMap" type="com.hust.bill.electric.bean.ChargeRecord">
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"       property="roomName"       jdbcType="VARCHAR" />
+    <result column="stamp"          property="dateTime" />
+    <result column="power"          property="chargePower"    jdbcType="FLOAT" />
+    <result column="money"          property="chargeMoney"    jdbcType="FLOAT" />
+  </resultMap>
+  
+  <select id="getLastRemainsByBuilding" resultMap="recordRemainResultMap">
+     select buildingName, roomName, max(stamp) stamp, remain from e_record_remain where buildingName=#{buildingName} group by roomName;
   </select>
-  <select id="getLastChargesByBuilding" resultType="java.util.HashMap">
-     select roomName, max(stamp) stamp from e_record_charge where buildingName=#{buildingName} group by roomName;
+  <select id="getLastChargesByBuilding" resultMap="recordChargeResultMap">
+     select buildingName, roomName, max(stamp) stamp, power, money from e_record_charge where buildingName=#{buildingName} group by roomName;
   </select>
   
   <insert id="insertRemains">
     <if test="array.length == 0">
-      select count(*) from e_record_remain_temp
+      select count(*) from e_record_remain
     </if>
     <if test="array.length != 0">
       insert into e_record_remain(buildingName, roomName, stamp, remain) values
       <foreach collection="array" item="item" index="index" separator=",">
-        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime, jdbcType=DATE}, #{item.remain, jdbcType=FLOAT})
+        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime}, #{item.remain, jdbcType=FLOAT})
       </foreach>
     </if>
   </insert>
     
   <insert id="insertCharges">
     <if test="array.length == 0">
-      select count(*) from e_record_charge_temp
+      select count(*) from e_record_charge
     </if>
     <if test="array.length != 0">
       insert into e_record_charge(buildingName, roomName, stamp, power, money) values
       <foreach collection="array" item="item" index="index" separator=",">
-        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime, jdbcType=DATE}, #{item.chargePower, jdbcType=FLOAT}, #{item.chargeMoney, jdbcType=FLOAT})
+        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.dateTime}, #{item.chargePower, jdbcType=FLOAT}, #{item.chargeMoney, jdbcType=FLOAT})
       </foreach>
     </if>
   </insert>

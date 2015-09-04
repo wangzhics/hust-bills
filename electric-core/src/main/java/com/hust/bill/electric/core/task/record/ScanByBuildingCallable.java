@@ -85,12 +85,12 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 					chargeCount ++;
 				}
 			}
-			logger.info("record[{}]: room{} remian count {}-{}, charge count{}-{}", building.getName(), room.getRoomName(), recordPage.getRemainLines().length, remianCount, recordPage.getChargeLines().length, chargeCount);
+			logger.info("record[{}]: room{} remian count {}-{}, charge count {}-{}", building.getName(), room.getRoomName(), recordPage.getRemainLines().length, remianCount, recordPage.getChargeLines().length, chargeCount);
 		}
 		RecordTaskResultBean resultBean = new RecordTaskResultBean(taskBean.getId(), building.getName(), remianRecordList.size(), chargeRecordList.size());
-		logger.info("record[{}]: remian count {}, charge count{}", building.getName(), resultBean.getRemainCount(), resultBean.getChargeCount());
+		logger.info("record[{}]: remian count {}, charge count {}", building.getName(), resultBean.getRemainCount(), resultBean.getChargeCount());
 		recordService.insertRecords(resultBean, remianRecordList.toArray(new RemainRecord[0]), chargeRecordList.toArray(new ChargeRecord[0]));
-		return new ScanByBuildingResult();
+		return new ScanByBuildingResult(resultBean);
 	}
 	
 	

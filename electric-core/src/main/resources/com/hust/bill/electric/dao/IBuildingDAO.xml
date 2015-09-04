@@ -116,7 +116,7 @@
   </insert>
 
   <select id="getAll" resultMap="buildingResultMap">
-    select area, name, floor from e_building
+    select area, name, floor from e_building order by area asc, name asc
   </select>
   
 </mapper>

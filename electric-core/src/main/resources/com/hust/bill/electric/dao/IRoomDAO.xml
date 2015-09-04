@@ -78,7 +78,7 @@
     <result column="stamp"          property="timestamp"      jdbcType="DATE" />
   </resultMap>
   
-    <insert id="insertOperateBeans">
+  <insert id="insertOperateBeans">
     <if test="array.length == 0">
       select count(*) from e_room_operate
     </if>
@@ -102,7 +102,7 @@
   <!-- room -->
   <resultMap id="roomResultMap" type="com.hust.bill.electric.bean.Room">
     <result column="buildingName"     property="buildingName"   jdbcType="NVARCHAR" />
-    <result column="roomName"         property="roomName"       jdbcType="NVARCHAR" />
+    <result column="roomName"         property="roomName"       jdbcType="VARCHAR" />
     <result column="roomFloor"        property="roomFloor"      jdbcType="INTEGER" />
     <result column="roomNO"           property="roomNO"         jdbcType="INTEGER" />
   </resultMap>
@@ -117,6 +117,10 @@
         (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.roomFloor, jdbcType=INTEGER}, #{item.roomNO, jdbcType=INTEGER})
       </foreach>
     </if>
-  </insert>       
+  </insert>
+  
+  <select id="getByBuilding" resultMap="roomResultMap">
+    select buildingName, roomName, roomFloor, roomNO from e_room where buildingName = #{buildingName} order by roomName asc
+  </select>   
 	
 </mapper>

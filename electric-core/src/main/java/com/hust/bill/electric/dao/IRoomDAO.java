@@ -32,7 +32,7 @@ public interface IRoomDAO {
 	
 	public void insertOperateBeans(RoomOperateBean[] operateBeans);
 	
-	public RoomOperateBean[] getOperateBeansByTaskID(@Param("taskID")BigInteger taskID);
+	public RoomOperateBean[] getOperateBeansByTaskID(@Param("taskID") BigInteger taskID);
 	
 	public RoomOperateBean[] getAllOperateBeans();
 	
@@ -40,7 +40,7 @@ public interface IRoomDAO {
 	
 	public Building[] getAll();
 	
-	public Room[] getByBuilding(String buildingName);
+	public Room[] getByBuilding(@Param("buildingName") String buildingName);
 
 	
 }
