@@ -3,6 +3,7 @@ package com.hust.bill.electric.dao;
 import java.math.BigInteger;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.RemainRecord;
@@ -10,6 +11,7 @@ import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskResultBean;
 
+@Repository(value="ConsumeDAO")
 public interface IConsumeDAO {
 	
 	public void insertTask(ConsumeTaskBean taskBean);

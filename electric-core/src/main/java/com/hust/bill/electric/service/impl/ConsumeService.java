@@ -18,7 +18,7 @@ import com.hust.bill.electric.dao.IConsumeDAO;
 import com.hust.bill.electric.service.IConsumeService;
 
 
-@Service(value="consumeService")
+@Service(value="ConsumeService")
 public class ConsumeService implements IConsumeService {
 
 	@Autowired
@@ -28,6 +28,7 @@ public class ConsumeService implements IConsumeService {
 	public void addTask(TaskBean taskBean) {
 		ConsumeTaskBean consumeTaskBean = (ConsumeTaskBean)taskBean;
 		consumeDAO.insertTask(consumeTaskBean);
+		consumeTaskBean.setId(consumeDAO.getTaskIDByName(taskBean.getName()));
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class ConsumeService implements IConsumeService {
 
 	@Override
 	@Transactional
-	public void insertRecords(ConsumeTaskResultBean taskResultBean, RemainRecord[] lastRemains, Consume[] consumes) {
+	public void insertConsumes(ConsumeTaskResultBean taskResultBean, RemainRecord[] lastRemains, Consume[] consumes) {
 		consumeDAO.insertTaskResult(taskResultBean);
 		consumeDAO.updateLastRemainsByBuilding(lastRemains);
 		consumeDAO.insertConsumes(consumes);

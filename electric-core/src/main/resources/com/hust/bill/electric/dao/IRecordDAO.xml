@@ -76,8 +76,15 @@
   <select id="getLastRemainsByBuilding" resultMap="recordRemainResultMap">
      select buildingName, roomName, max(stamp) stamp, remain from e_record_remain where buildingName=#{buildingName} group by roomName;
   </select>
-  <select id="getLastChargesByBuilding" resultMap="recordChargeResultMap">
-     select buildingName, roomName, max(stamp) stamp, power, money from e_record_charge where buildingName=#{buildingName} group by roomName;
+  
+  <select id="getUnCalculateRemains" resultMap="recordRemainResultMap">
+    select buildingName, roomName, stamp, remain from e_record_remain where 1 = 1
+    <trim suffixOverrides="and | or">
+      <if test="buildingName != null">and buildingName = #{buildingName}</if>
+      <if test="roomName != null"> and roomName = #{roomName}</if>
+      <if test="lastDateTime != null"> and stamp > #{lastDateTime}</if>
+    </trim>
+    order by stamp asc 
   </select>
   
   <insert id="insertRemains">
@@ -91,6 +98,14 @@
       </foreach>
     </if>
   </insert>
+  
+  <select id="getLastChargesByBuilding" resultMap="recordChargeResultMap">
+     select buildingName, roomName, max(stamp) stamp, power, money from e_record_charge where buildingName=#{buildingName} group by roomName;
+  </select>
+  
+  <select id="getCharges"  resultMap="recordChargeResultMap">
+    <![CDATA[ select buildingName, roomName, stamp, power, money from e_record_charge where buildingName=#{buildingName} and roomName = #{roomName} and stamp > #{startDateTime} and stamp < #{endDateTime}  order by stamp asc ]]>
+  </select>
     
   <insert id="insertCharges">
     <if test="array.length == 0">

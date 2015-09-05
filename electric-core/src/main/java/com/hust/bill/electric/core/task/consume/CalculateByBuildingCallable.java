@@ -1,6 +1,5 @@
 package com.hust.bill.electric.core.task.consume;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.RemainRecord;
 import com.hust.bill.electric.bean.Room;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
+import com.hust.bill.electric.bean.task.consume.ConsumeTaskResultBean;
 import com.hust.bill.electric.service.IConsumeService;
 import com.hust.bill.electric.service.IRecordService;
 import com.hust.bill.electric.service.IRoomService;
@@ -23,7 +23,6 @@ import com.hust.bill.electric.service.IRoomService;
 public class CalculateByBuildingCallable implements Callable<CalculateByBuildingResult> {
 
 	private final static Logger logger = LoggerFactory.getLogger(CalculateByBuildingCallable.class);
-	private final static DecimalFormat DF = new DecimalFormat("####.##"); 
 	private final static long DAY_MILLI_SECONDS = 24 * 60 * 60 * 1000;
 	
 	private ConsumeTaskBean taskBean;
@@ -57,32 +56,36 @@ public class CalculateByBuildingCallable implements Callable<CalculateByBuilding
 			int startIndex = 0;
 			RemainRecord[] unCalculateRemainRecords;
 			if(lastRemainRecord == null){
-				unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getRoomName(), null);
+				unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getBuildingName(), room.getRoomName(), null);
+				if(unCalculateRemainRecords.length == 0) {
+					continue;
+				}
 				lastRemainRecord = unCalculateRemainRecords[0];
 				startIndex = 1;
 			} else {
-				unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getRoomName(), lastRemainRecord.getDateTime());
+				unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getBuildingName(), room.getRoomName(), lastRemainRecord.getDateTime());
+				if(unCalculateRemainRecords.length == 0) {
+					continue;
+				}
 			}
-			if(unCalculateRemainRecords.length == 0) {
-				continue;
-			}
+			int consoumeCount = 0;
 			for(; startIndex< unCalculateRemainRecords.length; startIndex ++) {
 				RemainRecord indexRemainRecord = unCalculateRemainRecords[startIndex];
 				long gapMillisecond = indexRemainRecord.getDateTime().getTime() - lastRemainRecord.getDateTime().getTime();
 				int gapDays = (int)Math.rint(gapMillisecond / DAY_MILLI_SECONDS);
 				if(gapDays == 0) {
-					logger.warn("");
+					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), indexRemainRecord.getDateTime(), lastRemainRecord.getDateTime(), 0);
 					lastRemainRecord = indexRemainRecord;
 					continue;
 				}
 				if(gapDays > 3) {
-					logger.warn("");
+					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), indexRemainRecord.getDateTime(), lastRemainRecord.getDateTime(), gapDays);
 					lastRemainRecord = indexRemainRecord;
 					continue;
 				}
 				float evenCounsume = 0, lastRemain = lastRemainRecord.getRemain(), indexRemain = indexRemainRecord.getRemain();
 				if(indexRemain > lastRemain) {
-					ChargeRecord[] chargeRecords = recordService.getCharges(lastRemainRecord.getDateTime(), indexRemainRecord.getDateTime());
+					ChargeRecord[] chargeRecords = recordService.getCharges(room.getBuildingName(), room.getRoomName(), lastRemainRecord.getDateTime(), indexRemainRecord.getDateTime());
 					for(ChargeRecord chargeRecord : chargeRecords) {
 						lastRemain = lastRemain + chargeRecord.getChargePower();
 					}
@@ -93,11 +96,17 @@ public class CalculateByBuildingCallable implements Callable<CalculateByBuilding
 					gapCalender.setTime(lastRemainRecord.getDateTime());
 					gapCalender.add(Calendar.DATE, i);
 					consumeList.add(new Consume(building.getName(), room.getRoomName(), gapCalender.getTime(), evenCounsume));
+					consoumeCount ++;
 				}
-				lastRemainList.add(unCalculateRemainRecords[unCalculateRemainRecords.length - 1]);
+				lastRemainRecord = indexRemainRecord;
 			}
+			lastRemainList.add(unCalculateRemainRecords[unCalculateRemainRecords.length - 1]);
+			logger.debug("consume[{}]: room[{}] consume count {}", building.getName(), room.getRoomName(), consoumeCount);
 		}
-		return new CalculateByBuildingResult();
+		ConsumeTaskResultBean resultBean = new ConsumeTaskResultBean(taskBean.getId(), building.getName(), consumeList.size());
+		logger.info("consume[{}]: consume count {} ", building.getName(), resultBean.getConsumeCount());
+		consumeService.insertConsumes(resultBean, lastRemainList.toArray(new RemainRecord[0]) , consumeList.toArray(new Consume[0]));
+		return new CalculateByBuildingResult(resultBean);
 	}
 	
 	private void perpare() throws Exception {

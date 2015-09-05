@@ -39,8 +39,8 @@ public interface IRecordDAO {
 	
 	public void insertCharges(ChargeRecord[] chargeRecords);
 	
-	public RemainRecord[] getUnCalculateRemains(@Param("roomName") String roomName, @Param("lasteDate") Date lastDate);
+	public RemainRecord[] getUnCalculateRemains(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("lastDateTime") Date lastDateTime);
 	
-	public ChargeRecord[]  getCharges(@Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
+	public ChargeRecord[] getCharges(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 	
 }

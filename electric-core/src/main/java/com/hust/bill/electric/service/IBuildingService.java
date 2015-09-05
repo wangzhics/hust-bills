@@ -8,7 +8,6 @@ import com.hust.bill.electric.bean.task.building.BuildingTaskResultBean;
 
 public interface IBuildingService extends ITaskService {
 	
-	
 	public void addTaskResults(BuildingTaskResultBean[] results);
 	
 	public BuildingTaskResultBean[] getTaskResultsByTaskID(BigInteger scanID);

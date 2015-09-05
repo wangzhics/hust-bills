@@ -70,16 +70,13 @@
 
 	<update id="updateLastRemainsByBuilding">
 		<if test="array.length == 0">
-			select count(*) from e_consume_last
-		</if>
-		<if test="array.length != 0">
-			<foreach collection="array" item="item" index="index" open="" close="" separator=";">
-				update e_consume_last
-				<set>stamp=${item.dateTime}</set>
-				<set>remain=${item.remain}</set>
-				where buildingName = ${item.buildingName} and roomName = ${item.roomName}
-			</foreach>
-		</if>
+      select count(*) from e_consume_last
+    </if>
+    <if test="array.length != 0">
+      <foreach collection="array" item="item" index="index" separator=";">
+        update e_consume_last set remain = #{item.remain}, stamp = #{item.dateTime} where buildingName = #{item.buildingName} and roomName = #{item.roomName}
+      </foreach>
+    </if>
 	</update>
   
   <!-- consume -->

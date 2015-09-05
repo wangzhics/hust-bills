@@ -11,6 +11,11 @@ public class ConsumeTaskResultBean {
 	private int consumeCount;
 	private Date timestamp;
 	
+	public ConsumeTaskResultBean(BigInteger taskID, String buildingName, int consumeCount) {
+		this.taskID = taskID;
+		this.buildingName = buildingName;
+		this.consumeCount = consumeCount;
+	}
 	public BigInteger getId() {
 		return id;
 	}

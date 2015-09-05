@@ -80,13 +80,13 @@ public class RecordServiceImpl implements IRecordService{
 	}
 
 	@Override
-	public RemainRecord[] getUnCalculateRemains(String roomName, Date lastDate) {
-		return recordDAO.getUnCalculateRemains(roomName, lastDate);
+	public RemainRecord[] getUnCalculateRemains(String buildingName, String roomName, Date lastDateTime) {
+		return recordDAO.getUnCalculateRemains(buildingName, roomName, lastDateTime);
 	}
 
 	@Override
-	public ChargeRecord[] getCharges(Date startDateTime, Date endDateTime) {
-		return recordDAO.getCharges(startDateTime, endDateTime);
+	public ChargeRecord[] getCharges(String buildingName, String roomName, Date startDateTime, Date endDateTime) {
+		return recordDAO.getCharges(buildingName, roomName, startDateTime, endDateTime);
 	}
 
 }

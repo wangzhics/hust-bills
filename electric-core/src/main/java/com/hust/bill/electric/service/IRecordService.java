@@ -15,7 +15,7 @@ public interface IRecordService extends ITaskService {
 	
 	public void insertRecords(RecordTaskResultBean taskResultBean, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords);
 	
-	public RemainRecord[] getUnCalculateRemains(String roomName, Date lastDate);
+	public RemainRecord[] getUnCalculateRemains(String buildingName, String roomName, Date lastDateTime);
 	
-	public ChargeRecord[] getCharges(Date startDateTime, Date endDateTime);
+	public ChargeRecord[] getCharges(String buildingName, String roomName, Date startDateTime, Date endDateTime);
 }

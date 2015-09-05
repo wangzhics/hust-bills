@@ -10,5 +10,5 @@ public interface IConsumeService extends ITaskService {
 
 	public Map<String, RemainRecord> getLastRemainsByBuilding(String buildingName);
 	
-	public void insertRecords(ConsumeTaskResultBean taskResultBean, RemainRecord[] lastRemains, Consume[] consumes);
+	public void insertConsumes(ConsumeTaskResultBean taskResultBean, RemainRecord[] lastRemains, Consume[] consumes);
 }

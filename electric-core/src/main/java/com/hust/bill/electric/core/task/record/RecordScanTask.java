@@ -76,7 +76,7 @@ public class RecordScanTask extends Task {
 				throw e;
 			}
 		}
-		logger.info("task[{}]: finish emian count {}, charge count {}", getName(), remianCount, chargeCount);
+		logger.info("task[{}]: finish remain count {}, charge count {}", getName(), remianCount, chargeCount);
 	}
 
 	@Override
