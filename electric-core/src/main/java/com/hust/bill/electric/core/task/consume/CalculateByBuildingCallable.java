@@ -72,7 +72,7 @@ public class CalculateByBuildingCallable implements Callable<CalculateByBuilding
 			for(; startIndex< unCalculateRemainRecords.length; startIndex ++) {
 				RemainRecord indexRemainRecord = unCalculateRemainRecords[startIndex];
 				long gapMillisecond = indexRemainRecord.getDateTime().getTime() - lastRemainRecord.getDateTime().getTime();
-				int gapDays = (int)Math.rint(gapMillisecond / DAY_MILLI_SECONDS);
+				int gapDays = (int)Math.rint((float)gapMillisecond / DAY_MILLI_SECONDS);
 				if(gapDays == 0) {
 					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), indexRemainRecord.getDateTime(), lastRemainRecord.getDateTime(), 0);
 					lastRemainRecord = indexRemainRecord;

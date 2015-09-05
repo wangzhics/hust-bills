@@ -26,7 +26,7 @@ public interface IConsumeDAO {
 	
 	public void insertTaskResult(ConsumeTaskResultBean scanResult);
 	
-	public RemainRecord[] getLastRemainsByBuilding();
+	public RemainRecord[] getLastRemainsByBuilding(@Param("buildingName") String buildingName);
 	
 	public void updateLastRemainsByBuilding(RemainRecord[] lastRemains);
 	

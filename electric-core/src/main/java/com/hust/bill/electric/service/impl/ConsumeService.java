@@ -51,7 +51,7 @@ public class ConsumeService implements IConsumeService {
 
 	@Override
 	public Map<String, RemainRecord> getLastRemainsByBuilding(String buildingName) {
-		RemainRecord[] remainRecords = consumeDAO.getLastRemainsByBuilding();
+		RemainRecord[] remainRecords = consumeDAO.getLastRemainsByBuilding(buildingName);
 		Map<String, RemainRecord> map = new HashMap<String, RemainRecord>(remainRecords.length);
 		for(RemainRecord remainRecord : remainRecords) {
 			map.put(remainRecord.getRoomName(), remainRecord);

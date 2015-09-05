@@ -39,7 +39,7 @@ public class ConsumeCalculateTaskTest {
 			Thread t = new Thread(calculateTask);
 			t.start();
 			while(true) {
-				System.out.println(calculateTask.getProgress());
+				//System.out.println(calculateTask.getProgress());
 				Thread.sleep(1000);
 			}
 		} catch (DataAccessException e) {
