@@ -14,4 +14,8 @@ public interface IRecordService extends ITaskService {
 	public Map<String, Date> getLastChargesByBuilding(String buildingName);
 	
 	public void insertRecords(RecordTaskResultBean taskResultBean, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords);
+	
+	public RemainRecord[] getUnCalculateRemains(String roomName, Date lastDate);
+	
+	public ChargeRecord[] getCharges(Date startDateTime, Date endDateTime);
 }

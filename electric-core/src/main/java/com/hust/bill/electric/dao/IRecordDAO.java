@@ -1,6 +1,7 @@
 package com.hust.bill.electric.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -37,5 +38,9 @@ public interface IRecordDAO {
 	public void insertRemains(RemainRecord[] remainRecords);
 	
 	public void insertCharges(ChargeRecord[] chargeRecords);
+	
+	public RemainRecord[] getUnCalculateRemains(@Param("roomName") String roomName, @Param("lasteDate") Date lastDate);
+	
+	public ChargeRecord[]  getCharges(@Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 	
 }

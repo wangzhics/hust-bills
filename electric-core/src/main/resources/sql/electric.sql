@@ -162,8 +162,7 @@ CREATE TABLE `e_consume_task_result` (
   `taskId`          bigint              NOT NULL,
   `id`              bigint              NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `buildingName`    nvarchar(50)        NOT NULL,
-  `remainCount`     int                 NOT NULL,
-  `chargeCount`     int                 NOT NULL,
+  `consumeCount`    int                 NOT NULL,
   `stamp`           datetime            NOT NULL,
   FOREIGN KEY `fk_e_consume_task_result_id` (`taskId`) REFERENCES `e_consume_task`(`id`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
@@ -173,7 +172,8 @@ DROP TABLE IF EXISTS `e_consume_last`;
 CREATE TABLE `e_consume_last` (
   `buildingName`  nvarchar(50)  NOT NULL,
   `roomName`      varchar(5)    NOT NULL,
-  `stamp`         date,
+  `remain`        DECIMAL(8,2)  ,
+  `stamp`         datetime      ,
   PRIMARY KEY (`buildingName`, `roomName`),
   FOREIGN KEY `fk_e_consume_last` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import org.apache.ibatis.annotations.Param;
 
 import com.hust.bill.electric.bean.Consume;
+import com.hust.bill.electric.bean.RemainRecord;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskResultBean;
@@ -23,11 +24,9 @@ public interface IConsumeDAO {
 	
 	public void insertTaskResult(ConsumeTaskResultBean scanResult);
 	
-	public void initialConsumeLast();
+	public RemainRecord[] getLastRemainsByBuilding();
 	
-	public Consume[] getLastsByBuilding();
-	
-	public void updateLastsByBuilding(Consume[] consumes);
+	public void updateLastRemainsByBuilding(RemainRecord[] lastRemains);
 	
 	public void insertConsumes(Consume[] consumes);
 }

@@ -12,6 +12,19 @@ public class Consume {
 	
 	private float consume;
 
+	public Consume() {
+	}
+	
+	public Consume(String buildingName, String roomName, Date date, float consume) {
+		super();
+		this.buildingName = buildingName;
+		this.roomName = roomName;
+		this.date = date;
+		this.consume = consume;
+	}
+
+
+
 	public String getBuildingName() {
 		return buildingName;
 	}

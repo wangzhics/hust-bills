@@ -39,6 +39,7 @@ public class RecordServiceImpl implements IRecordService{
 	}
 
 	@Override
+	@Transactional
 	public void finishTask(BigInteger taskId, TaskStatus taskStatus) {
 		recordDAO.updateTaskEndTime(taskId);
 		recordDAO.updateTaskResultCount(taskId);
@@ -76,6 +77,16 @@ public class RecordServiceImpl implements IRecordService{
 			map.put(record.getRoomName(), record.getDateTime());
 		}
 		return map;
+	}
+
+	@Override
+	public RemainRecord[] getUnCalculateRemains(String roomName, Date lastDate) {
+		return recordDAO.getUnCalculateRemains(roomName, lastDate);
+	}
+
+	@Override
+	public ChargeRecord[] getCharges(Date startDateTime, Date endDateTime) {
+		return recordDAO.getCharges(startDateTime, endDateTime);
 	}
 
 }

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -65,10 +66,15 @@ public class RecordScanTask extends Task {
 		int remianCount = 0, chargeCount = 0;
 		logger.debug("task[{}]: sub scaner start execute", getName());
 		for(Future<ScanByBuildingResult> result : resultList) {
-			ScanByBuildingResult resultBean = result.get();
-			remianCount = remianCount + resultBean.getResultBean().getRemainCount();
-			chargeCount = chargeCount + resultBean.getResultBean().getRemainCount();
-			stepIn();
+			try {
+				ScanByBuildingResult resultBean = result.get();
+				remianCount = remianCount + resultBean.getResultBean().getRemainCount();
+				chargeCount = chargeCount + resultBean.getResultBean().getRemainCount();
+				stepIn();
+			} catch (ExecutionException e) {
+				executorService.shutdownNow();
+				throw e;
+			}
 		}
 		logger.info("task[{}]: finish emian count {}, charge count {}", getName(), remianCount, chargeCount);
 	}

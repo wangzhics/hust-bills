@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -66,9 +67,14 @@ public class BuildingScanTask extends Task {
 		
 		logger.debug("task[{}]: sub scaner start execute", getName());
 		for(Future<ScanByAreaResult> result : resultList) {
-			ScanByAreaResult scanByAreaResult = result.get();
-			buildingList.addAll(scanByAreaResult.getBuildingList());
-			stepIn();
+			try {
+				ScanByAreaResult scanByAreaResult = result.get();
+				buildingList.addAll(scanByAreaResult.getBuildingList());
+				stepIn();
+			} catch (ExecutionException e) {
+				executorService.shutdownNow();
+				throw e;
+			}
 		}
 	}
 
