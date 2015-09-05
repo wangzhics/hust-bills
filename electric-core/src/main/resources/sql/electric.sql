@@ -52,7 +52,7 @@ CREATE TABLE `e_room_task` (
   `id`              bigint        NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name`            nvarchar(50)  NOT NULL UNIQUE,
   `buildingName`    nvarchar(50)  NOT NULL,
-  `startTime`        datetime      NOT NULL,
+  `startTime`       datetime      NOT NULL,
   `endTime`         datetime,
   `resultCount`     int,
   `status`          int(1)        NOT NULL
@@ -125,7 +125,7 @@ CREATE TABLE `e_record_remain` (
   `roomName`      varchar(5)    NOT NULL,
   `stamp`         datetime      NOT NULL,
   `remain`        DECIMAL(8,2)  NOT NULL,
-  PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),
+  PRIMARY KEY (`buildingName`, `roomName`, `stamp`),
   FOREIGN KEY `fk_e_record_remain` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
 ALTER TABLE `e_record_remain` ADD INDEX `ix_e_record_remain_building` (`buildingName`);
@@ -139,8 +139,56 @@ CREATE TABLE `e_record_charge` (
   `stamp`         datetime      NOT NULL,    
   `power`         DECIMAL(7,2)  NOT NULL,
   `money`         DECIMAL(6,2)  NOT NULL,
-  PRIMARY KEY (`buildingName`, `roomName`, `dateTime`),
+  PRIMARY KEY (`buildingName`, `roomName`, `stamp`),
   FOREIGN KEY `fk_e_record_charge` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
 ALTER TABLE `e_record_charge` ADD INDEX `ix_e_record_charge_building` (`buildingName`);
 ALTER TABLE `e_record_charge` ADD INDEX `ix_e_record_charge_room` (`roomName`);
+
+
+--
+DROP TABLE IF EXISTS `e_consume_task`;
+CREATE TABLE `e_consume_task` (
+  `id`              bigint        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name`            nvarchar(50)  NOT NULL UNIQUE,
+  `startTime`       datetime      NOT NULL,
+  `endTime`         datetime,
+  `resultCount`     int,
+  `status`          int(1)        NOT NULL
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `e_consume_task_result`;
+CREATE TABLE `e_consume_task_result` (
+  `taskId`          bigint              NOT NULL,
+  `id`              bigint              NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `buildingName`    nvarchar(50)        NOT NULL,
+  `remainCount`     int                 NOT NULL,
+  `chargeCount`     int                 NOT NULL,
+  `stamp`           datetime            NOT NULL,
+  FOREIGN KEY `fk_e_consume_task_result_id` (`taskId`) REFERENCES `e_consume_task`(`id`)
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+
+--
+DROP TABLE IF EXISTS `e_consume_last`;
+CREATE TABLE `e_consume_last` (
+  `buildingName`  nvarchar(50)  NOT NULL,
+  `roomName`      varchar(5)    NOT NULL,
+  `stamp`         date,
+  PRIMARY KEY (`buildingName`, `roomName`),
+  FOREIGN KEY `fk_e_consume_last` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+ALTER TABLE `e_consume_last` ADD INDEX `ix_e_consume_last_building` (`buildingName`);
+ALTER TABLE `e_consume_last` ADD INDEX `ix_e_consume_last_room` (`roomName`);
+
+--
+DROP TABLE IF EXISTS `e_consume`;
+CREATE TABLE `e_consume` (
+  `buildingName`  nvarchar(50)  NOT NULL,
+  `roomName`      varchar(5)    NOT NULL,
+  `stamp`         date          NOT NULL,
+  `consume`       DECIMAL(6,2)  NOT NULL,
+  PRIMARY KEY (`buildingName`, `roomName`, `stamp`),
+  FOREIGN KEY `fk_e_consume` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+ALTER TABLE `e_consume` ADD INDEX `ix_e_consume_building` (`buildingName`);
+ALTER TABLE `e_consume` ADD INDEX `ix_e_consume_room` (`roomName`);

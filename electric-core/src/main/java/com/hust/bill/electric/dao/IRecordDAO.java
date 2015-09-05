@@ -26,7 +26,7 @@ public interface IRecordDAO {
 	
 	public RecordTaskBean[] getAllTask();
 	
-	public void insertTaskResult(RecordTaskResultBean scanResults);
+	public void insertTaskResult(RecordTaskResultBean scanResult);
 	
 	public RecordTaskResultBean[] getTaskResultsByTaskID(@Param("taskID") BigInteger taskID);
 	
@@ -35,7 +35,6 @@ public interface IRecordDAO {
 	public ChargeRecord[] getLastChargesByBuilding(@Param("buildingName") String buildingName);
 	
 	public void insertRemains(RemainRecord[] remainRecords);
-	
 	
 	public void insertCharges(ChargeRecord[] chargeRecords);
 	

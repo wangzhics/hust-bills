@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hust.bill.electric.dao.IConsumeDAO">
+	<!-- task -->
+	<resultMap id="consumeTaskResultMap" type="com.hust.bill.electric.bean.task.consume.ConsumeTaskBean">
+    <id column="id"               property="id"           jdbcType="BIGINT" />
+    <result column="name"         property="name"         jdbcType="NVARCHAR" />
+    <result column="startTime"    property="startTime"    />
+    <result column="endTime"      property="endTime"      />
+    <result column="resultCount"  property="resultCount"  jdbcType="INTEGER" />
+    <result column="status"       property="status"       jdbcType="INTEGER" typeHandler="com.hust.bill.electric.dao.TaskStatusTypeHandler" />
+  </resultMap>
+  
+	<insert id="insertTask">
+      insert into e_consume_task(name, startTime, status) 
+      values (#{name}, now(), #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler})
+  </insert>
+  
+  <update id="updateTaskSatus">
+      update e_consume_task set status = #{status, typeHandler=com.hust.bill.electric.dao.TaskStatusTypeHandler} where id = #{id}
+  </update>
+  
+  <update id="updateTaskEndTime">
+      update e_consume_task set endTime = now() where id = #{id}
+  </update>
+  
+  <update id="updateTaskResultCount">
+      update e_consume_task set resultCount = (select count(buildingName) from e_consume_task_result where taskId = #{id}) where id = #{id}
+  </update>
+  
+  <select id="getTaskIDByName" resultType="java.math.BigInteger">
+    select id from e_consume_task where name = #{name}
+  </select>
+  
+  <select id="getAllTask" resultMap="consumeTaskResultMap">
+    select id, name, starTime, endTime, resultCount, status from e_consume_task
+  </select>
+  
+  
+  <!-- taskResult -->
+  <resultMap id="consumeTaskResultResultMap" type="com.hust.bill.electric.bean.task.consume.ConsumeTaskResultBean">
+    <id column="id"                 property="id"             jdbcType="BIGINT" />
+    <result column="taskId"         property="taskID"         jdbcType="BIGINT" />
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="consumeCount"   property="consumeCount"   jdbcType="INTEGER" />
+    <result column="stamp"          property="timestamp"      />
+  </resultMap>
+  
+  <insert id="insertTaskResult">
+      insert into e_consume_task_result(taskId, buildingName, consumeCount, stamp) values
+      (#{taskID}, #{buildingName}, #{consumeCount}, now())
+  </insert>
+  
+  <select id="getTaskResultsByTaskID" resultMap="consumeTaskResultResultMap">
+    select id, taskId, buildingName, consumeCount from e_consume_task_result where taskId= #{taskID}
+  </select>
+
+  <!-- consume_last -->
+  <resultMap id="consumeLastResultMap" type="com.hust.bill.electric.bean.Consume">
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"       property="roomName"       jdbcType="VARCHAR" />
+    <result column="stamp"          property="date"           />
+  </resultMap>
+
+  <insert id="initialConsumeLast" >
+    insert into e_consume_last(buildingName, roomName) select buildingName, roomName from e_room
+  </insert>
+
+  <select id="getLastsByBuilding" resultMap="consumeLastResultMap">
+    select buildingName, roomName, stamp from e_consume_last where buildingName=#{buildingName} group by roomName;
+  </select>
+
+	<update id="updateLastsByBuilding">
+		<if test="array.length == 0">
+			select count(*) from e_consume_last
+		</if>
+		<if test="array.length != 0">
+			<foreach collection="array" item="item" index="index" open="" close="" separator=";">
+				update e_consume_last
+				<set>stamp=${item.date}</set>
+				where buildingName = ${item.buildingName} and roomName = ${item.roomName}
+			</foreach>
+		</if>
+	</update>
+  
+  <!-- consume -->
+  <resultMap id="consumeResultMap" type="com.hust.bill.electric.bean.Consume">
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="roomName"       property="roomName"       jdbcType="VARCHAR" />
+    <result column="stamp"          property="date"           />
+    <result column="consume"        property="consume"        jdbcType="FLOAT" />
+  </resultMap>
+  
+  
+  <insert id="insertConsumes">
+    <if test="array.length == 0">
+      select count(*) from e_consume
+    </if>
+    <if test="array.length != 0">
+      insert into e_consume(buildingName, roomName, stamp, consume) values
+      <foreach collection="array" item="item" index="index" separator=",">
+        (#{item.buildingName, jdbcType=VARCHAR}, #{item.roomName, jdbcType=VARCHAR}, #{item.date}, #{item.consume, jdbcType=FLOAT})
+      </foreach>
+    </if>
+  </insert>
+	
+</mapper>

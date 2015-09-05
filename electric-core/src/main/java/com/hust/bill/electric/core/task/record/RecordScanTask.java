@@ -70,7 +70,7 @@ public class RecordScanTask extends Task {
 			chargeCount = chargeCount + resultBean.getResultBean().getRemainCount();
 			stepIn();
 		}
-		logger.info("task[{}]: finish emian count {}, charge count{}", getName(), remianCount, chargeCount);
+		logger.info("task[{}]: finish emian count {}, charge count {}", getName(), remianCount, chargeCount);
 	}
 
 	@Override
