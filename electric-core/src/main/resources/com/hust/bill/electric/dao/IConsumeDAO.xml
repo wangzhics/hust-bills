@@ -65,7 +65,7 @@
   </resultMap>
 
   <select id="getLastRemainsByBuilding" resultMap="consumeLastResultMap">
-    select buildingName, roomName, stamp, remain from e_consume_last where buildingName=#{buildingName} order by roomName desc, stamp asc;
+    select buildingName, roomName, stamp, remain from e_consume_last where buildingName=#{buildingName}
   </select>
 
 	<update id="updateLastRemainsByBuilding">

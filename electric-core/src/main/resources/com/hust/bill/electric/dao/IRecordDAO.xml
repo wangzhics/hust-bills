@@ -97,7 +97,7 @@
       <if test="roomName != null"> and roomName = #{roomName}</if>
       <if test="lastDateTime != null"> and stamp > #{lastDateTime}</if>
     </trim>
-    order by stamp asc 
+    order by stamp asc
   </select>
   
   <insert id="insertRemains">
