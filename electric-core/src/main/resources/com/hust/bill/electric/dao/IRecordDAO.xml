@@ -34,7 +34,11 @@
   </select>
   
   <select id="getAllTask" resultMap="recordTaskResultMap">
-    select id, name, starTime, endTime, resultCount, status from e_record_task
+    select id, name, startTime, endTime, resultCount, status from e_record_task
+  </select>
+  
+  <select id="getTaskById" resultMap="recordTaskResultMap">
+    select id, name, startTime, endTime, resultCount, status from e_record_task where id = #{id}
   </select>
   
   
@@ -47,6 +51,11 @@
     <result column="chargeCount"    property="chargeCount"    jdbcType="INTEGER" />
     <result column="stamp"          property="timestamp"      />
   </resultMap>
+  <resultMap id="buildingResultMap" type="com.hust.bill.electric.bean.Building">
+    <id column="name"             property="name"   jdbcType="NVARCHAR" />
+    <result column="area"         property="area"   jdbcType="NVARCHAR" />
+    <result column="floor"        property="floor"  jdbcType="INTEGER" />
+  </resultMap>
   
   <insert id="insertTaskResult">
       insert into e_record_task_result(taskId, buildingName, remainCount, chargeCount, stamp) values
@@ -55,6 +64,10 @@
   
   <select id="getTaskResultsByTaskID" resultMap="recordTaskResultResultMap">
     select id, taskId, buildingName, remainCount, chargeCount from e_record_task_result where taskId= #{taskID}
+  </select>
+  
+  <select id="getUnSuccessBuildings" resultMap="buildingResultMap">
+    select area, name, floor from e_building where name not in (select buildingName from e_record_task_result where taskId = #{taskId});
   </select>
 
   

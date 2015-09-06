@@ -1,5 +1,6 @@
 package com.hust.bill.electric.core.task.consume;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.hust.bill.electric.service.IRoomService;
 public class CalculateByBuildingCallable implements Callable<CalculateByBuildingResult> {
 
 	private final static Logger logger = LoggerFactory.getLogger(CalculateByBuildingCallable.class);
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private final static long DAY_MILLI_SECONDS = 24 * 60 * 60 * 1000;
 	
 	private ConsumeTaskBean taskBean;
@@ -54,19 +56,13 @@ public class CalculateByBuildingCallable implements Callable<CalculateByBuilding
 		for(Room room : rooms) {
 			RemainRecord lastRemainRecord = lastRemainMap.get(room.getRoomName());
 			int startIndex = 0;
-			RemainRecord[] unCalculateRemainRecords;
-			if(lastRemainRecord == null){
-				unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getBuildingName(), room.getRoomName(), null);
-				if(unCalculateRemainRecords.length == 0) {
-					continue;
-				}
+			RemainRecord[] unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getBuildingName(), room.getRoomName(), lastRemainRecord.getDateTime());;
+			if(unCalculateRemainRecords.length == 0) {
+				continue;
+			}
+			if(lastRemainRecord.getDateTime() == null){
 				lastRemainRecord = unCalculateRemainRecords[0];
 				startIndex = 1;
-			} else {
-				unCalculateRemainRecords = recordService.getUnCalculateRemains(room.getBuildingName(), room.getRoomName(), lastRemainRecord.getDateTime());
-				if(unCalculateRemainRecords.length == 0) {
-					continue;
-				}
 			}
 			int consoumeCount = 0;
 			for(; startIndex< unCalculateRemainRecords.length; startIndex ++) {
@@ -74,18 +70,23 @@ public class CalculateByBuildingCallable implements Callable<CalculateByBuilding
 				long gapMillisecond = indexRemainRecord.getDateTime().getTime() - lastRemainRecord.getDateTime().getTime();
 				int gapDays = (int)Math.rint((float)gapMillisecond / DAY_MILLI_SECONDS);
 				if(gapDays == 0) {
-					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), indexRemainRecord.getDateTime(), lastRemainRecord.getDateTime(), 0);
+					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), sdf.format(indexRemainRecord.getDateTime()), sdf.format(lastRemainRecord.getDateTime()), 0);
 					lastRemainRecord = indexRemainRecord;
 					continue;
 				}
 				if(gapDays > 3) {
-					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), indexRemainRecord.getDateTime(), lastRemainRecord.getDateTime(), gapDays);
+					logger.warn("consume[{}]: room[{}] gap day of {} and {} is {}", building.getName(), room.getRoomName(), sdf.format(indexRemainRecord.getDateTime()), sdf.format(lastRemainRecord.getDateTime()), gapDays);
 					lastRemainRecord = indexRemainRecord;
 					continue;
 				}
 				float evenCounsume = 0, lastRemain = lastRemainRecord.getRemain(), indexRemain = indexRemainRecord.getRemain();
 				if(indexRemain > lastRemain) {
 					ChargeRecord[] chargeRecords = recordService.getCharges(room.getBuildingName(), room.getRoomName(), lastRemainRecord.getDateTime(), indexRemainRecord.getDateTime());
+					if(chargeRecords.length == 0) {
+						logger.warn("consume[{}]: room[{}] gap charge of {} and {} is 0", building.getName(), room.getRoomName(), sdf.format(indexRemainRecord.getDateTime()), sdf.format(lastRemainRecord.getDateTime()));
+						lastRemainRecord = indexRemainRecord;
+						continue;
+					}
 					for(ChargeRecord chargeRecord : chargeRecords) {
 						lastRemain = lastRemain + chargeRecord.getChargePower();
 					}

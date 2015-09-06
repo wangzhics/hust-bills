@@ -29,7 +29,7 @@ import com.hust.bill.electric.service.IRoomService;
 public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 
 	private final static Logger logger = LoggerFactory.getLogger(ScanByBuildingCallable.class);
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private ElectricHttpClient httpClient = new ElectricHttpClient();
 	
 	private RecordTaskBean taskBean;

@@ -50,6 +50,11 @@ public class RoomServiceImpl implements IRoomService {
 	}
 
 	@Override
+	public TaskBean getTaskById(BigInteger id) {
+		return null;
+	}
+	
+	@Override
 	public void addTaskResults(RoomTaskResultBean[] taskResults) {
 		roomDAO.insertTaskResults(taskResults);
 	}

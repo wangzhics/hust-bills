@@ -60,6 +60,11 @@ public class BuildingServiceImpl implements IBuildingService {
 	}
 	
 	@Override
+	public TaskBean getTaskById(BigInteger id) {
+		return null;
+	}
+	
+	@Override
 	@Transactional
 	public void operate(BuildingOperateBean[] operateBeans) {
 		List<BuildingOperateBean> operateAddList = new ArrayList<BuildingOperateBean>(operateBeans.length);

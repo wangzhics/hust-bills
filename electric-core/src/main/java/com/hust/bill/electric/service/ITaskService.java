@@ -14,4 +14,6 @@ public interface ITaskService {
 	public void finishTask(BigInteger taskId, TaskStatus taskStatus);
 	
 	public TaskBean[] getAllTask();
+	
+	public TaskBean getTaskById(BigInteger id);
 }

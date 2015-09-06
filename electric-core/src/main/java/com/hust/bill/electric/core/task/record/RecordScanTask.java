@@ -23,12 +23,12 @@ import com.hust.bill.electric.service.IRoomService;
 public class RecordScanTask extends Task {
 
 	private final static Logger logger = LoggerFactory.getLogger(RecordScanTask.class);
-	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private IBuildingService buildingService;
 	private IRoomService roomService;
 	
-	private Building[] buildings;
+	protected Building[] buildings;
 	private ExecutorService executorService = Executors.newFixedThreadPool(5);
 	private List<Future<ScanByBuildingResult>> resultList = new ArrayList<Future<ScanByBuildingResult>>(100);
 	

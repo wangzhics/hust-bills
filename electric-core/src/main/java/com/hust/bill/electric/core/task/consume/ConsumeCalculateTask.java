@@ -24,7 +24,7 @@ import com.hust.bill.electric.service.IRoomService;
 public class ConsumeCalculateTask extends Task {
 
 	private final static Logger logger = LoggerFactory.getLogger(RecordScanTask.class);
-	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private IBuildingService buildingService;
 	private IRoomService roomService;
 	private IRecordService recordService;
@@ -76,7 +76,7 @@ public class ConsumeCalculateTask extends Task {
 				throw e;
 			}
 		}
-		logger.info("consume[{}]: finish consume count {}, charge count {}", getName(), consumeCount);
+		logger.info("consume[{}]: finish consume count {}", getName(), consumeCount);
 	}
 
 	@Override

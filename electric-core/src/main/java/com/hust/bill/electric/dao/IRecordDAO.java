@@ -6,8 +6,10 @@ import java.util.Date;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.bean.ChargeRecord;
 import com.hust.bill.electric.bean.RemainRecord;
+import com.hust.bill.electric.bean.task.TaskBean;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.record.RecordTaskBean;
 import com.hust.bill.electric.bean.task.record.RecordTaskResultBean;
@@ -27,7 +29,11 @@ public interface IRecordDAO {
 	
 	public RecordTaskBean[] getAllTask();
 	
+	public TaskBean getTaskById(@Param("id") BigInteger id);
+	
 	public void insertTaskResult(RecordTaskResultBean scanResult);
+	
+	public Building[] getUnSuccessBuildings(@Param("taskId") BigInteger taskId);
 	
 	public RecordTaskResultBean[] getTaskResultsByTaskID(@Param("taskID") BigInteger taskID);
 	
@@ -38,6 +44,7 @@ public interface IRecordDAO {
 	public void insertRemains(RemainRecord[] remainRecords);
 	
 	public void insertCharges(ChargeRecord[] chargeRecords);
+	
 	
 	public RemainRecord[] getUnCalculateRemains(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("lastDateTime") Date lastDateTime);
 	

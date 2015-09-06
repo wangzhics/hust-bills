@@ -24,7 +24,7 @@ import com.hust.bill.electric.service.IRoomService;
 public class RoomScanTask extends Task {
 
 	private final static Logger logger = LoggerFactory.getLogger(RoomScanTask.class);
-	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	protected Building building;
 	protected List<Room> roomList = new ArrayList<Room>(100);

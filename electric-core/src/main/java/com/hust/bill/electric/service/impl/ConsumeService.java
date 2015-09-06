@@ -48,6 +48,11 @@ public class ConsumeService implements IConsumeService {
 	public TaskBean[] getAllTask() {
 		return null;
 	}
+	
+	@Override
+	public TaskBean getTaskById(BigInteger id) {
+		return null;
+	}
 
 	@Override
 	public Map<String, RemainRecord> getLastRemainsByBuilding(String buildingName) {

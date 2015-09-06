@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.bean.ChargeRecord;
 import com.hust.bill.electric.bean.RemainRecord;
 import com.hust.bill.electric.bean.task.TaskBean;
@@ -37,6 +38,7 @@ public class RecordServiceImpl implements IRecordService{
 	public void updateTaskStatus(BigInteger taskId, TaskStatus taskStatus) {
 		recordDAO.updateTaskSatus(taskId, taskStatus);
 	}
+	
 
 	@Override
 	@Transactional
@@ -51,6 +53,11 @@ public class RecordServiceImpl implements IRecordService{
 		return recordDAO.getAllTask();
 	}
 
+	@Override
+	public TaskBean getTaskById(BigInteger id) {
+		return recordDAO.getTaskById(id);
+	}
+	
 	@Override
 	@Transactional
 	public void insertRecords(RecordTaskResultBean taskResultBean, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords) {
@@ -82,6 +89,10 @@ public class RecordServiceImpl implements IRecordService{
 	@Override
 	public RemainRecord[] getUnCalculateRemains(String buildingName, String roomName, Date lastDateTime) {
 		return recordDAO.getUnCalculateRemains(buildingName, roomName, lastDateTime);
+	}
+	
+	public Building[] getUnSuccessBuildings(BigInteger taskId) {
+		return recordDAO.getUnSuccessBuildings(taskId);
 	}
 
 	@Override
