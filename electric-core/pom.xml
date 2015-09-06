@@ -28,7 +28,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
-			<!-- 删除原本的日志架构：commons-logging -->
+			<!-- excluse commons-logging -->
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
@@ -57,7 +57,7 @@
 			<artifactId>mybatis-spring</artifactId>
 			<version>${mybatis-spring.version}</version>
 		</dependency>
-		<!-- 数据库驱动以及连接池 -->
+		<!-- jdbc driver and connect pool -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -94,6 +94,13 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5</version>
+			<!-- excluse commons-logging -->
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
 		</dependency>
     <dependency>
 		  <groupId>org.jsoup</groupId>
