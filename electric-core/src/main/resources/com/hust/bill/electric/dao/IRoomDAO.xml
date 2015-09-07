@@ -122,5 +122,9 @@
   <select id="getByBuilding" resultMap="roomResultMap">
     select buildingName, roomName, roomFloor, roomNO from e_room where buildingName = #{buildingName} order by roomName asc
   </select>   
+  
+  <select id="getByNames" resultMap="roomResultMap">
+    select buildingName, roomName, roomFloor, roomNO from e_room where buildingName = #{buildingName} and roomName = #{roomName}
+  </select> 
 	
 </mapper>

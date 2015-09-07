@@ -18,4 +18,6 @@ public interface IBuildingService extends ITaskService {
 	
 	public Building[] getAll();
 	
+	public Building getByName(String name);
+	
 }

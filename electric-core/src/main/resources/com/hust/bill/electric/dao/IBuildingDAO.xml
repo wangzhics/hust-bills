@@ -116,7 +116,11 @@
   </insert>
 
   <select id="getAll" resultMap="buildingResultMap">
-    select area, name, floor from e_building order by area asc, name asc
+    select area, name, floor from e_building order by convert(area using gbk) asc, convert(name using gbk) asc
+  </select>
+  
+  <select id="getByName" resultMap="buildingResultMap">
+    select area, name, floor from e_building where name=#{name}
   </select>
   
 </mapper>

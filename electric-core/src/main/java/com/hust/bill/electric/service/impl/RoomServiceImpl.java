@@ -111,4 +111,9 @@ public class RoomServiceImpl implements IRoomService {
 		return roomDAO.getByBuilding(buildingName);
 	}
 
+	@Override
+	public Room getByNames(String buildingName, String roomName) {
+		return roomDAO.getByNames(buildingName, roomName);
+	}
+
 }

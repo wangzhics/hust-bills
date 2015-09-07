@@ -42,5 +42,6 @@ public interface IRoomDAO {
 	
 	public Room[] getByBuilding(@Param("buildingName") String buildingName);
 
+	public Room getByNames(@Param("buildingName")String buildingName, @Param("roomName") String roomName);
 	
 }

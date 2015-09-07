@@ -2,202 +2,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Landing Page | Amaze UI Example</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="renderer" content="webkit">
-  <meta http-equiv="Cache-Control" content="no-siteapp"/>
-  <link rel="alternate icon" type="image/png" href="${pageContext.request.contextPath}/static/AmazeUI-2.4.2/i/favicon.png">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/AmazeUI-2.4.2/css/amazeui.min.css"/>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/other/index.css"/>
-  <!--[if lt IE 9]>
-  <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
-  <script src="assets/js/amazeui.ie8polyfill.min.js"></script>
-  <![endif]-->
-  <script src="${pageContext.request.contextPath}/static/AmazeUI-2.4.2/js/amazeui.min.js"></script>
-  <script src="${pageContext.request.contextPath}/static/angular-1.4.5/angular.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="电费查询入口">
+<meta name="author" content="WangZ">
+<title>电费查询</title>
+<!-- Bootstrap -->
+<link href="static/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" type='text/css'>
+<!-- Full screen slider -->
+<link href="static/other/index/css/full-screen-slider.css" rel="stylesheet" type='text/css'>
+<script type="text/javascript" src="static/other/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="static/other/index/js/jquery.countdown.js"></script>
+<script type="text/javascript" src="static/other/index/js/full-screen-slider.js"></script>
+<!-- land -->
+<link href="static/other/index/land.css" rel="stylesheet"  type='text/css'>
+<!-- angularJS -->
+<script src="static/angular-1.4.5/angular.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var app = angular.module('buildingApp', []);
+app.controller('buildingCtrl', function($scope, $http) {
+  $http.get("${pageContext.request.contextPath}/api/building").success(function (response) {
+    $scope.datas = response;
+  });
+  // process the form
+  $scope.processForm = function() {
+    window.location.href = "${pageContext.request.contextPath}/" + $scope.selectedBuilding + "/" + $scope.inputRoom;
+  };
+});
+</script>
+<style type="text/css">
+select.ng-dirty.ng-invalid,
+input.ng-dirty.ng-invalid {
+    border-color: #e9322d;
+    -webkit-box-shadow: 0 0 6px #f8b9b7;
+    -moz-box-shadow: 0 0 6px #f8b9b7;
+    box-shadow: 0 0 6px #f8b9b7;
+}
+</style>
 </head>
-<body class="am-with-topbar-fixed-top">
-<header class="am-topbar am-topbar-fixed-top">
-  <div class="am-container">
-    <h1 class="am-topbar-brand">
-      <a href="#">Amaze UI</a>
-    </h1>
-
-    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only am-collapsed" data-am-collapse="{target: '#collapse-head'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
-
-    <div class="am-topbar-collapse am-collapse" id="collapse-head" style="height: 20px;">
-      <ul class="am-nav am-nav-pills am-topbar-nav">
-        <li class="am-active"><a href="#">首页</a></li>
-        <li><a href="#">项目</a></li>
-        <li class="am-dropdown" data-am-dropdown="">
-          <a class="am-dropdown-toggle" data-am-dropdown-toggle="" href="javascript:;">
-            下拉菜单 <span class="am-icon-caret-down"></span>
-          </a>
-          <ul class="am-dropdown-content">
-            <li class="am-dropdown-header">标题</li>
-            <li><a href="#">1. 默认样式</a></li>
-            <li><a href="#">2. 基础设置</a></li>
-            <li><a href="#">3. 文字排版</a></li>
-            <li><a href="#">4. 网格系统</a></li>
-          </ul>
-        </li>
-      </ul>
-
-      <div class="am-topbar-right">
-        <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm"><span class="am-icon-pencil"></span> 注册</button>
-      </div>
-
-      <div class="am-topbar-right">
-        <button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"><span class="am-icon-user"></span> 登录</button>
-      </div>
-    </div>
+<body>
+  <div class="full-screen-slider">
+    <!-- Put the list of images you want to slide in full screen here.
+       The image which has the class 'active' will be the starting slide.
+       -->
+    <img src="static/other/index/img/room.jpg" alt="Room" class="active"> 
+    <img src="static/other/index/img/inner.jpg" alt="Inner"> 
+    <img src="static/other/index/img/table.jpg" alt="Table"> 
+    <img src="static/other/index/img/flower-collection.jpg" alt="Flower"> 
+    <img src="static/other/index/img/banana.jpg" alt="Banana"> 
+    <img src="static/other/index/img/nice.jpg" alt="Nice">
   </div>
-</header>
-
-<div class="get">
-  <div class="am-g">
-    <div class="am-u-lg-12">
-      <h1 class="get-title">Amaze UI - HTML5 跨屏前端框架</h1>
-      <p>
-        期待你的参与，共同打造一个简单易用的前端框架
-      </p>
-      <div class='content' style="color: black;">
+  <div class="container transparent">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <strong id="logo" style="font-style: normal;">电费查询</strong>
+        <h2 style="margin-bottom: 1em;">让您的电费更直观，更详细</h2>
+      </div>
+      <!-- /.col-md-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row" style="font-size: 16px;">
+      <div class="col-md-12 text-center">
       <div ng-app="buildingApp">
       <div ng-controller="buildingCtrl">
-      <select ng-model="selectedArea" ng-change="selectedBuilding=''" ng-options="area for (area, buildings) in datas" >
-      <option value="">---请选择楼区---</option>
-      </select>
-      <select ng-model="selectedBuilding" ng-options="name for name in selectedArea">
-      <option value="">---请选择楼栋---</option>
-      </select>
-      <input type="text"> 
+        <form id="roomForm" name="roomForm"  novalidate class="form-inline" role="form" style="margin-top: 2em;" ng-submit="processForm()">
+          <div class="form-group">
+            <label class="sr-only" for="area">楼区</label> 
+            <select id="area" required class="form-control" ng-model="selectedArea" ng-change="selectedBuilding=''" ng-options="area for (area, buildings) in datas">
+              <option value="">-请选择楼区-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="buillding">楼栋</label> 
+            <select id="buillding" name="building" required class="form-control"  ng-model="selectedBuilding"  ng-change="inputRoom=''" ng-options="name for name in selectedArea">
+              <option value="">-请选择楼栋-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="room">房间号</label> 
+            <input id="room" name="room" type="number" required ng-pattern="/^[0-9]{3}$/" class="form-control" ng-model="inputRoom" placeholder="请输入房间号">
+          </div>
+          <button type="submit" class="btn btn-success" ng-disabled="roomForm.$invalid">查询</button>
+        </form>
+      </div> 
       </div>
       </div>
-      <script>
-  var app = angular.module('buildingApp', []);
-  app.controller('buildingCtrl', function($scope, $http) {
-    $http.get("${pageContext.request.contextPath}/api/building").success(function (response) {
-      $scope.datas = response;
-    });
-  });
-  </script>
-      <p>
-        <a href="http://amazeui.org" class="am-btn am-btn-sm get-btn">获取新get技能√</a>
-      </p>
     </div>
-  </div>
-</div>
-
-<div class="detail">
-  <div class="am-g am-container">
-    <div class="am-u-lg-12">
-      <h2 class="detail-h2">One Web 、Any Device，期待和你一起去实现!</h2>
-
-      <div class="am-g">
-        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
-
-          <h3 class="detail-h3">
-            <i class="am-icon-mobile am-icon-sm"></i>
-            为移动而生
-          </h3>
-
-          <p class="detail-p">
-            Amaze UI 采用业内先进的 mobile first 理念，从小屏逐步扩展到大屏，最终实现所有屏幕适配，适应移动互联潮流。
-          </p>
-        </div>
-        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
-          <h3 class="detail-h3">
-            <i class="am-icon-cogs am-icon-sm"></i>
-            组件丰富，模块化
-          </h3>
-
-          <p class="detail-p">
-            Amaze UI 含近 20 个 CSS 组件、10 个 JS 组件，更有 17 款包含近 60 个主题的 Widgets，可快速构建界面出色、体验优秀的跨屏页面，大幅度提升你的开发效率。
-          </p>
-        </div>
-        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
-          <h3 class="detail-h3">
-            <i class="am-icon-check-square-o am-icon-sm"></i>
-            本地化支持
-          </h3>
-
-          <p class="detail-p">
-            相比国外的前端框架，Amaze UI 专注解决中文排版优化问题，根据操作系统调整字体，实现最佳中文排版效果；针对国内主流浏览器及 App 内置浏览器提供更好的兼容性支持，为你节省大量兼容性调试时间。
-          </p>
-        </div>
-        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
-          <h3 class="detail-h3">
-            <i class="am-icon-send-o am-icon-sm"></i>
-            轻量级，高性能
-          </h3>
-
-          <p class="detail-p">
-            Amaze UI 非常注重性能，基于轻量的 Zepto.js 开发，并使用 CSS3 来做动画交互，平滑、高效，更适合移动设备，让你的 Web 应用可以高速载入。
-          </p>
-        </div>
+    <div class="row" style="margin-top: 3em; margin-bottom: 3em;">
+      <div class="col-md-12 text-center" id="links">
+        <p>
+          <a href="http://coverstrap.com"> <span class="glyphicon glyphicon-home"></span> From Coverstrap
+          </a> <span class="separator">&middot;</span> <a href="#"> <span class="glyphicon glyphicon-user"></span> About Us
+          </a> <span class="separator">&middot;</span> <a href="#"> <span class="glyphicon glyphicon-thumbs-up"></span> Like Us
+          </a> <span class="separator">&middot;</span> <a href="#"> <span class="glyphicon glyphicon-envelope"></span> Contact Us
+          </a>
+        </p>
       </div>
     </div>
+    <!-- /.row -->
   </div>
-</div>
-
-<div class="hope">
-  <div class="am-g am-container">
-    <div class="am-u-lg-4 am-u-md-6 am-u-sm-12 hope-img">
-      <img src="${pageContext.request.contextPath}/static/AmazeUI-2.4.2/i/examples/landing.png" alt="" data-am-scrollspy="{animation:'slide-left', repeat: false}" class="am-scrollspy-init am-scrollspy-inview am-animation-slide-left">
-      <hr class="am-article-divider am-show-sm-only hope-hr">
-    </div>
-    <div class="am-u-lg-8 am-u-md-6 am-u-sm-12">
-      <h2 class="hope-title">同我们一起打造你的前端框架</h2>
-
-      <p>
-        在知识爆炸的年代，我们不愿成为知识的过客，拥抱开源文化，发挥社区的力量，参与到Amaze Ui开源项目能获得自我提升。
-      </p>
-    </div>
-  </div>
-</div>
-
-<div class="about">
-  <div class="am-g am-container">
-    <div class="am-u-lg-12">
-      <h2 class="about-title about-color">Amaze UI 崇尚开放、自由，非常欢迎大家的参与</h2>
-
-      <div class="am-g">
-        <div class="am-u-lg-6 am-u-md-4 am-u-sm-12">
-          <form class="am-form">
-            <label for="name" class="about-color">你的姓名</label>
-            <input id="name" type="text">
-            <br>
-            <label for="email" class="about-color">你的邮箱</label>
-            <input id="email" type="email">
-            <br>
-            <label for="message" class="about-color">你的留言</label>
-            <textarea id="message"></textarea>
-            <br>
-            <button type="submit" class="am-btn am-btn-primary am-btn-sm"><i class="am-icon-check"></i> 提 交</button>
-          </form>
-          <hr class="am-article-divider am-show-sm-only">
-        </div>
-
-        <div class="am-u-lg-6 am-u-md-8 am-u-sm-12">
-          <h4 class="about-color">关于我们</h4>
-
-          <p>AllMobilize Inc (美通云动科技有限公司)
-            由前微软美国总部IE浏览器核心研发团队成员及移动互联网行业专家在美国西雅图创立，旨在解决网页在不同移动设备屏幕上的适配问题。基于国际专利技术并结合最前沿的HTML5技术，云适配解决方案可以帮助企业快速将桌面版网站适配到各种移动设备终端的屏幕上，不仅显著地提高了企业网站的用户体验以及销售转化率，而且大幅度地节省了企业开发和维护移动网站的费用。</p>
-          <h4 class="about-color">团队介绍</h4>
-
-          <p>AllMobilize Inc 获得了微软创投孵化器的支持，其领先科技已得到全球多家企业及机构的认可与信赖，客户包括全球500强企业、美国政府、国内政府机关、国内外上市公司、以及互联网标准化组织W3C。</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<footer class="footer">
-  <p>© 2014 <a href="http://www.yunshipei.com" target="_blank">AllMobilize, Inc.</a> Licensed under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>. by the AmazeUI Team.</p>
-</footer>
+  <!-- /.container -->
 </body>
 </html>

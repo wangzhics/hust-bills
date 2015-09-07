@@ -40,11 +40,7 @@ public interface IBuildingDAO {
 	
 	public void inserts(Building[] buildings);
 	
-	public void updates(Building[] buildings);
-	
-	public void deletes(Building[] buildings);
-	
 	public Building[] getAll();
 
-	
+	public Building getByName(@Param("name") String name);
 }

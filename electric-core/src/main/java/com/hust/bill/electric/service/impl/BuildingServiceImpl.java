@@ -111,4 +111,9 @@ public class BuildingServiceImpl implements IBuildingService {
 		return buildingDAO.getAll();
 	}
 
+	@Override
+	public Building getByName(String name) {
+		return buildingDAO.getByName(name);
+	}
+
 }

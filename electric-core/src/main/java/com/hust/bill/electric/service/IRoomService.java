@@ -19,4 +19,6 @@ public interface IRoomService extends ITaskService {
 	public Room[] getAll();
 	
 	public Room[] getByBuilding(String buildingName);
+	
+	public Room getByNames(String buildingName, String roomName);
 }
