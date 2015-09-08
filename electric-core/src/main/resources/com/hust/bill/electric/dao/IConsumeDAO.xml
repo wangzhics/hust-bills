@@ -105,11 +105,11 @@
   </insert>
   
   <select id="getConsumesByRoom" resultMap="consumeResultMap">
-     <![CDATA[ select buildingName, roomName, stamp, consume from e_consume where buildingName=#{buildingName} and roomName=#{roomName} and stamp >= #{startDate} and stamp <= #{endDate} order by stamp asc ]]>
+     <![CDATA[ select buildingName, roomName, stamp, consume from e_consume where buildingName=#{buildingName} and roomName=#{roomName} and stamp>=#{startDate} and stamp<=#{endDate} order by stamp asc ]]>
   </select>
   
   <select id="getDateAvgByBuilding" resultMap="dateAverageResultMap">
-     <![CDATA[ select stamp, avg(consume) as consume from e_consume where buildingName=#{buildingName} and stamp >= #{startDate} and stamp <= #{endDate} group by stamp order by stamp asc ]]>
+     <![CDATA[ select stamp, avg(consume) as consume from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by stamp order by stamp asc ]]>
   </select>
 	
 </mapper>
