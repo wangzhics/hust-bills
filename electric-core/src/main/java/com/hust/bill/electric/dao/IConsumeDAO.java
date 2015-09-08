@@ -1,12 +1,14 @@
 package com.hust.bill.electric.dao;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.RemainRecord;
+import com.hust.bill.electric.bean.query.DateAverage;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskResultBean;
@@ -31,4 +33,9 @@ public interface IConsumeDAO {
 	public void updateLastRemainsByBuilding(RemainRecord[] lastRemains);
 	
 	public void insertConsumes(Consume[] consumes);
+	
+	public Consume[] getConsumesByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+	
+	public DateAverage[] getDateAvgByBuilding(@Param("buildingName") String buildingName, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+	
 }

@@ -9,9 +9,8 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		// 防止重复执行。
-		if (event.getApplicationContext().getParent() == null) {
-			System.out.println(event);
-		}
+		System.out.println(event);
+		System.out.println(event.getApplicationContext().getParent());
 	}
 
 }

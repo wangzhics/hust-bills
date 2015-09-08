@@ -1,6 +1,7 @@
 package com.hust.bill.electric.service.impl;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.RemainRecord;
+import com.hust.bill.electric.bean.query.DateAverage;
 import com.hust.bill.electric.bean.task.TaskBean;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
@@ -70,6 +72,16 @@ public class ConsumeService implements IConsumeService {
 		consumeDAO.insertTaskResult(taskResultBean);
 		consumeDAO.updateLastRemainsByBuilding(lastRemains);
 		consumeDAO.insertConsumes(consumes);
+	}
+
+	@Override
+	public Consume[] getConsumesByRoom(String buildingName, String roomName, Date startDate, Date endDate) {
+		return consumeDAO.getConsumesByRoom(buildingName, roomName, startDate, endDate);
+	}
+
+	@Override
+	public DateAverage[] getDateAvgByBuilding(String buildingName, Date startDate, Date endDate) {
+		return consumeDAO.getDateAvgByBuilding(buildingName, startDate, endDate);
 	}
 
 }
