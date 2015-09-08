@@ -90,6 +90,12 @@ public class CalculateByBuildingCallable implements Callable<CalculateByBuilding
 					for(ChargeRecord chargeRecord : chargeRecords) {
 						lastRemain = lastRemain + chargeRecord.getChargePower();
 					}
+					//still bigger
+					if(indexRemain > lastRemain) {
+						logger.warn("consume[{}]: room[{}] record of {} is bigger than {} and chargeRecords is {}", building.getName(), room.getRoomName(), sdf.format(indexRemainRecord.getDateTime()), sdf.format(lastRemainRecord.getDateTime()), chargeRecords.length);
+						lastRemainRecord = indexRemainRecord;
+						continue;
+					}
 				}
 				evenCounsume = (lastRemain - indexRemain) / gapDays;
 				for(int i = 0; i < gapDays; i++) {
