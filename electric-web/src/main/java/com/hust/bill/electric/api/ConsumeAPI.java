@@ -68,5 +68,39 @@ public class ConsumeAPI {
 		return new ResponseEntity<Consume[]>(consumes, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/{buildingName}/month/avg", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<DateAverage[]> getBuildingMonthAverage(@PathVariable String buildingName) {
+		if(StringUtils.isEmpty(buildingName)){
+			return new ResponseEntity<DateAverage[]>(HttpStatus.BAD_REQUEST);
+		}
+		Building building = buildingService.getByName(buildingName);
+		if(building == null) {
+			return new ResponseEntity<DateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		Calendar endCalendar = Calendar.getInstance();
+		Calendar startCalendar = Calendar.getInstance();
+		startCalendar.add(Calendar.DATE, -6);
+		DateAverage[] averages =  consumeService.getDateAvgByBuilding(buildingName, startCalendar.getTime(), endCalendar.getTime());
+		return new ResponseEntity<DateAverage[]>(averages, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/{buildingName}/{roomName}/month", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<Consume[]> getRoomMonth(@PathVariable String buildingName, @PathVariable String roomName, Model model) {
+		if(StringUtils.isEmpty(buildingName) || StringUtils.isEmpty(roomName)){
+			return new ResponseEntity<Consume[]>(HttpStatus.BAD_REQUEST);
+		}
+		Room room = roomService.getByNames(buildingName, roomName);
+		if(room == null) {
+			return new ResponseEntity<Consume[]>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		Calendar endCalendar = Calendar.getInstance();
+		Calendar startCalendar = Calendar.getInstance();
+		startCalendar.add(Calendar.DATE, -6);
+		Consume[] consumes =  consumeService.getConsumesByRoom(buildingName, roomName, startCalendar.getTime(), endCalendar.getTime());
+		return new ResponseEntity<Consume[]>(consumes, HttpStatus.OK);
+	}
+	
 	
 }

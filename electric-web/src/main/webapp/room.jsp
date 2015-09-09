@@ -24,7 +24,7 @@
 <link href="${pageContext.request.contextPath}/static/prettify-r224/prettify.min.css" rel="stylesheet"/>
  -->
 <!-- morris.js -->
-<script src="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.js" type="text/javascript"></script>
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/legend.css" rel="stylesheet" />
@@ -34,91 +34,116 @@
 <link href="${pageContext.request.contextPath}/static/other/room/AdminLTE.css" rel="stylesheet" />
 
 <script type="text/javascript">
-var week_data = new Array();
-var week_graph = null;
 
-function initWeekData() {
-	  var week_ago = moment();
-	  week_ago.add(-6, 'days');
-	  for(var i = 0; i < 7; i++) {
-		  var date = new Object();
-		  week_ago.add(1, 'days');
-		  date.period = week_ago.format("YYYY-MM-DD");
-		  week_data[i] = date;
-	  }
+var graphMorris = null;
+var isSettingGraph = false;
+
+function initGraph() {
+  graphMorris = Morris.Line({
+    element : 'graphDiv',
+    xkey : 'period',
+    ykeys : [ 'cousume', 'average' ],
+    labels : [ '${room.roomName}', '${room.buildingName}' ],
+    hideHover : 'auto',
+    resize : true
+  });
 }
 
-function showGraph() {
-	week_graph = Morris.Line({
-	    element: 'graphDiv',
-	    data: week_data,
-	    xkey: 'period',
-	    ykeys: ['cousume', 'average'],
-	    labels: ['${room.roomName}', '${room.buildingName}'],
-	    hideHover: 'auto',
-	    resize: true
-	  });
+function resetGraph(periodType, gap) {
+  isSettingGraph = true;
+  var roomReady = false, readyAverage = false;
+  var graph_data = new Array();
+  var ago = moment();
+  ago.subtract((gap - 1), 'days');
+  for (var i = 0; i < gap; i++) {
+    var data = new Object();
+    ago.add(1, 'days');
+    data.period = ago.format("YYYY-MM-DD");
+    graph_data[i] = data;
+  }
+  $.ajax({
+    url : '${pageContext.request.contextPath}/api/consume/${room.buildingName}/${room.roomName}/'
+        + periodType,
+    type : 'get',
+    dataType : 'json',
+    success : function(result) {
+      var dataMap = new Object();
+      for (index in result) {
+        var date = moment(result[index].date);
+        var periodStr = moment(result[index]).format("YYYY-MM-DD");
+        dataMap[date.format("YYYY-MM-DD")] = result[index].consume;
+      }
+      for (index in graph_data) {
+        var period = graph_data[index].period;
+        var consume = dataMap[period];
+        if (consume != null) {
+          graph_data[index].cousume = consume;
+        }
+      }
+      roomReady = true;
+    }
+  });
+  $.ajax({
+    url : '${pageContext.request.contextPath}/api/consume/${room.buildingName}/'
+        + periodType + '/avg',
+    type : 'get',
+    dataType : 'json',
+    success : function(result) {
+      var dataMap = new Object();
+      for (index in result) {
+        var date = moment(result[index].date);
+        var periodStr = moment(result[index]).format("YYYY-MM-DD");
+        dataMap[date.format("YYYY-MM-DD")] = result[index].average;
+      }
+      for (index in graph_data) {
+        var period = graph_data[index].period;
+        var average = dataMap[period];
+        if (average != null) {
+          graph_data[index].average = average;
+        }
+      }
+      readyAverage = true;
+    }
+  });
+  var showGraphTimer = window.setTimeout(function() {
+    if (!(roomReady && readyAverage)) {
+      return;
+    }
+    window.clearTimeout(showGraphTimer);
+    graphMorris.setData(graph_data, true);
+    isSettingGraph = false;
+  }, 400);
 }
 
-function getWeekData() {
-	var roomReady = false, readyAverage = false;
-	$.ajax({
-	    url: '${pageContext.request.contextPath}/api/consume/${room.buildingName}/${room.roomName}/week',
-	    type: 'get',
-	    dataType: 'json',
-	    success: function(result) {
-	      var dataMap = new Object();
-	      for(index in result) {
-	        var date = moment(result[index].date);
-	        var periodStr = moment(result[index]).format("YYYY-MM-DD");
-	        dataMap[date.format("YYYY-MM-DD")]=result[index].consume;
-	      }
-	      for(index in week_data) {
-	        var period = week_data[index].period;
-	        var consume = dataMap[period];
-	        if(consume != null) {
-	          week_data[index].cousume = consume;
-	        }
-	      }
-	      roomReady = true;
-	    }
-	  });
-	$.ajax({
-	      url: '${pageContext.request.contextPath}/api/consume/${room.buildingName}/week/avg',
-	      type: 'get',
-	      dataType: 'json',
-	      success: function(result) {
-	        var dataMap = new Object();
-	        for(index in result) {
-	          var date = moment(result[index].date);
-	          var periodStr = moment(result[index]).format("YYYY-MM-DD");
-	          dataMap[date.format("YYYY-MM-DD")]=result[index].average;
-	        }
-	        for(index in week_data) {
-	          var period = week_data[index].period;
-	          var average = dataMap[period];
-	          if(average != null) {
-	            week_data[index].average = average;
-	          }
-	        }
-	        readyAverage = true;
-	      }
-	    });
-	var showGraphTimer = window.setTimeout(function() {
-		if(!(roomReady && readyAverage)) {
-			return;
-		}
-		showGraph();
-		window.clearTimeout(showGraphTimer);
-	},400);
+function resetPeriodGraph(periodType) {
+  if (isSettingGraph) {
+    return;
+  }
+  var currentPerid = $("#graphTitleLabel").val();
+  if (periodType == 'week') {
+    if (currentPerid == '周') {
+      return;
+    }
+    resetGraph('week', 7);
+    $("#graphTitleLabel").text('周');
+    return;
+  }
+  if (periodType == 'month') {
+    if (currentPerid == '月') {
+      return;
+    }
+    resetGraph('month', 28);
+    $("#graphTitleLabel").text('月');
+    return;
+  }
 }
 
-$(document).ready(function(){
-	$('.dropdown-toggle').dropdown();
-	initWeekData();
-	getWeekData();
+$(document).ready(function() {
+  $('.dropdown-toggle').dropdown();
+  initGraph();
+  resetGraph('week', 7);
 });
-</script> 
+</script>
 </head>
 <body>
   <section class="content-header">
@@ -187,7 +212,7 @@ $(document).ready(function(){
           <p>可用天数</p>
         </div>
         <div class="icon">
-          <i class="ion ion-pie-graph"></i>
+          <i class="ion ion-flash-off"></i>
         </div>
         <a href="#" class="small-box-footer"> More info <i class="fa fa-arrow-circle-right"></i>
         </a>
@@ -199,18 +224,16 @@ $(document).ready(function(){
   <div class="col-lg-12"> 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
+      <i class="fa fa-bar-chart-o fa-fw"></i>
+      <label id="graphTitleLabel">周</label>电量使用记录
       <div class="pull-right">
         <div class="btn-group">
           <button id="graphDropdown" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-            Actions <span class="caret"></span>
+                            时间段 <span class="caret"></span>
           </button>
           <ul class="dropdown-menu pull-right" role="menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
+            <li><a href="javascript:void(0);" onclick="resetPeriodGraph('week')" style="font-size: 8px;">一周</a></li>
+            <li><a href="javascript:void(0);"  onclick="resetPeriodGraph('month')" style="font-size: 8px;">一月</a></li>
           </ul>
         </div>
       </div>
@@ -218,8 +241,8 @@ $(document).ready(function(){
     </div>
     <!-- /.panel-heading -->
     <div class="panel-body" style="clear: both;">
-          <div>
-            <div id="graphDiv" style="position: relative;" ></div>
+          <div  id="graphParentDiv">
+            <div id="graphDiv"></div>
             <div>
               <div class="legend-content"></div>
               <table class="legend-table">
@@ -245,7 +268,7 @@ $(document).ready(function(){
   </div>
   </div>
   <div class="row">
-  <div class="col-xs-6 connectedSortable">
+  <section class="col-lg-6 connectedSortable ui-sortable">
   <div class="box box-danger" style="border-top-color:#079C6C;">
     <div class="box-header">
       <!-- tools box -->
@@ -273,8 +296,8 @@ $(document).ready(function(){
       </div>
     </div>
     </div>
-  </div>
-  <div class="col-xs-6 connectedSortable">
+  </section>
+  <section class="col-lg-6 connectedSortable ui-sortable">
   <div class="box box-primary;">
     <div class="box-header">
       <!-- tools box -->
@@ -285,7 +308,6 @@ $(document).ready(function(){
         </button>
       </div>
       <!-- /. tools -->
-
       <i class="fa fa-credit-card"></i>
       <h3 class="box-title">充值记录</h3>
     </div>
@@ -304,7 +326,7 @@ $(document).ready(function(){
       </div>
     </div>
     </div>
-  </div>
+  </section>
   </div>
   </section>
 </body>
