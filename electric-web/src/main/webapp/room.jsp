@@ -24,12 +24,15 @@
 <link href="${pageContext.request.contextPath}/static/prettify-r224/prettify.min.css" rel="stylesheet"/>
  -->
 <!-- morris.js -->
-<script src="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.js" type="text/javascript"></script>
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/legend.css" rel="stylesheet" />
+<script src="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.js" type="text/javascript"></script>
 <!-- Moment.js -->
 <script src="${pageContext.request.contextPath}/static/Moment.js-2.10.6/moment-with-locales.js" type="text/javascript" /></script>
+<!-- bootstrap-table -->
+<link href="${pageContext.request.contextPath}/static/bootstrap-table-1.8.1/bootstrap-table.min.css" rel="stylesheet" />
+<script src="${pageContext.request.contextPath}/static/bootstrap-table-1.8.1/bootstrap-table.min.js" type="text/javascript"></script>
 <!-- AdminLTE -->
 <link href="${pageContext.request.contextPath}/static/other/room/AdminLTE.css" rel="stylesheet" />
 
@@ -283,15 +286,14 @@ $(document).ready(function() {
     </div>
     <div class="box-body no-padding">
       <div class="table-responsive">
-        <table class="table table-striped">
-          <tbody>
-            <tr>
-              <th>Country</th>
-              <th>Visitors</th>
-              <th>Online</th>
-              <th>Page Views</th>
-            </tr>
-          </tbody>
+        <table data-toggle="table" data-url="${pageContext.request.contextPath}/api/remain/${room.buildingName}/${room.roomName}" 
+          data-height="300" data-side-pagination="server" data-pagination="true" data-page-list="[10, 20, 50]">
+          <thead>
+          <tr>
+              <th data-field="dateTime" data-align="center">时间</th>
+              <th data-field="remain" data-align="left" >余额</th>
+          </tr>
+          </thead>
         </table>
       </div>
     </div>
@@ -313,15 +315,15 @@ $(document).ready(function() {
     </div>
     <div class="box-body no-padding">
       <div class="table-responsive">
-        <table class="table table-striped">
-          <tbody>
-            <tr>
-              <th>Country</th>
-              <th>Visitors</th>
-              <th>Online</th>
-              <th>Page Views</th>
-            </tr>
-          </tbody>
+        <table data-toggle="table" data-url="${pageContext.request.contextPath}/api/charge/${room.buildingName}/${room.roomName}" 
+          data-height="300" data-side-pagination="server" data-pagination="true" data-page-list="[10, 20, 50]">
+          <thead>
+          <tr>
+              <th data-field="dateTime" data-align="center" >时间</th>
+              <th data-field="chargePower" data-align="left" >充值金额</th>
+              <th data-field="chargeMoney" data-align="left" >充值电量</th>
+          </tr>
+          </thead>
         </table>
       </div>
     </div>
