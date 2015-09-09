@@ -1,0 +1,46 @@
+@CHARSET "UTF-8";
+
+.legend-table {
+	position: absolute; 
+	top: 80px; 
+	right: 40px;
+	font-size: smaller; 
+	color: #545454
+}
+
+.legend-table tr {
+	padding-top: 5px;
+}
+
+.legend-table td {
+  padding-left: 5px;
+}
+
+.legendColorBox-border {
+	border: 1px solid #000000;
+}
+
+.legendColorBox1 {
+	width:4px;
+	height:0;
+	border:5px solid rgb(11,98,164);
+	overflow:hidden
+}
+.legendColorBox2 {
+  width:4px;
+  height:0;
+  border:5px solid rgb(122,146,163);
+  overflow:hidden
+}
+.legendColorBox3 {
+  width:4px;
+  height:0;
+  border:5px solid #cc6666;
+  overflow:hidden
+}
+.legendColorBox4 {
+  width:4px;
+  height:0;
+  border:5px solid #663333;
+  overflow:hidden
+}
