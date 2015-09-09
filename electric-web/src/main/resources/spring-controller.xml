@@ -12,8 +12,6 @@
         http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
         ">
 
-  <mvc:annotation-driven />
-  
   <!-- static resources -->
   <mvc:resources mapping="/static/**" location="/static/" />
 
@@ -23,16 +21,21 @@
     <property name="suffix" value=".jsp" />
   </bean>
 
-  <bean id="annotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-    <property name="messageConverters">
-      <list>
-        <ref bean="stringHttpMessageConverter" />
-        <ref bean="jsonHttpMessageConverter" />
-      </list>
-    </property>
-  </bean>
-  <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
-  <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+						<property name="dateFormat">
+							<bean class="java.text.SimpleDateFormat">
+								<constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+							</bean>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 
   <!-- 自动扫描所有basePackage下以Controller注解的类或接口，完成Controller对象的注入 -->
   <context:component-scan base-package="com.hust.bill.electric" use-default-filters="false">

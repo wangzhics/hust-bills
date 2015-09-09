@@ -7,17 +7,19 @@
 <meta name="description" content="电费查询入口">
 <meta name="author" content="WangZ">
 <title>电费查询</title>
-<!-- Bootstrap -->
-<link href="static/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" type='text/css'>
-<!-- Full screen slider -->
-<link href="static/other/index/css/full-screen-slider.css" rel="stylesheet" type='text/css'>
-<script type="text/javascript" src="static/other/index/js/jquery.min.js"></script>
-<script type="text/javascript" src="static/other/index/js/jquery.countdown.js"></script>
-<script type="text/javascript" src="static/other/index/js/full-screen-slider.js"></script>
-<!-- land -->
-<link href="static/other/index/land.css" rel="stylesheet"  type='text/css'>
+<!-- jquery -->
+<script src="${pageContext.request.contextPath}/static/jquery/jquery-2.1.4.min.js" type="text/javascript"></script>
+<!-- jquery.countdown -->
+<script src="${pageContext.request.contextPath}/static/jquery.countdown-2.1.0/jquery.countdown.min.js" type="text/javascript"></script>
 <!-- angularJS -->
-<script src="static/angular-1.4.5/angular.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/static/angular-1.4.5/angular.min.js" type="text/javascript"></script>
+<!-- Bootstrap -->
+<link href="${pageContext.request.contextPath}/static/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" type='text/css' />
+<!-- Full screen slider -->
+<link href="${pageContext.request.contextPath}/static/other/index/full-screen-slider.css" rel="stylesheet" type='text/css' />
+<script src="${pageContext.request.contextPath}/static/other/index/full-screen-slider.js"  type="text/javascript" ></script>
+<!-- land -->
+<link href="${pageContext.request.contextPath}/static/other/index/land.css" rel="stylesheet"  type="text/css" />
 <script type="text/javascript">
 var app = angular.module('buildingApp', []);
 app.controller('buildingCtrl', function($scope, $http) {
@@ -45,12 +47,10 @@ input.ng-dirty.ng-invalid {
     <!-- Put the list of images you want to slide in full screen here.
        The image which has the class 'active' will be the starting slide.
        -->
-    <img src="static/other/index/img/room.jpg" alt="Room" class="active"> 
-    <img src="static/other/index/img/inner.jpg" alt="Inner"> 
-    <img src="static/other/index/img/table.jpg" alt="Table"> 
-    <img src="static/other/index/img/flower-collection.jpg" alt="Flower"> 
-    <img src="static/other/index/img/banana.jpg" alt="Banana"> 
-    <img src="static/other/index/img/nice.jpg" alt="Nice">
+    <img src="${pageContext.request.contextPath}/static/other/index/slider/1.jpg" alt="1" class="active"> 
+    <img src="${pageContext.request.contextPath}/static/other/index/slider/2.jpg" alt="2"> 
+    <img src="${pageContext.request.contextPath}/static/other/index/slider/3.jpg" alt="3"> 
+    <img src="${pageContext.request.contextPath}/static/other/index/slider/4.jpg" alt="4">
   </div>
   <div class="container transparent">
     <div class="row">

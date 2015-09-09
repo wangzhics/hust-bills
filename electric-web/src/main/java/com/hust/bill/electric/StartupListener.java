@@ -2,7 +2,6 @@ package com.hust.bill.electric;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Service;
 
 public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
 
