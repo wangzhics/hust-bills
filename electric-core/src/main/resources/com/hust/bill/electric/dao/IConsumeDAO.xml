@@ -115,7 +115,7 @@
   </select>
   
   <select id="getBuildingDateAvg" resultMap="dateAverageResultMap">
-     <![CDATA[ select buildingName, stamp, avg(consume) as average from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by stamp order by stamp asc ]]>
+     <![CDATA[ select buildingName, stamp, avg(consume) as average from e_consume where buildingName=#{buildingName} and consume>=0 and stamp>=#{startDate} and stamp<=#{endDate} group by stamp order by stamp asc ]]>
   </select>
   
   
@@ -124,8 +124,8 @@
       SET @rowNo=0;
 			select t2.roomName, t2.average, t2.rank, t2.total from
 			(select roomName, average, (@rowNo:=@rowNo+1) as rank, 
-			(select count(1) from (select avg(consume) from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by roomName) as t) as total from 
-			(select roomName, avg(consume) as average from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by roomName) as t1
+			(select count(1) from e_room where buildingName=#{buildingName} ) as total from 
+			(select roomName, avg(consume) as average from e_consume where buildingName=#{buildingName} and consume>=0 and stamp>=#{startDate} and stamp<=#{endDate} group by roomName) as t1
 			order by t1.average desc) as t2 where t2.roomName=#{roomName}
      ]]>
   </select>
