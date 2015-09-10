@@ -38,8 +38,8 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 	private IRecordService recordService;
 	
 	private Room[] rooms;
-	private Map<String, Date> lastRemianMap;
-	private Map<String, Date> lastChargeMap;
+	private Map<String, Date> lastRemianDateMap;
+	private Map<String, Date> lastChargeDateMap;
 	
 	private List<RemainRecord> remianRecordList = new ArrayList<RemainRecord>(200);
 	private List<ChargeRecord> chargeRecordList = new ArrayList<ChargeRecord>(100);
@@ -71,14 +71,14 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 			RecordPage recordPage = new RecordPage(sdf);
 			recordPage.parse(httpClient.getCurrentDocument());
 			int remianCount = 0, chargeCount = 0;
-			Date roomLastRemainDate = lastRemianMap.get(room.getRoomName());
+			Date roomLastRemainDate = lastRemianDateMap.get(room.getRoomName());
 			for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
 				if(roomLastRemainDate == null || remainLine.getDate().after(roomLastRemainDate)) {
 					remianRecordList.add(new RemainRecord(building.getName(), room.getRoomName(), remainLine.getDate(), remainLine.getRemain()));
 					remianCount ++;
 				}
 			}
-			Date roomLastChargeDate = lastChargeMap.get(room.getRoomName());
+			Date roomLastChargeDate = lastChargeDateMap.get(room.getRoomName());
 			for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
 				if(roomLastChargeDate == null ||chargeLine.getDate().after(roomLastChargeDate)) {
 					chargeRecordList.add(new ChargeRecord(building.getName(), room.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney()));
@@ -105,9 +105,9 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 		
 		logger.debug("record[{}]: perpare record history", building.getName());
 		rooms = roomService.getByBuilding(building.getName());
-		lastRemianMap = recordService.getLastRemainsByBuilding(building.getName());
-		lastChargeMap = recordService.getLastChargesByBuilding(building.getName());
-		logger.debug("record[{}]: perpare record history finish, room-{} lastRemianMap-{}, lastChargeMap", building.getName(), rooms.length, lastRemianMap.size(), lastChargeMap.size());
+		lastRemianDateMap = recordService.getLastRemainDatesByBuilding(building.getName());
+		lastChargeDateMap = recordService.getLastChargeDatesByBuilding(building.getName());
+		logger.debug("record[{}]: perpare record history finish, room-{} lastRemianMap-{}, lastChargeMap", building.getName(), rooms.length, lastRemianDateMap.size(), lastChargeDateMap.size());
 	}
 
 }

@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.RemainRecord;
-import com.hust.bill.electric.bean.query.DateAverage;
+import com.hust.bill.electric.bean.query.BuildingDateAverage;
+import com.hust.bill.electric.bean.query.RoomRank;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskResultBean;
@@ -36,6 +37,7 @@ public interface IConsumeDAO {
 	
 	public Consume[] getConsumesByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 	
-	public DateAverage[] getDateAvgByBuilding(@Param("buildingName") String buildingName, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+	public BuildingDateAverage[] getBuildingDateAvg(@Param("buildingName") String buildingName, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 	
+	public RoomRank getRoomRank(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

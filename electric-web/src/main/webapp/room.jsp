@@ -50,6 +50,7 @@ function initGraph() {
     hideHover : 'auto',
     resize : true
   });
+  $('#graphDiv svg').height(260);
 }
 
 function resetGraph(periodType, gap) {
@@ -141,6 +142,40 @@ function resetPeriodGraph(periodType) {
   }
 }
 
+function remainAjaxRequest(params) {
+  $.ajax({
+    url : '${pageContext.request.contextPath}/api/remain/${room.buildingName}/${room.roomName}/'
+      + params.data.limit + '/'+ params.data.offset,
+    type : 'get',
+    dataType : 'json',
+    success : function(result) {
+      params.success(result);
+      params.complete();
+    },
+    error : function(result) {
+      params.error(result);
+      params.complete();
+    }
+  });
+}
+
+function chargeAjaxRequest(params) {
+  $.ajax({
+    url : '${pageContext.request.contextPath}/api/charge/${room.buildingName}/${room.roomName}/'
+      + params.data.limit + '/'+ params.data.offset,
+    type : 'get',
+    dataType : 'json',
+    success : function(result) {
+      params.success(result);
+      params.complete();
+    },
+    error : function(result) {
+      params.error(result);
+      params.complete();
+    }
+  });
+}
+
 $(document).ready(function() {
   $('.dropdown-toggle').dropdown();
   initGraph();
@@ -165,7 +200,7 @@ $(document).ready(function() {
       <!-- small box -->
       <div class="small-box bg-green">
         <div class="inner">
-          <h3>150</h3>
+          <h3>${lastRemain.remain}</h3>
           <p>剩余电量</p>
         </div>
         <div class="icon">
@@ -181,7 +216,7 @@ $(document).ready(function() {
       <div class="small-box bg-aqua">
         <div class="inner">
           <h3>
-            53<sup style="font-size: 20px"> of 100</sup>
+            ${roomRank.rank}<sup style="font-size: 20px"> of ${roomRank.total}</sup>
           </h3>
           <p>一周排名</p>
         </div>
@@ -245,7 +280,7 @@ $(document).ready(function() {
     <!-- /.panel-heading -->
     <div class="panel-body" style="clear: both;">
           <div  id="graphParentDiv">
-            <div id="graphDiv"></div>
+            <div id="graphDiv" style="heigh:280px;"></div>
             <div>
               <div class="legend-content"></div>
               <table class="legend-table">
@@ -286,8 +321,8 @@ $(document).ready(function() {
     </div>
     <div class="box-body no-padding">
       <div class="table-responsive">
-        <table data-toggle="table" data-url="${pageContext.request.contextPath}/api/remain/${room.buildingName}/${room.roomName}" 
-          data-height="300" data-side-pagination="server" data-pagination="true" data-page-list="[10, 20, 50]">
+        <table data-toggle="table" data-ajax="remainAjaxRequest" data-side-pagination="server" 
+          data-pagination="true" data-page-size="7" data-page-list="[]">
           <thead>
           <tr>
               <th data-field="dateTime" data-align="center">时间</th>
@@ -315,8 +350,8 @@ $(document).ready(function() {
     </div>
     <div class="box-body no-padding">
       <div class="table-responsive">
-        <table data-toggle="table" data-url="${pageContext.request.contextPath}/api/charge/${room.buildingName}/${room.roomName}" 
-          data-height="300" data-side-pagination="server" data-pagination="true" data-page-list="[10, 20, 50]">
+        <table  data-toggle="table" data-ajax="chargeAjaxRequest" data-side-pagination="server" 
+          data-pagination="true" data-page-size="7" data-page-list="[]">
           <thead>
           <tr>
               <th data-field="dateTime" data-align="center" >时间</th>

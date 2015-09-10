@@ -86,20 +86,6 @@
     <result column="money"          property="chargeMoney"    jdbcType="FLOAT" />
   </resultMap>
   
-  <select id="getLastRemainsByBuilding" resultMap="recordRemainResultMap">
-     select buildingName, roomName, max(stamp) stamp, remain from e_record_remain where buildingName=#{buildingName} group by roomName;
-  </select>
-  
-  <select id="getUnCalculateRemains" resultMap="recordRemainResultMap">
-    select buildingName, roomName, stamp, remain from e_record_remain where 1 = 1
-    <trim suffixOverrides="and | or">
-      <if test="buildingName != null">and buildingName = #{buildingName}</if>
-      <if test="roomName != null"> and roomName = #{roomName}</if>
-      <if test="lastDateTime != null"> and stamp > #{lastDateTime}</if>
-    </trim>
-    order by stamp asc
-  </select>
-  
   <insert id="insertRemains">
     <if test="array.length == 0">
       select count(*) from e_record_remain
@@ -112,14 +98,46 @@
     </if>
   </insert>
   
-  <select id="getLastChargesByBuilding" resultMap="recordChargeResultMap">
-     select buildingName, roomName, max(stamp) stamp, power, money from e_record_charge where buildingName=#{buildingName} group by roomName;
+  <select id="getLastRemainDatesByBuilding" resultMap="recordRemainResultMap">
+     select buildingName, roomName, max(stamp) stamp from e_record_remain where buildingName=#{buildingName} group by roomName;
   </select>
   
-  <select id="getCharges"  resultMap="recordChargeResultMap">
-    <![CDATA[ select buildingName, roomName, stamp, power, money from e_record_charge where buildingName=#{buildingName} and roomName = #{roomName} and stamp > #{startDateTime} and stamp < #{endDateTime}  order by stamp asc ]]>
+  <select id="getUnCalculateRemains" resultMap="recordRemainResultMap">
+    select buildingName, roomName, stamp, remain from e_record_remain where 1 = 1
+    <trim suffixOverrides="and | or">
+      <if test="buildingName != null">and buildingName = #{buildingName}</if>
+      <if test="roomName != null"> and roomName = #{roomName}</if>
+      <if test="lastDateTime != null"> and stamp > #{lastDateTime}</if>
+    </trim>
+    order by stamp asc
   </select>
-    
+ 
+  <select id="getRemainsByRoom"  resultMap="recordRemainResultMap">
+    select buildingName, roomName, stamp, remain from e_record_remain where buildingName=#{buildingName} and roomName=#{roomName} order by stamp desc limit #{limit} offset #{offset}
+  </select>
+  
+  <select id="getRemainCountByRoom" resultType="Integer">
+    select count(stamp) from e_record_remain where buildingName=#{buildingName} and roomName=#{roomName} 
+  </select>
+  
+  <select id="getLastRemainByRoom"  resultMap="recordRemainResultMap">
+     select buildingName, roomName, stamp, remain from e_record_remain 
+        where buildingName=#{buildingName} and roomName=#{roomName} 
+          and stamp=(select max(stamp) from e_record_remain where buildingName=#{buildingName} and roomName=#{roomName})
+  </select>
+  
+  <select id="geLastRemainsByBuilding" resultMap="recordRemainResultMap">
+    select t3.buildingName, t3.roomName, t4.stamp, t4.remain from (
+    (select buildingName, roomName from e_room where buildingName=#{buildingName}) as t3
+    left join
+    (select t1.roomName, t1.stamp, t2.remain from(
+    (select roomName, max(stamp) stamp from e_record_remain where buildingName=#{buildingName} group by roomName) as t1 
+    left join 
+    (select roomName, stamp, remain from e_record_remain where buildingName=#{buildingName}) as t2 
+    on t1.roomName=t2.roomName and t1.stamp=t2.stamp)) as t4
+    on t3.roomName = t4.roomName)
+  </select>
+      
   <insert id="insertCharges">
     <if test="array.length == 0">
       select count(*) from e_record_charge
@@ -131,5 +149,21 @@
       </foreach>
     </if>
   </insert>
+  
+  <select id="getLastChargeDatesByBuilding" resultMap="recordChargeResultMap">
+     select buildingName, roomName, max(stamp) stamp from e_record_charge where buildingName=#{buildingName} group by roomName;
+  </select>
+  
+  <select id="getChargesByGapDate"  resultMap="recordChargeResultMap">
+    <![CDATA[ select buildingName, roomName, stamp, power, money from e_record_charge where buildingName=#{buildingName} and roomName = #{roomName} and stamp > #{startDateTime} and stamp < #{endDateTime}  order by stamp asc ]]>
+  </select>
+  
+  <select id="getChargesByRoom"  resultMap="recordChargeResultMap">
+    select buildingName, roomName, stamp, power, money from e_record_charge where buildingName=#{buildingName} and roomName=#{roomName} order by stamp desc limit #{limit} offset #{offset}
+  </select>
+  
+  <select id="getChargeCountByRoom" resultType="Integer">
+    select count(stamp) from e_record_charge where buildingName=#{buildingName} and roomName=#{roomName} 
+  </select>
 	
 </mapper>

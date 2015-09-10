@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.RemainRecord;
-import com.hust.bill.electric.bean.query.DateAverage;
+import com.hust.bill.electric.bean.query.BuildingDateAverage;
+import com.hust.bill.electric.bean.query.RoomRank;
 import com.hust.bill.electric.bean.task.TaskBean;
 import com.hust.bill.electric.bean.task.TaskStatus;
 import com.hust.bill.electric.bean.task.consume.ConsumeTaskBean;
@@ -80,8 +81,14 @@ public class ConsumeService implements IConsumeService {
 	}
 
 	@Override
-	public DateAverage[] getDateAvgByBuilding(String buildingName, Date startDate, Date endDate) {
-		return consumeDAO.getDateAvgByBuilding(buildingName, startDate, endDate);
+	public BuildingDateAverage[] getBuildingDateAvg(String buildingName, Date startDate, Date endDate) {
+		return consumeDAO.getBuildingDateAvg(buildingName, startDate, endDate);
+	}
+
+
+	@Override
+	public RoomRank getRoomRank(String buildingName, String roomName, Date startDate, Date endDate) {
+		return consumeDAO.getRoomRank(buildingName, roomName, startDate, endDate);
 	}
 
 }

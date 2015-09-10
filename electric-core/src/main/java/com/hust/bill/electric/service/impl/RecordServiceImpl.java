@@ -67,8 +67,8 @@ public class RecordServiceImpl implements IRecordService{
 	}
 
 	@Override
-	public Map<String, Date> getLastRemainsByBuilding(String buildingName) {
-		RemainRecord[] records = recordDAO.getLastRemainsByBuilding(buildingName);
+	public Map<String, Date> getLastRemainDatesByBuilding(String buildingName) {
+		RemainRecord[] records = recordDAO.getLastRemainDatesByBuilding(buildingName);
 		Map<String, Date> map = new HashMap<>(records.length);
 		for(RemainRecord record : records) {
 			map.put(record.getRoomName(), record.getDateTime());
@@ -77,8 +77,8 @@ public class RecordServiceImpl implements IRecordService{
 	}
 
 	@Override
-	public Map<String, Date> getLastChargesByBuilding(String buildingName) {
-		ChargeRecord[] records= recordDAO.getLastChargesByBuilding(buildingName);
+	public Map<String, Date> getLastChargeDatesByBuilding(String buildingName) {
+		ChargeRecord[] records= recordDAO.getLastChargeDatesByBuilding(buildingName);
 		Map<String, Date> map = new HashMap<>(records.length);
 		for(ChargeRecord record : records) {
 			map.put(record.getRoomName(), record.getDateTime());
@@ -97,7 +97,32 @@ public class RecordServiceImpl implements IRecordService{
 
 	@Override
 	public ChargeRecord[] getCharges(String buildingName, String roomName, Date startDateTime, Date endDateTime) {
-		return recordDAO.getCharges(buildingName, roomName, startDateTime, endDateTime);
+		return recordDAO.getChargesByGapDate(buildingName, roomName, startDateTime, endDateTime);
+	}
+
+	@Override
+	public RemainRecord[] getRemains(String buildingName, String roomName, int limit, int offset) {
+		return recordDAO.getRemainsByRoom(buildingName, roomName, limit, offset);
+	}
+
+	@Override
+	public int getRemainCount(String buildingName, String roomName) {
+		return recordDAO.getRemainCountByRoom(buildingName, roomName);
+	}
+
+	@Override
+	public RemainRecord getLastRemain(String buildingName, String roomName) {
+		return recordDAO.getLastRemainByRoom(buildingName, roomName);
+	}
+
+	@Override
+	public ChargeRecord[] getCharges(String buildingName, String roomName, int limit, int offset) {
+		return recordDAO.getChargesByRoom(buildingName, roomName, limit, offset);
+	}
+
+	@Override
+	public int getChargeCount(String buildingName, String roomName) {
+		return recordDAO.getChargeCountByRoom(buildingName, roomName);
 	}
 
 }

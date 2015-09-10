@@ -37,9 +37,9 @@ public interface IRecordDAO {
 	
 	public RecordTaskResultBean[] getTaskResultsByTaskID(@Param("taskID") BigInteger taskID);
 	
-	public RemainRecord[] getLastRemainsByBuilding(@Param("buildingName") String buildingName);
+	public RemainRecord[] getLastRemainDatesByBuilding(@Param("buildingName") String buildingName);
 	
-	public ChargeRecord[] getLastChargesByBuilding(@Param("buildingName") String buildingName);
+	public ChargeRecord[] getLastChargeDatesByBuilding(@Param("buildingName") String buildingName);
 	
 	public void insertRemains(RemainRecord[] remainRecords);
 	
@@ -48,6 +48,19 @@ public interface IRecordDAO {
 	
 	public RemainRecord[] getUnCalculateRemains(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("lastDateTime") Date lastDateTime);
 	
-	public ChargeRecord[] getCharges(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
+	public ChargeRecord[] getChargesByGapDate(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
+
 	
+	public RemainRecord[] getRemainsByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("limit") int limit, @Param("offset") int offset);
+	
+	public int getRemainCountByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName);
+	
+	public ChargeRecord[] getChargesByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName, @Param("limit") int limit, @Param("offset") int offset);
+	
+	public int getChargeCountByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName);
+	
+	
+	public RemainRecord getLastRemainByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName);
+	
+	public RemainRecord[] getLastRemainsByBuilding(@Param("buildingName") String buildingName);
 }

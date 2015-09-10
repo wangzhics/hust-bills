@@ -2,11 +2,21 @@ package com.hust.bill.electric.bean.query;
 
 import java.util.Date;
 
-public class DateAverage {
+public class BuildingDateAverage {
 
+	private String buildingName;
 	private Date date;
 	private float average;
 	
+	
+	public String getBuildingName() {
+		return buildingName;
+	}
+
+	public void setBuildingName(String buildingName) {
+		this.buildingName = buildingName;
+	}
+
 	public Date getDate() {
 		return date;
 	}

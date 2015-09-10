@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hust.bill.electric.bean.Building;
 import com.hust.bill.electric.bean.Consume;
 import com.hust.bill.electric.bean.Room;
-import com.hust.bill.electric.bean.query.DateAverage;
+import com.hust.bill.electric.bean.query.BuildingDateAverage;
 import com.hust.bill.electric.service.IBuildingService;
 import com.hust.bill.electric.service.IConsumeService;
 import com.hust.bill.electric.service.IRoomService;
@@ -36,24 +36,24 @@ public class ConsumeAPI {
 
 	@RequestMapping(value="/{buildingName}/week/avg", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<DateAverage[]> getBuildingWeekAverage(@PathVariable String buildingName) {
+	public ResponseEntity<BuildingDateAverage[]> getBuildingWeekAverage(@PathVariable String buildingName) {
 		if(StringUtils.isEmpty(buildingName)){
-			return new ResponseEntity<DateAverage[]>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<BuildingDateAverage[]>(HttpStatus.BAD_REQUEST);
 		}
 		Building building = buildingService.getByName(buildingName);
 		if(building == null) {
-			return new ResponseEntity<DateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<BuildingDateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		Calendar endCalendar = Calendar.getInstance();
 		Calendar startCalendar = Calendar.getInstance();
 		startCalendar.add(Calendar.DATE, -6);
-		DateAverage[] averages =  consumeService.getDateAvgByBuilding(buildingName, startCalendar.getTime(), endCalendar.getTime());
-		return new ResponseEntity<DateAverage[]>(averages, HttpStatus.OK);
+		BuildingDateAverage[] averages =  consumeService.getBuildingDateAvg(buildingName, startCalendar.getTime(), endCalendar.getTime());
+		return new ResponseEntity<BuildingDateAverage[]>(averages, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/{buildingName}/{roomName}/week", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<Consume[]> getRoomWeek(@PathVariable String buildingName, @PathVariable String roomName, Model model) {
+	public ResponseEntity<Consume[]> getRoomWeek(@PathVariable String buildingName, @PathVariable String roomName) {
 		if(StringUtils.isEmpty(buildingName) || StringUtils.isEmpty(roomName)){
 			return new ResponseEntity<Consume[]>(HttpStatus.BAD_REQUEST);
 		}
@@ -70,19 +70,19 @@ public class ConsumeAPI {
 	
 	@RequestMapping(value="/{buildingName}/month/avg", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<DateAverage[]> getBuildingMonthAverage(@PathVariable String buildingName) {
+	public ResponseEntity<BuildingDateAverage[]> getBuildingMonthAverage(@PathVariable String buildingName) {
 		if(StringUtils.isEmpty(buildingName)){
-			return new ResponseEntity<DateAverage[]>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<BuildingDateAverage[]>(HttpStatus.BAD_REQUEST);
 		}
 		Building building = buildingService.getByName(buildingName);
 		if(building == null) {
-			return new ResponseEntity<DateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<BuildingDateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		Calendar endCalendar = Calendar.getInstance();
 		Calendar startCalendar = Calendar.getInstance();
 		startCalendar.add(Calendar.DATE, -6);
-		DateAverage[] averages =  consumeService.getDateAvgByBuilding(buildingName, startCalendar.getTime(), endCalendar.getTime());
-		return new ResponseEntity<DateAverage[]>(averages, HttpStatus.OK);
+		BuildingDateAverage[] averages =  consumeService.getBuildingDateAvg(buildingName, startCalendar.getTime(), endCalendar.getTime());
+		return new ResponseEntity<BuildingDateAverage[]>(averages, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/{buildingName}/{roomName}/month", method = RequestMethod.GET)

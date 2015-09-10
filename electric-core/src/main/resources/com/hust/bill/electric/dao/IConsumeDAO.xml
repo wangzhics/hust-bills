@@ -87,9 +87,15 @@
     <result column="consume"        property="consume"        jdbcType="FLOAT" />
   </resultMap>
   <!-- DateAverage -->
-  <resultMap id="dateAverageResultMap" type="com.hust.bill.electric.bean.query.DateAverage">
-    <result column="stamp"     property="date"      jdbcType="DATE" />
-    <result column="consume"   property="average"   jdbcType="FLOAT" />
+  <resultMap id="dateAverageResultMap" type="com.hust.bill.electric.bean.query.BuildingDateAverage">
+    <result column="buildingName"   property="buildingName"   jdbcType="NVARCHAR" />
+    <result column="stamp"          property="date"           jdbcType="DATE" />
+    <result column="average"        property="average"        jdbcType="FLOAT" />
+  </resultMap>
+  <resultMap id="roomRankResultMap" type="com.hust.bill.electric.bean.query.RoomRank">
+    <result column="average"        property="average"        jdbcType="FLOAT" />
+    <result column="rank"           property="rank"           jdbcType="INTEGER" />
+    <result column="total"          property="total"          jdbcType="INTEGER" />
   </resultMap>
   
   <insert id="insertConsumes">
@@ -108,8 +114,21 @@
      <![CDATA[ select buildingName, roomName, stamp, consume from e_consume where buildingName=#{buildingName} and roomName=#{roomName} and stamp>=#{startDate} and stamp<=#{endDate} order by stamp asc ]]>
   </select>
   
-  <select id="getDateAvgByBuilding" resultMap="dateAverageResultMap">
-     <![CDATA[ select stamp, avg(consume) as consume from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by stamp order by stamp asc ]]>
+  <select id="getBuildingDateAvg" resultMap="dateAverageResultMap">
+     <![CDATA[ select buildingName, stamp, avg(consume) as average from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by stamp order by stamp asc ]]>
   </select>
+  
+  
+  <select id="getRoomRank" resultMap="roomRankResultMap">
+     <![CDATA[ 
+      SET @rowNo=0;
+			select t2.roomName, t2.average, t2.rank, t2.total from
+			(select roomName, average, (@rowNo:=@rowNo+1) as rank, 
+			(select count(1) from (select avg(consume) from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by roomName) as t) as total from 
+			(select roomName, avg(consume) as average from e_consume where buildingName=#{buildingName} and consume!=0 and stamp>=#{startDate} and stamp<=#{endDate} group by roomName) as t1
+			order by t1.average desc) as t2 where t2.roomName=#{roomName}
+     ]]>
+  </select>
+  
 	
 </mapper>
