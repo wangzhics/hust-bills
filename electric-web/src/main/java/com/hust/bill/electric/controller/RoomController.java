@@ -44,16 +44,8 @@ public class RoomController {
 		
 		Calendar yesterday = Calendar.getInstance();
 		yesterday.add(Calendar.DATE, -1);
-		yesterday.set(Calendar.HOUR_OF_DAY, 0);
-		yesterday.set(Calendar.MINUTE, 0);
-		yesterday.set(Calendar.SECOND, 0);
-		yesterday.set(Calendar.MILLISECOND, 0);
 		Calendar week_ago = Calendar.getInstance();
 		week_ago.add(Calendar.DATE, -7);
-		week_ago.set(Calendar.HOUR_OF_DAY, 0);
-		week_ago.set(Calendar.MINUTE, 0);
-		week_ago.set(Calendar.SECOND, 0);
-		week_ago.set(Calendar.MILLISECOND, 0);
 		RoomRank roomRank = consumeService.getRoomRank(buildingName, roomName, week_ago.getTime(), yesterday.getTime());
 		model.addAttribute("roomRank", roomRank);
 		

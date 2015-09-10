@@ -59,7 +59,7 @@ function resetGraph(periodType, gap) {
   var roomReady = false, readyAverage = false;
   var graph_data = new Array();
   var ago = moment();
-  ago.subtract((gap - 1), 'days');
+  ago.subtract(gap + 1, 'days');
   for (var i = 0; i < gap; i++) {
     var data = new Object();
     ago.add(1, 'days');

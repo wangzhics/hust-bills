@@ -45,8 +45,9 @@ public class ConsumeAPI {
 			return new ResponseEntity<BuildingDateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.add(Calendar.DATE, -1);
 		Calendar startCalendar = Calendar.getInstance();
-		startCalendar.add(Calendar.DATE, -6);
+		startCalendar.add(Calendar.DATE, -7);
 		BuildingDateAverage[] averages =  consumeService.getBuildingDateAvg(buildingName, startCalendar.getTime(), endCalendar.getTime());
 		return new ResponseEntity<BuildingDateAverage[]>(averages, HttpStatus.OK);
 	}
@@ -62,8 +63,9 @@ public class ConsumeAPI {
 			return new ResponseEntity<Consume[]>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.add(Calendar.DATE, -1);
 		Calendar startCalendar = Calendar.getInstance();
-		startCalendar.add(Calendar.DATE, -6);
+		startCalendar.add(Calendar.DATE, -7);
 		Consume[] consumes =  consumeService.getConsumesByRoom(buildingName, roomName, startCalendar.getTime(), endCalendar.getTime());
 		return new ResponseEntity<Consume[]>(consumes, HttpStatus.OK);
 	}
@@ -79,8 +81,9 @@ public class ConsumeAPI {
 			return new ResponseEntity<BuildingDateAverage[]>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.add(Calendar.DATE, -1);
 		Calendar startCalendar = Calendar.getInstance();
-		startCalendar.add(Calendar.DATE, -6);
+		startCalendar.add(Calendar.DATE, -28);
 		BuildingDateAverage[] averages =  consumeService.getBuildingDateAvg(buildingName, startCalendar.getTime(), endCalendar.getTime());
 		return new ResponseEntity<BuildingDateAverage[]>(averages, HttpStatus.OK);
 	}
@@ -96,8 +99,9 @@ public class ConsumeAPI {
 			return new ResponseEntity<Consume[]>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.add(Calendar.DATE, -1);
 		Calendar startCalendar = Calendar.getInstance();
-		startCalendar.add(Calendar.DATE, -6);
+		startCalendar.add(Calendar.DATE, -28);
 		Consume[] consumes =  consumeService.getConsumesByRoom(buildingName, roomName, startCalendar.getTime(), endCalendar.getTime());
 		return new ResponseEntity<Consume[]>(consumes, HttpStatus.OK);
 	}
