@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -103,7 +104,7 @@ function resetGraph(periodType, gap) {
         var period = graph_data[index].period;
         var average = dataMap[period];
         if (average != null) {
-          graph_data[index].average = average;
+          graph_data[index].average = average.toFixed(2);
         }
       }
       readyAverage = true;
@@ -200,8 +201,8 @@ $(document).ready(function() {
       <!-- small box -->
       <div class="small-box bg-green">
         <div class="inner">
-          <h3>${lastRemain.remain}</h3>
-          <p>剩余电量</p>
+          <h3>${lastRemain.remain}<sup style="font-size: 20px">&nbsp;KW</sup></h3>
+          <p>剩余电量，截至<fmt:formatDate value="${lastRemain.dateTime}" type="date"/></p>
         </div>
         <div class="icon">
           <i class="ion ion-pie-graph"></i>
@@ -216,7 +217,7 @@ $(document).ready(function() {
       <div class="small-box bg-aqua">
         <div class="inner">
           <h3>
-            ${roomRank.rank}<sup style="font-size: 20px"> of ${roomRank.total}</sup>
+            ${roomRank.rank}<sup style="font-size: 20px">&nbsp;of ${roomRank.total}</sup>
           </h3>
           <p>一周排名</p>
         </div>
@@ -246,8 +247,8 @@ $(document).ready(function() {
       <!-- small box -->
       <div class="small-box bg-red">
         <div class="inner">
-          <h3>--</h3>
-          <p>可用天数</p>
+          <h3>${dayCount}<sup style="font-size: 20px">&nbsp;Day</sup></h3>
+          <p>可用天数，<fmt:formatNumber value="${roomRank.average}" pattern="0.00"/>KW/Day</p>
         </div>
         <div class="icon">
           <i class="ion ion-flash-off"></i>
@@ -300,7 +301,9 @@ $(document).ready(function() {
         </div>
     <div class="panel-footer">
     <small class="pull-right">
-      <i class="fa fa-clock-o"> </i>2015.02.30更新
+    <!-- 
+      <i class="fa fa-clock-o"> </i><fmt:formatDate value="${lastRemain.dateTime}" type="both"/>更新
+     -->
     </small>
     </div>
   </div>
@@ -311,7 +314,7 @@ $(document).ready(function() {
     <div class="box-header">
       <!-- tools box -->
       <div class="pull-right box-tools">
-        <button class="btn btn-danger btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#079C6C;border-color:#3c8dbc">
+        <button class="btn btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#079C6C;border-color:#3c8dbc">
           <i class="fa fa-refresh"></i>
         </button>
       </div>
@@ -339,9 +342,8 @@ $(document).ready(function() {
     <div class="box-header">
       <!-- tools box -->
       <div class="pull-right box-tools">
-        <button class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip" title="Collapse"
-          style="margin-right: 5px;">
-          <i class="fa fa-close"></i>
+        <button class="btn btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#c1c1c1;border-color:#3c8dbc">
+          <i class="fa fa-refresh"></i>
         </button>
       </div>
       <!-- /. tools -->

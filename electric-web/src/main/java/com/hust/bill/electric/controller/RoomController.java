@@ -57,6 +57,13 @@ public class RoomController {
 		RoomRank roomRank = consumeService.getRoomRank(buildingName, roomName, week_ago.getTime(), yesterday.getTime());
 		model.addAttribute("roomRank", roomRank);
 		
+		if(roomRank.getAverage() > 0) {
+			int dayCount = (int) (lastRemain.getRemain() / roomRank.getAverage());
+			model.addAttribute("dayCount", dayCount);
+		} else {
+			model.addAttribute("dayCount", "--");
+		}
+		
 		return "room";
 	}
 }
