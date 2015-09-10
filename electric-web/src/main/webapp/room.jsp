@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="宿舍电费详情页" />
 <meta name="author" content="WangZ" />
-<title>宿舍电费</title>
+<title>${room.buildingName}-${room.roomName}</title>
 <!-- jquery js -->
 <script src="${pageContext.request.contextPath}/static/jquery/jquery-2.1.4.min.js" type="text/javascript"></script>
 <!-- Bootstrap -->
@@ -314,7 +314,7 @@ $(document).ready(function() {
     <div class="box-header">
       <!-- tools box -->
       <div class="pull-right box-tools">
-        <button class="btn btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#079C6C;border-color:#3c8dbc">
+        <button class="btn btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#079C6C;border-color:#F5E9E9">
           <i class="fa fa-refresh"></i>
         </button>
       </div>
@@ -342,7 +342,7 @@ $(document).ready(function() {
     <div class="box-header">
       <!-- tools box -->
       <div class="pull-right box-tools">
-        <button class="btn btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#c1c1c1;border-color:#3c8dbc">
+        <button class="btn btn-sm refresh-btn" data-toggle="tooltip" title="Refresh" style="background-color:#c1c1c1;border-color:#F5E9E9">
           <i class="fa fa-refresh"></i>
         </button>
       </div>
