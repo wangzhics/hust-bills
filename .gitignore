@@ -22,3 +22,6 @@ RemoteSystemsTempFiles
 
 # Eclipse Code Recommenders 
 .recommenders
+
+# Eclipse Server Confirgetion
+Server*
