@@ -14,6 +14,8 @@
 
   <!-- static resources -->
   <mvc:resources mapping="/static/**" location="/static/" />
+	
+  <bean id ="startupListener" class="com.hust.bill.electric.StartupListener"/>  
 
   <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
@@ -42,6 +44,5 @@
     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
   </context:component-scan>
 
-  <bean id ="startupListener" class="com.hust.bill.electric.StartupListener"/>  
   
 </beans>
