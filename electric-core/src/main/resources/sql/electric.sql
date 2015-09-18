@@ -132,6 +132,20 @@ ALTER TABLE `e_record_remain` ADD INDEX `ix_e_record_remain_building` (`building
 ALTER TABLE `e_record_remain` ADD INDEX `ix_e_record_remain_room` (`roomName`);
 
 --
+DROP TABLE IF EXISTS `e_record_remain_last`;
+CREATE TABLE `e_record_remain_last` (
+  `buildingName`  nvarchar(50)  NOT NULL,
+  `roomName`      varchar(5)    NOT NULL,
+  `stamp`         datetime,
+  `remain`        DECIMAL(8,2),
+  PRIMARY KEY (`buildingName`, `roomName`),
+  FOREIGN KEY `fk_e_record_remain_last` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+ALTER TABLE `e_record_remain_last` ADD INDEX `ix_e_record_remain_last_building` (`buildingName`);
+ALTER TABLE `e_record_remain_last` ADD INDEX `ix_e_record_remain_last_room` (`roomName`);
+
+
+--
 DROP TABLE IF EXISTS `e_record_charge`;
 CREATE TABLE `e_record_charge` (
   `buildingName`  nvarchar(50)  NOT NULL,
@@ -144,6 +158,21 @@ CREATE TABLE `e_record_charge` (
 ) ENGINE=Innodb, DEFAULT CHARSET=utf8;
 ALTER TABLE `e_record_charge` ADD INDEX `ix_e_record_charge_building` (`buildingName`);
 ALTER TABLE `e_record_charge` ADD INDEX `ix_e_record_charge_room` (`roomName`);
+
+
+--
+DROP TABLE IF EXISTS `e_record_charge_last`;
+CREATE TABLE `e_record_charge_last` (
+  `buildingName`  nvarchar(50)  NOT NULL,
+  `roomName`      varchar(5)    NOT NULL,
+  `stamp`         datetime,    
+  `power`         DECIMAL(7,2),
+  `money`         DECIMAL(6,2),
+  PRIMARY KEY (`buildingName`, `roomName`),
+  FOREIGN KEY `fk_e_record_charge_last` (`buildingName`, `roomName`) REFERENCES `e_room`(`buildingName`, `roomName`)
+) ENGINE=Innodb, DEFAULT CHARSET=utf8;
+ALTER TABLE `e_record_charge_last` ADD INDEX `ix_e_record_charge_last_building` (`buildingName`);
+ALTER TABLE `e_record_charge_last` ADD INDEX `ix_e_record_charge_last_room` (`roomName`);
 
 
 --

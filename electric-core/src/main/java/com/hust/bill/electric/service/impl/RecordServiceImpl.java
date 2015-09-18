@@ -60,28 +60,30 @@ public class RecordServiceImpl implements IRecordService{
 	
 	@Override
 	@Transactional
-	public void insertRecords(RecordTaskResultBean taskResultBean, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords) {
+	public void addRecords(RecordTaskResultBean taskResultBean, RemainRecord[] lastRemainRecords, ChargeRecord[] lastChargeRecords, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords) {
 		recordDAO.insertTaskResult(taskResultBean);
+		recordDAO.updateLastRemainsByBuilding(remainRecords);
 		recordDAO.insertRemains(remainRecords);
+		recordDAO.updateLastChargesByBuilding(lastChargeRecords);
 		recordDAO.insertCharges(chargeRecords);
 	}
 
 	@Override
-	public Map<String, Date> getLastRemainDatesByBuilding(String buildingName) {
-		RemainRecord[] records = recordDAO.getLastRemainDatesByBuilding(buildingName);
-		Map<String, Date> map = new HashMap<>(records.length);
+	public Map<String, RemainRecord> getLastRemainsByBuilding(String buildingName) {
+		RemainRecord[] records = recordDAO.getLastRemainsByBuilding(buildingName);
+		Map<String, RemainRecord> map = new HashMap<String, RemainRecord>(records.length);
 		for(RemainRecord record : records) {
-			map.put(record.getRoomName(), record.getDateTime());
+			map.put(record.getRoomName(), record);
 		}
 		return map;
 	}
 
 	@Override
-	public Map<String, Date> getLastChargeDatesByBuilding(String buildingName) {
-		ChargeRecord[] records= recordDAO.getLastChargeDatesByBuilding(buildingName);
-		Map<String, Date> map = new HashMap<>(records.length);
+	public Map<String, ChargeRecord> getLastChargesByBuilding(String buildingName) {
+		ChargeRecord[] records= recordDAO.getLastChargesByBuilding(buildingName);
+		Map<String, ChargeRecord> map = new HashMap<String, ChargeRecord>(records.length);
 		for(ChargeRecord record : records) {
-			map.put(record.getRoomName(), record.getDateTime());
+			map.put(record.getRoomName(), record);
 		}
 		return map;
 	}

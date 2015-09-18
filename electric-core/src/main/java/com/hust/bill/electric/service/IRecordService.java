@@ -11,11 +11,11 @@ import com.hust.bill.electric.bean.task.record.RecordTaskResultBean;
 
 public interface IRecordService extends ITaskService {
 	
-	public Map<String, Date> getLastRemainDatesByBuilding(String buildingName);
+	public Map<String, RemainRecord> getLastRemainsByBuilding(String buildingName);
 	
-	public Map<String, Date> getLastChargeDatesByBuilding(String buildingName);
+	public Map<String, ChargeRecord> getLastChargesByBuilding(String buildingName);
 	
-	public void insertRecords(RecordTaskResultBean taskResultBean, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords);
+	public void addRecords(RecordTaskResultBean taskResultBean, RemainRecord[] lastRemainRecords, ChargeRecord[] lastChargeRecords, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords);
 	
 	public Building[] getUnSuccessBuildings(BigInteger taskId);
 	

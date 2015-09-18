@@ -2,7 +2,6 @@ package com.hust.bill.electric.core.task.record;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -38,12 +37,13 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 	private IRecordService recordService;
 	
 	private Room[] rooms;
-	private Map<String, Date> lastRemianDateMap;
-	private Map<String, Date> lastChargeDateMap;
+	private Map<String, RemainRecord> lastRemianMap;
+	private Map<String, ChargeRecord> lastChargeMap;
 	
 	private List<RemainRecord> remianRecordList = new ArrayList<RemainRecord>(200);
+	private List<RemainRecord> lastRemianRecordList = new ArrayList<RemainRecord>(100);
 	private List<ChargeRecord> chargeRecordList = new ArrayList<ChargeRecord>(100);
-	
+	private List<ChargeRecord> lastChargeRecordList = new ArrayList<ChargeRecord>(100);	
 	
 	
 	public ScanByBuildingCallable(RecordTaskBean taskBean, Building building, 
@@ -71,25 +71,39 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 			RecordPage recordPage = new RecordPage(sdf);
 			recordPage.parse(httpClient.getCurrentDocument());
 			int remianCount = 0, chargeCount = 0;
-			Date roomLastRemainDate = lastRemianDateMap.get(room.getRoomName());
+			RemainRecord roomLastRemain = lastRemianMap.get(room.getRoomName());
+			RemainRecord lastRemianRecord = new RemainRecord(roomLastRemain.getBuildingName(), roomLastRemain.getRoomName(), roomLastRemain.getDateTime(), roomLastRemain.getRemain());
 			for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
-				if(roomLastRemainDate == null || remainLine.getDate().after(roomLastRemainDate)) {
+				if(roomLastRemain.getDateTime() == null || remainLine.getDate().after(roomLastRemain.getDateTime())) {
 					remianRecordList.add(new RemainRecord(building.getName(), room.getRoomName(), remainLine.getDate(), remainLine.getRemain()));
 					remianCount ++;
+					if(remainLine.getDate().after(lastRemianRecord.getDateTime())) {
+						lastRemianRecord.setDateTime(remainLine.getDate());
+						lastRemianRecord.setRemain(remainLine.getRemain());
+					}
 				}
 			}
-			Date roomLastChargeDate = lastChargeDateMap.get(room.getRoomName());
+			lastRemianRecordList.add(lastRemianRecord);
+			ChargeRecord roomLastCharge = lastChargeMap.get(room.getRoomName());
+			ChargeRecord lastChargeRecord = new ChargeRecord(roomLastCharge.getBuildingName(), roomLastCharge.getRoomName(), roomLastCharge.getDateTime(), roomLastCharge.getChargePower(), roomLastCharge.getChargeMoney());
 			for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
-				if(roomLastChargeDate == null ||chargeLine.getDate().after(roomLastChargeDate)) {
+				if(roomLastCharge.getDateTime() == null ||chargeLine.getDate().after(roomLastCharge.getDateTime())) {
 					chargeRecordList.add(new ChargeRecord(building.getName(), room.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney()));
 					chargeCount ++;
+					if(chargeLine.getDate().after(lastRemianRecord.getDateTime())) {
+						lastChargeRecord.setDateTime(chargeLine.getDate());
+						lastChargeRecord.setChargePower(chargeLine.getPower());
+						lastChargeRecord.setChargeMoney(chargeLine.getMoney());
+					}
 				}
 			}
+			lastChargeRecordList.add(lastChargeRecord);
 			logger.debug("record[{}]: room{} remian count {}-{}, charge count {}-{}", building.getName(), room.getRoomName(), recordPage.getRemainLines().length, remianCount, recordPage.getChargeLines().length, chargeCount);
 		}
 		RecordTaskResultBean resultBean = new RecordTaskResultBean(taskBean.getId(), building.getName(), remianRecordList.size(), chargeRecordList.size());
 		logger.info("record[{}]: remian count {}, charge count {}", building.getName(), resultBean.getRemainCount(), resultBean.getChargeCount());
-		recordService.insertRecords(resultBean, remianRecordList.toArray(new RemainRecord[0]), chargeRecordList.toArray(new ChargeRecord[0]));
+		recordService.addRecords(resultBean, lastRemianRecordList.toArray(new RemainRecord[0]), lastChargeRecordList.toArray(new ChargeRecord[0]),
+				remianRecordList.toArray(new RemainRecord[0]), chargeRecordList.toArray(new ChargeRecord[0]));
 		return new ScanByBuildingResult(resultBean);
 	}
 	
@@ -105,9 +119,9 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 		
 		logger.debug("record[{}]: perpare record history", building.getName());
 		rooms = roomService.getByBuilding(building.getName());
-		lastRemianDateMap = recordService.getLastRemainDatesByBuilding(building.getName());
-		lastChargeDateMap = recordService.getLastChargeDatesByBuilding(building.getName());
-		logger.debug("record[{}]: perpare record history finish, room-{} lastRemianMap-{}, lastChargeMap", building.getName(), rooms.length, lastRemianDateMap.size(), lastChargeDateMap.size());
+		lastRemianMap = recordService.getLastRemainsByBuilding(building.getName());
+		lastChargeMap = recordService.getLastChargesByBuilding(building.getName());
+		logger.debug("record[{}]: perpare record history finish, room-{} lastRemianMap-{}, lastChargeMap", building.getName(), rooms.length, lastRemianMap.size(), lastChargeMap.size());
 	}
 
 }

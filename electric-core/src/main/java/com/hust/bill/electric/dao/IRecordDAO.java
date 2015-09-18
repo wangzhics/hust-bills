@@ -37,9 +37,14 @@ public interface IRecordDAO {
 	
 	public RecordTaskResultBean[] getTaskResultsByTaskID(@Param("taskID") BigInteger taskID);
 	
-	public RemainRecord[] getLastRemainDatesByBuilding(@Param("buildingName") String buildingName);
 	
-	public ChargeRecord[] getLastChargeDatesByBuilding(@Param("buildingName") String buildingName);
+	public RemainRecord[] getLastRemainsByBuilding(@Param("buildingName") String buildingName);
+	
+	public ChargeRecord[] getLastChargesByBuilding(@Param("buildingName") String buildingName);
+	
+	public void updateLastRemainsByBuilding(RemainRecord[] remainRecords);
+	
+	public void updateLastChargesByBuilding(ChargeRecord[] chargeRecords);
 	
 	public void insertRemains(RemainRecord[] remainRecords);
 	
@@ -62,5 +67,4 @@ public interface IRecordDAO {
 	
 	public RemainRecord getLastRemainByRoom(@Param("buildingName") String buildingName, @Param("roomName") String roomName);
 	
-	public RemainRecord[] getLastRemainsByBuilding(@Param("buildingName") String buildingName);
 }

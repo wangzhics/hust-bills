@@ -98,9 +98,20 @@
     </if>
   </insert>
   
-  <select id="getLastRemainDatesByBuilding" resultMap="recordRemainResultMap">
-     select buildingName, roomName, max(stamp) stamp from e_record_remain where buildingName=#{buildingName} group by roomName;
+  <select id="getLastRemainsByBuilding" resultMap="recordRemainResultMap">
+     select buildingName, roomName, stamp, remain from e_record_remain_last where buildingName=#{buildingName} ;
   </select>
+  
+  <update id="updateLastRemainsByBuilding">
+    <if test="array.length == 0">
+      select count(*) from e_record_remain_last
+    </if>
+    <if test="array.length != 0">
+      <foreach collection="array" item="item" index="index" separator=";">
+        update e_record_remain_last set stamp = #{item.dateTime}, remain = #{item.remain} where buildingName = #{item.buildingName} and roomName = #{item.roomName}
+      </foreach>
+    </if>
+  </update>
   
   <select id="getUnCalculateRemains" resultMap="recordRemainResultMap">
     select buildingName, roomName, stamp, remain from e_record_remain where 1 = 1
@@ -121,21 +132,7 @@
   </select>
   
   <select id="getLastRemainByRoom"  resultMap="recordRemainResultMap">
-     select buildingName, roomName, stamp, remain from e_record_remain 
-        where buildingName=#{buildingName} and roomName=#{roomName} 
-          and stamp=(select max(stamp) from e_record_remain where buildingName=#{buildingName} and roomName=#{roomName})
-  </select>
-  
-  <select id="geLastRemainsByBuilding" resultMap="recordRemainResultMap">
-    select t3.buildingName, t3.roomName, t4.stamp, t4.remain from (
-    (select buildingName, roomName from e_room where buildingName=#{buildingName}) as t3
-    left join
-    (select t1.roomName, t1.stamp, t2.remain from(
-    (select roomName, max(stamp) stamp from e_record_remain where buildingName=#{buildingName} group by roomName) as t1 
-    left join 
-    (select roomName, stamp, remain from e_record_remain where buildingName=#{buildingName}) as t2 
-    on t1.roomName=t2.roomName and t1.stamp=t2.stamp)) as t4
-    on t3.roomName = t4.roomName)
+     select buildingName, roomName, stamp, remain from e_record_remain_last where buildingName=#{buildingName} and roomName=#{roomName} 
   </select>
       
   <insert id="insertCharges">
@@ -150,9 +147,20 @@
     </if>
   </insert>
   
-  <select id="getLastChargeDatesByBuilding" resultMap="recordChargeResultMap">
-     select buildingName, roomName, max(stamp) stamp from e_record_charge where buildingName=#{buildingName} group by roomName;
+  <select id="getLastChargesByBuilding" resultMap="recordChargeResultMap">
+     select buildingName, roomName, stamp, power, money from e_record_charge_last where buildingName=#{buildingName};
   </select>
+  
+    <update id="updateLastChargesByBuilding">
+    <if test="array.length == 0">
+      select count(*) from e_record_charge_last
+    </if>
+    <if test="array.length != 0">
+      <foreach collection="array" item="item" index="index" separator=";">
+        update e_record_charge_last set stamp = #{item.dateTime}, power = #{item.chargePower} , money = #{item.chargeMoney} where buildingName = #{item.buildingName} and roomName = #{item.roomName}
+      </foreach>
+    </if>
+  </update>
   
   <select id="getChargesByGapDate"  resultMap="recordChargeResultMap">
     <![CDATA[ select buildingName, roomName, stamp, power, money from e_record_charge where buildingName=#{buildingName} and roomName = #{roomName} and stamp > #{startDateTime} and stamp < #{endDateTime}  order by stamp asc ]]>

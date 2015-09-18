@@ -34,8 +34,7 @@ public class RoomController {
 	public String get(@PathVariable String buildingName, @PathVariable String roomName, Model model, HttpServletResponse response) {
 		Room room = roomService.getByNames(buildingName, roomName);
 		if(room == null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return null;
+			return "redirect:/";
 		}
 		model.addAttribute("room", room);
 		

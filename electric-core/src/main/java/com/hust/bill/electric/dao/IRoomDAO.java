@@ -14,6 +14,7 @@ import com.hust.bill.electric.bean.task.room.RoomTaskResultBean;
 
 @Repository(value="roomTempDAO")
 public interface IRoomDAO {
+	
 	public void insertTask(RoomTaskBean taskBean);
 	
 	public void updateTaskSatus(@Param("id") BigInteger id, @Param("status") TaskStatus taskStatus);
