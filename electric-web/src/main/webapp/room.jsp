@@ -190,8 +190,8 @@ $(document).ready(function() {
       ${room.buildingName}-${room.roomName} <small>信息概览</small>
     </h1>
     <ol class="breadcrumb">
-     <li><a href="#"><i class="fa fa-home"></i></a></li>
-      <li><a href="#"><i class="fa fa-building"></i>${room.buildingName}</a></li>
+     <li><a href="${pageContext.request.contextPath}"><i class="fa fa-home"></i></a></li>
+      <li><a href="${pageContext.request.contextPath}/${room.buildingName}"><i class="fa fa-building"></i>${room.buildingName}</a></li>
       <li class="active">${room.roomName}</li>
     </ol>
   </section>
@@ -309,7 +309,7 @@ $(document).ready(function() {
   </div>
   </div>
   <div class="row">
-  <section class="col-lg-6 connectedSortable ui-sortable">
+  <section class="col-lg-4 connectedSortable ui-sortable">
   <div class="box box-danger" style="border-top-color:#079C6C;">
     <div class="box-header">
       <!-- tools box -->
@@ -324,7 +324,7 @@ $(document).ready(function() {
     </div>
     <div class="box-body no-padding">
       <div class="table-responsive">
-        <table data-toggle="table" data-ajax="remainAjaxRequest" data-side-pagination="server" 
+        <table class="table table-striped" data-toggle="table" data-ajax="remainAjaxRequest" data-side-pagination="server" 
           data-pagination="true" data-page-size="7" data-page-list="[]">
           <thead>
           <tr>
@@ -352,7 +352,7 @@ $(document).ready(function() {
     </div>
     <div class="box-body no-padding">
       <div class="table-responsive">
-        <table  data-toggle="table" data-ajax="chargeAjaxRequest" data-side-pagination="server" 
+        <table  class="table table-striped" data-toggle="table" data-ajax="chargeAjaxRequest" data-side-pagination="server" 
           data-pagination="true" data-page-size="7" data-page-list="[]">
           <thead>
           <tr>
