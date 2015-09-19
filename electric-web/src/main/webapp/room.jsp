@@ -202,7 +202,7 @@ $(document).ready(function() {
       <div class="small-box bg-green">
         <div class="inner">
           <h3>${lastRemain.remain}<sup style="font-size: 20px">&nbsp;KW</sup></h3>
-          <p>剩余电量，截至<fmt:formatDate value="${lastRemain.dateTime}" type="date"/></p>
+          <p>剩余电量</p>
         </div>
         <div class="icon">
           <i class="ion ion-pie-graph"></i>
@@ -248,7 +248,7 @@ $(document).ready(function() {
       <div class="small-box bg-red">
         <div class="inner">
           <h3>${dayCount}<sup style="font-size: 20px">&nbsp;Day</sup></h3>
-          <p>可用天数，<fmt:formatNumber value="${roomRank.average}" pattern="0.00"/>KW/Day</p>
+          <p>可用天数</p>
         </div>
         <div class="icon">
           <i class="ion ion-flash-off"></i>

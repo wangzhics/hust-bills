@@ -39,9 +39,40 @@
 <link href="${pageContext.request.contextPath}/static/other/room/AdminLTE.css" rel="stylesheet" />
 <!-- timeline -->
 <link href="${pageContext.request.contextPath}/static/other/building/timeline.css" rel="stylesheet" />
+<!-- map -->
+<script src="http://map.qq.com/api/js?v=2.exp&libraries=drawing,geometry,autocomplete,convertor" type="text/javascript"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
   $('#myTab a:first').tab('show');
+  var center = new qq.maps.LatLng(30.507902, 114.413659);
+  var map = new qq.maps.Map(document.getElementById('bar-chart'), {
+    // 地图的中心地理坐标。
+    center: center,
+    zoom:16,
+    mapTypeControl:false,
+    keyboardShortcuts:false
+  });
+  var latlngBounds = new qq.maps.LatLngBounds();
+  var searchService = new qq.maps.SearchService({
+    complete : function(results){
+      var pois = results.detail.pois;
+      var poi = pois[0];
+      latlngBounds.extend(poi.latLng);  
+      var marker = new qq.maps.Marker({
+          map:map,
+          position: poi.latLng
+      });
+      marker.setTitle('华中科技大学 ${building.name}');
+      map.fitBounds(latlngBounds);
+    }
+  });
+  setTimeout(function() {
+    var keyword = '华中科技大学 ${building.name}';
+    var region = '武汉';
+    searchService.setLocation(region);
+    searchService.search(keyword);
+  }, 1000);
 });
 </script>
 <head>
@@ -58,11 +89,66 @@ $(document).ready(function() {
     <li><i class="fa fa-building"></i>${building.name}</li> 
   </ol>
 </section>
-  <section class="content" style="padding: 0px;">
-    <div class="row">
-     <div class="col-lg-6" >
-      <div class="panel panel-default" style="border-top: 0px; margin-left: 5px;">
-      <ul id="myTab" class="nav nav-tabs" >
+  <section class="col-lg-6 connectedSortable">
+    <!-- Box (with bar chart) -->
+    <div class="box box-danger" id="loading-example">
+      <div class="box-header">
+        <!-- tools box -->
+        <div class="pull-right box-tools">
+          <button class="btn btn-danger btn-sm refresh-btn" data-toggle="tooltip" title="Reload">
+            <i class="fa fa-refresh"></i>
+          </button>
+          <button class="btn btn-danger btn-sm" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <i class="fa fa-minus"></i>
+          </button>
+          <button class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <!-- /. tools -->
+        <i class="fa fa-cloud"></i>
+        <h3 class="box-title">Server Load</h3>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body no-padding">
+        <div class="row">
+          <div class="col-sm-12">
+            <!-- bar chart -->
+            <div class="chart" id="bar-chart" style="height: 300px;">
+            </div>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row - inside box -->
+      </div>
+      <!-- /.box-body -->
+      <div class="box-footer">
+        <div class="row">
+          <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+            <input type="text" class="knob" data-readonly="true" value="80" data-width="60" data-height="60" data-fgcolor="#f56954">
+            <div class="knob-label">CPU</div>
+          </div>
+          <!-- ./col -->
+          <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+            <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60" data-fgcolor="#00a65a">
+            <div class="knob-label">Disk</div>
+          </div>
+          <!-- ./col -->
+          <div class="col-xs-4 text-center">
+            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60" data-fgcolor="#3c8dbc">
+            <div class="knob-label">RAM</div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.box-footer -->
+    </div>
+    <!-- /.box -->
+  </section>
+  <section class="col-lg-6 connectedSortable">
+    <div class="panel panel-default" style="border-top: 0px; margin-left: 5px;">
+      <ul id="myTab" class="nav nav-tabs">
         <c:forEach var="item" items="${floorMap}">
           <li><a href="#floor_${item.key}" data-toggle="tab">${item.key}层</a></li>
         </c:forEach>
@@ -70,144 +156,29 @@ $(document).ready(function() {
       <div id="myTabContent" class="tab-content">
         <c:forEach var="item" items="${floorMap}">
           <div class="tab-pane fade " id="floor_${item.key}">
-          <table data-toggle="table" class="table table-striped">
-            <thead><tr><th>房间号</th><th>电量</th><th>抄表时间</th></tr></thead>
-            <tbody>
-              <c:forEach items="${item.value}" var="it">
-                <tr><td><a href="${pageContext.request.contextPath}/${building.name}/${it.roomName}">${it.roomName}</a>
-                </td><td>${it.remain}</td><td><fmt:formatDate value="${it.dateTime}" type="both"/></td></tr>
-              </c:forEach>
-            </tbody>
+            <table data-toggle="table" class="table table-striped">
+              <thead>
+                <tr>
+                  <th>房间号</th>
+                  <th>电量</th>
+                  <th>抄表时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <c:forEach items="${item.value}" var="it">
+                  <tr>
+                    <td><a href="${pageContext.request.contextPath}/${building.name}/${it.roomName}">${it.roomName}</a></td>
+                    <td>${it.remain}</td>
+                    <td><fmt:formatDate value="${it.dateTime}" type="both" /></td>
+                  </tr>
+                </c:forEach>
+              </tbody>
             </table>
-            </div>
+          </div>
         </c:forEach>
-      </div>
-      </div>
-     </div>
-      <div class="col-lg-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <i class="fa fa-clock-o fa-fw"></i> Timeline
-          </div>
-          <!-- /.panel-heading -->
-          <div class="panel-body">
-            <ul class="timeline">
-              <li>
-                <div class="timeline-badge">
-                  <i class="fa fa-check"></i>
-                </div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                    <p>
-                      <small class="text-muted"><i class="fa fa-time"></i> 11 hours ago via Twitter</small>
-                    </p>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                  </div>
-                </div>
-              </li>
-              <li class="timeline-inverted">
-                <div class="timeline-badge warning">
-                  <i class="fa fa-credit-card"></i>
-                </div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-badge danger">
-                  <i class="fa fa-credit-card"></i>
-                </div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                  </div>
-                </div>
-              </li>
-              <li class="timeline-inverted">
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-badge info">
-                  <i class="fa fa-save"></i>
-                </div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                    <hr>
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-cog"></i> <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                  </div>
-                </div>
-              </li>
-              <li class="timeline-inverted">
-                <div class="timeline-badge success">
-                  <i class="fa fa-thumbs-up"></i>
-                </div>
-                <div class="timeline-panel">
-                  <div class="timeline-heading">
-                    <h4 class="timeline-title">Timeline Event</h4>
-                  </div>
-                  <div class="timeline-body">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel justo eu mi scelerisque vulputate. Aliquam in metus eu
-                      lectus aliquet egestas.</p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!-- /.panel-body -->
-        </div>
       </div>
     </div>
   </section>
+
 </body>
 </html>
