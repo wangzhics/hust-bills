@@ -71,8 +71,10 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 			RecordPage recordPage = new RecordPage(sdf);
 			recordPage.parse(httpClient.getCurrentDocument());
 			int remianCount = 0, chargeCount = 0;
+			
 			RemainRecord roomLastRemain = lastRemianMap.get(room.getRoomName());
 			RemainRecord lastRemianRecord = new RemainRecord(roomLastRemain.getBuildingName(), roomLastRemain.getRoomName(), roomLastRemain.getDateTime(), roomLastRemain.getRemain());
+			lastRemianRecordList.add(lastRemianRecord);
 			for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
 				if(roomLastRemain.getDateTime() == null || remainLine.getDate().after(roomLastRemain.getDateTime())) {
 					remianRecordList.add(new RemainRecord(building.getName(), room.getRoomName(), remainLine.getDate(), remainLine.getRemain()));
@@ -83,9 +85,10 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 					}
 				}
 			}
-			lastRemianRecordList.add(lastRemianRecord);
+			
 			ChargeRecord roomLastCharge = lastChargeMap.get(room.getRoomName());
 			ChargeRecord lastChargeRecord = new ChargeRecord(roomLastCharge.getBuildingName(), roomLastCharge.getRoomName(), roomLastCharge.getDateTime(), roomLastCharge.getChargePower(), roomLastCharge.getChargeMoney());
+			lastChargeRecordList.add(lastChargeRecord);
 			for(RecordChargeLine chargeLine : recordPage.getChargeLines()) {
 				if(roomLastCharge.getDateTime() == null ||chargeLine.getDate().after(roomLastCharge.getDateTime())) {
 					chargeRecordList.add(new ChargeRecord(building.getName(), room.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney()));
@@ -97,10 +100,10 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 					}
 				}
 			}
-			lastChargeRecordList.add(lastChargeRecord);
 			logger.debug("record[{}]: room{} remian count {}-{}, charge count {}-{}", building.getName(), room.getRoomName(), recordPage.getRemainLines().length, remianCount, recordPage.getChargeLines().length, chargeCount);
 		}
 		RecordTaskResultBean resultBean = new RecordTaskResultBean(taskBean.getId(), building.getName(), remianRecordList.size(), chargeRecordList.size());
+		logger.info("record[{}]: start save {}", building.getName(), resultBean);
 		recordService.addRecords(resultBean, 
 				lastRemianRecordList.toArray(new RemainRecord[0]), lastChargeRecordList.toArray(new ChargeRecord[0]),
 				remianRecordList.toArray(new RemainRecord[0]), chargeRecordList.toArray(new ChargeRecord[0]));

@@ -27,7 +27,6 @@
  -->
 <!-- morris.js -->
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.css" rel="stylesheet" />
-<link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/static/morris.js-0.5.1/legend.css" rel="stylesheet" />
 <script src="${pageContext.request.contextPath}/static/morris.js-0.5.1/morris.js" type="text/javascript"></script>
 <!-- Moment.js -->
@@ -44,7 +43,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#myTab a:first').tab('show');
+  //$('#myTab a:first').tab('show');
   var center = new qq.maps.LatLng(30.507902, 114.413659);
   var map = new qq.maps.Map(document.getElementById('bar-chart'), {
     // 地图的中心地理坐标。
@@ -90,95 +89,68 @@ $(document).ready(function() {
   </ol>
 </section>
   <section class="col-lg-6 connectedSortable">
-    <!-- Box (with bar chart) -->
-    <div class="box box-danger" id="loading-example">
+    <div class="box box-info">
       <div class="box-header">
-        <!-- tools box -->
-        <div class="pull-right box-tools">
-          <button class="btn btn-danger btn-sm refresh-btn" data-toggle="tooltip" title="Reload">
-            <i class="fa fa-refresh"></i>
-          </button>
-          <button class="btn btn-danger btn-sm" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-            <i class="fa fa-minus"></i>
-          </button>
-          <button class="btn btn-danger btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove">
-            <i class="fa fa-times"></i>
-          </button>
-        </div>
-        <!-- /. tools -->
-        <i class="fa fa-cloud"></i>
-        <h3 class="box-title">Server Load</h3>
+        <i class="fa fa-location-arrow" style="padding-bottom: 0px; font-size: 12px;"></i>
+        <h6 class="box-title" style="padding-bottom: 0px; font-size: 12px;">地理位置</h6>
       </div>
-      <!-- /.box-header -->
       <div class="box-body no-padding">
         <div class="row">
           <div class="col-sm-12">
-            <!-- bar chart -->
             <div class="chart" id="bar-chart" style="height: 300px;">
             </div>
           </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row - inside box -->
       </div>
-      <!-- /.box-body -->
-      <div class="box-footer">
-        <div class="row">
-          <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-            <input type="text" class="knob" data-readonly="true" value="80" data-width="60" data-height="60" data-fgcolor="#f56954">
-            <div class="knob-label">CPU</div>
-          </div>
-          <!-- ./col -->
-          <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-            <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60" data-fgcolor="#00a65a">
-            <div class="knob-label">Disk</div>
-          </div>
-          <!-- ./col -->
-          <div class="col-xs-4 text-center">
-            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60" data-fgcolor="#3c8dbc">
-            <div class="knob-label">RAM</div>
-          </div>
-          <!-- ./col -->
-        </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.box-footer -->
+      <div class="box-footer"></div>
     </div>
-    <!-- /.box -->
   </section>
   <section class="col-lg-6 connectedSortable">
-    <div class="panel panel-default" style="border-top: 0px; margin-left: 5px;">
-      <ul id="myTab" class="nav nav-tabs">
-        <c:forEach var="item" items="${floorMap}">
-          <li><a href="#floor_${item.key}" data-toggle="tab">${item.key}层</a></li>
-        </c:forEach>
-      </ul>
-      <div id="myTabContent" class="tab-content">
-        <c:forEach var="item" items="${floorMap}">
-          <div class="tab-pane fade " id="floor_${item.key}">
-            <table data-toggle="table" class="table table-striped">
-              <thead>
-                <tr>
-                  <th>房间号</th>
-                  <th>电量</th>
-                  <th>抄表时间</th>
-                </tr>
-              </thead>
-              <tbody>
-                <c:forEach items="${item.value}" var="it">
-                  <tr>
-                    <td><a href="${pageContext.request.contextPath}/${building.name}/${it.roomName}">${it.roomName}</a></td>
-                    <td>${it.remain}</td>
-                    <td><fmt:formatDate value="${it.dateTime}" type="both" /></td>
-                  </tr>
-                </c:forEach>
-              </tbody>
-            </table>
-          </div>
-        </c:forEach>
+    <div class="box box-primary">
+      <div class="box-header">
+        <i class="fa fa-table" style="padding-bottom: 0px; font-size: 12px;"></i>
+        <h6 class="box-title" style="padding-bottom: 0px; font-size: 12px;">房间</h6>
+        <select class="pull-right">
+          <c:forEach var="item" items="${floorMap}">
+            <option value="${item.key}">${item.key}层</option>
+          </c:forEach>
+        </select>
       </div>
+      <div class="box-body no-padding">
+        <div class="row">
+          <div class="col-sm-12">
+            <div id="myTabContent">
+              <c:forEach var="item" items="${floorMap}">
+                <div class="tab-pane ta" id="floor_${item.key}">
+                  <table data-toggle="table" class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>房间号</th>
+                        <th>电量</th>
+                        <th>抄表时间</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <c:forEach items="${item.value}" var="it">
+                        <tr>
+                          <td><a href="${pageContext.request.contextPath}/${building.name}/${it.roomName}">${it.roomName}</a></td>
+                          <td>${it.remain}</td>
+                          <td><fmt:formatDate value="${it.dateTime}" type="both" /></td>
+                        </tr>
+                      </c:forEach>
+                    </tbody>
+                  </table>
+                </div>
+              </c:forEach>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box-footer"></div>
     </div>
   </section>
-
+  <section class="col-lg-6 connectedSortable">
+  <p>test</p>
+  </section>
 </body>
 </html>

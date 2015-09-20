@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,11 +62,15 @@ public class RecordServiceImpl implements IRecordService{
 	@Override
 	@Transactional
 	public void addRecords(RecordTaskResultBean taskResultBean, RemainRecord[] lastRemainRecords, ChargeRecord[] lastChargeRecords, RemainRecord[] remainRecords, ChargeRecord[] chargeRecords) {
-		recordDAO.insertTaskResult(taskResultBean);
-		recordDAO.updateLastRemainsByBuilding(remainRecords);
-		recordDAO.insertRemains(remainRecords);
-		recordDAO.updateLastChargesByBuilding(lastChargeRecords);
-		recordDAO.insertCharges(chargeRecords);
+		try {
+			recordDAO.insertTaskResult(taskResultBean);
+			recordDAO.updateLastRemainsByBuilding(lastRemainRecords);
+			recordDAO.insertRemains(remainRecords);
+			recordDAO.updateLastChargesByBuilding(lastChargeRecords);
+			recordDAO.insertCharges(chargeRecords);
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

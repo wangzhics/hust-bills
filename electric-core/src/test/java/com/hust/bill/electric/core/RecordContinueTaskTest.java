@@ -31,7 +31,7 @@ public class RecordContinueTaskTest {
 	@Test
 	public void test() {
 		try {
-			BigInteger taskId = BigInteger.valueOf(47);
+			BigInteger taskId = BigInteger.valueOf(57);
 			RecordContinueTask continueTask = new RecordContinueTask(taskId, buildingService, roomService, recordService);
 			continueTask.create();
 			Thread t = new Thread(continueTask);
