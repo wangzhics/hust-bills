@@ -93,7 +93,7 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 				if(roomLastCharge.getDateTime() == null ||chargeLine.getDate().after(roomLastCharge.getDateTime())) {
 					chargeRecordList.add(new ChargeRecord(building.getName(), room.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney()));
 					chargeCount ++;
-					if(chargeLine.getDate().after(lastRemianRecord.getDateTime())) {
+					if(chargeLine.getDate().after(lastChargeRecord.getDateTime())) {
 						lastChargeRecord.setDateTime(chargeLine.getDate());
 						lastChargeRecord.setChargePower(chargeLine.getPower());
 						lastChargeRecord.setChargeMoney(chargeLine.getMoney());
