@@ -76,7 +76,8 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 			RemainRecord lastRemianRecord = new RemainRecord(roomLastRemain.getBuildingName(), roomLastRemain.getRoomName(), roomLastRemain.getDateTime(), roomLastRemain.getRemain());
 			lastRemianRecordList.add(lastRemianRecord);
 			for(RecordRemainLine remainLine : recordPage.getRemainLines()) {
-				if(roomLastRemain.getDateTime() == null || remainLine.getDate().after(roomLastRemain.getDateTime())) {
+				if(roomLastRemain.getDateTime() == null 
+						|| remainLine.getDate().after(roomLastRemain.getDateTime())) {
 					remianRecordList.add(new RemainRecord(building.getName(), room.getRoomName(), remainLine.getDate(), remainLine.getRemain()));
 					remianCount ++;
 					if(remainLine.getDate().after(lastRemianRecord.getDateTime())) {
@@ -93,7 +94,8 @@ public class ScanByBuildingCallable implements Callable<ScanByBuildingResult> {
 				if(roomLastCharge.getDateTime() == null ||chargeLine.getDate().after(roomLastCharge.getDateTime())) {
 					chargeRecordList.add(new ChargeRecord(building.getName(), room.getRoomName(), chargeLine.getDate(), chargeLine.getPower(), chargeLine.getMoney()));
 					chargeCount ++;
-					if(chargeLine.getDate().after(lastChargeRecord.getDateTime())) {
+					if(lastChargeRecord.getDateTime() == null 
+							|| chargeLine.getDate().after(lastChargeRecord.getDateTime())) {
 						lastChargeRecord.setDateTime(chargeLine.getDate());
 						lastChargeRecord.setChargePower(chargeLine.getPower());
 						lastChargeRecord.setChargeMoney(chargeLine.getMoney());
